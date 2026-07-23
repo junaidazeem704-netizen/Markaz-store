@@ -181,3 +181,149 @@ async function submitOrder() {
         }
     }
 }
+// ================= ADMIN PANEL FUNCTIONS ================= //
+
+function renderAdminPanel() {
+    renderAdminCategories();
+    renderAdminCategoryDropdown();
+    renderAdminProducts();
+}
+
+// 1. Categories Functions
+function renderAdminCategories() {
+    const listEl = document.getElementById('admin-category-list');
+    if (!listEl) return;
+
+    if (!categories.length) {
+        listEl.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem;">No categories added yet.</span>`;
+        return;
+    }
+
+    listEl.innerHTML = categories.map((cat, idx) => `
+        <div class="list-pill">
+            <span>${cat}</span>
+            <button class="btn-delete" onclick="deleteCategory(${idx})">✕</button>
+        </div>
+    `).join('');
+}
+
+function renderAdminCategoryDropdown() {
+    const selectEl = document.getElementById('p-category');
+    if (!selectEl) return;
+
+    selectEl.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+}
+
+function addNewCategory() {
+    const input = document.getElementById('new-cat-name');
+    const name = input.value.trim();
+
+    if (!name) {
+        alert("Category name likhna zaroori hai!");
+        return;
+    }
+
+    if (categories.includes(name)) {
+        alert("Yeh category pehle se maujood hai!");
+        return;
+    }
+
+    categories.push(name);
+    localStorage.setItem('myCategories', JSON.stringify(categories));
+    input.value = '';
+
+    renderAdminPanel();
+    alert(`Category "${name}" add ho gayi!`);
+}
+
+function deleteCategory(index) {
+    if (confirm(`Kya aap "${categories[index]}" category delete karna chahte hain?`)) {
+        categories.splice(index, 1);
+        localStorage.setItem('myCategories', JSON.stringify(categories));
+        renderAdminPanel();
+    }
+}
+
+// 2. Products Functions
+function renderAdminProducts() {
+    const listEl = document.getElementById('admin-products-list');
+    if (!listEl) return;
+
+    if (!products.length) {
+        listEl.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">No products in store.</p>`;
+        return;
+    }
+
+    listEl.innerHTML = products.map((p, idx) => {
+        const img = p.images && p.images.length ? p.images[0] : 'https://via.placeholder.com/50';
+        return `
+            <div class="admin-product-item">
+                <div class="admin-prod-info">
+                    <img src="${img}" class="admin-prod-img" alt="product">
+                    <div>
+                        <strong style="display:block; font-size:0.95rem;">${p.title}</strong>
+                        <span style="font-size:0.8rem; color:#38bdf8;">Rs. ${p.price}</span> | 
+                        <span style="font-size:0.8rem; color:var(--text-muted);">${p.category || 'General'}</span>
+                    </div>
+                </div>
+                <button class="btn-delete" style="width:28px; height:28px; font-size:0.9rem;" onclick="deleteProduct(${idx})">✕</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function addNewProduct() {
+    const title = document.getElementById('p-title').value.trim();
+    const price = document.getElementById('p-price').value.trim();
+    const category = document.getElementById('p-category').value;
+    const fileInput = document.getElementById('p-file');
+    const urlInput = document.getElementById('p-url').value.trim();
+
+    if (!title || !price) {
+        alert("Product Title aur Price likhna zaroori hai!");
+        return;
+    }
+
+    const saveAndRefresh = (imgSrc) => {
+        const newProd = {
+            title: title,
+            price: price,
+            category: category,
+            images: [imgSrc || 'https://via.placeholder.com/300']
+        };
+
+        products.unshift(newProd);
+        localStorage.setItem('myProducts', JSON.stringify(products));
+
+        // Form Clear
+        document.getElementById('p-title').value = '';
+        document.getElementById('p-price').value = '';
+        document.getElementById('p-file').value = '';
+        document.getElementById('p-url').value = '';
+
+        renderAdminPanel();
+        alert("🎉 Product Store Par Add Ho Gaya!");
+    };
+
+    // Check if File Uploaded
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            saveAndRefresh(e.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    } else if (urlInput) {
+        saveAndRefresh(urlInput);
+    } else {
+        saveAndRefresh('https://via.placeholder.com/300');
+    }
+}
+
+function deleteProduct(index) {
+    if (confirm(`Kya aap "${products[index].title}" ko delete karna chahte hain?`)) {
+        products.splice(index, 1);
+        localStorage.setItem('myProducts', JSON.stringify(products));
+        renderAdminPanel();
+    }
+}
+

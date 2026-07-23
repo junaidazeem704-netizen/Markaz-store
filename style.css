@@ -1,77 +1,127 @@
-/* Google Fonts Import for Modern Look */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+/* Google Fonts - Plus Jakarta Sans & Outfit for modern luxury e-commerce */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 :root {
-    --bg-color: #0f172a;       /* Deep Slate Background */
-    --card-bg: #1e293b;        /* Lighter Slate for Cards */
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --accent: #3b82f6;         /* Bright Blue */
-    --accent-hover: #2563eb;
-    --success: #10b981;        /* Emerald Green */
-    --success-hover: #059669;
-    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    /* Shopify Luxury Dark Palette */
+    --bg-dark: #090d16;          /* Deep Obsidian Navy */
+    --bg-surface: #121929;       /* Card Surface */
+    --bg-card-hover: #1a243a;    /* Card Hover State */
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    /* Brand Accents */
+    --accent-emerald: #10b981;   /* Primary Buy Action */
+    --accent-emerald-glow: rgba(16, 185, 129, 0.25);
+    --accent-indigo: #6366f1;    /* Category / Badges */
+    --accent-amber: #f59e0b;     /* Rating Stars & Sale Tags */
+    
+    --border-light: rgba(255, 255, 255, 0.08);
+    --border-active: rgba(99, 102, 241, 0.4);
+    
+    --glass-bg: rgba(18, 25, 41, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+    
+    --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 20px rgba(99, 102, 241, 0.15);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    line-height: 1.6;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    line-height: 1.5;
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
 }
 
-/* ================= HEADER ================= */
+/* ================= 1. SHOPIFY ANNOUNCEMENT BAR ================= */
+.announcement-bar {
+    background: linear-gradient(90deg, #4f46e5, #7c3aed, #06b6d4);
+    background-size: 200% 200%;
+    animation: gradientShift 6s ease infinite;
+    color: #ffffff;
+    text-align: center;
+    padding: 8px 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ================= 2. GLASS HEADER ================= */
 .header {
-    background: rgba(30, 41, 59, 0.75);
-    backdrop-filter: blur(12px); /* Glassmorphism effect */
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 15px 20px;
-    animation: fadeInDown 0.6s ease;
+    border-bottom: 1px solid var(--glass-border);
+    padding: 14px 20px;
 }
 
 .header-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .logo {
     text-decoration: none;
-    font-size: 1.7rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
     font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-.logo-text {
-    background: linear-gradient(135deg, #60a5fa, #a78bfa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.logo span.badge-store {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-/* ================= CATEGORIES ================= */
+/* ================= 3. CATEGORY PILLS ================= */
+.category-container {
+    max-width: 1200px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+}
+
 .category-bar {
     display: flex;
-    gap: 12px;
-    padding: 25px 20px 10px;
+    gap: 10px;
     overflow-x: auto;
-    justify-content: center;
+    padding-bottom: 10px;
     scrollbar-width: none;
-    animation: fadeIn 1s ease;
 }
 
 .category-bar::-webkit-scrollbar {
@@ -79,32 +129,33 @@ body {
 }
 
 .cat-btn {
-    background: var(--card-bg);
-    color: var(--text-muted);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 8px 24px;
-    border-radius: 30px;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-light);
+    padding: 9px 20px;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cat-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--bg-card-hover);
     transform: translateY(-2px);
 }
 
 .cat-btn.active {
-    background: linear-gradient(135deg, var(--accent), #6366f1);
-    color: white;
-    border: none;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
 }
 
-/* ================= PRODUCT GRID ================= */
+/* ================= 4. PRODUCT GRID & CARDS ================= */
 .main-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -113,274 +164,187 @@ body {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-    padding-top: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
+    margin-top: 10px;
 }
 
-/* ================= PRODUCT CARDS ================= */
 .card {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 15px;
-    position: relative;
-    box-shadow: var(--card-shadow);
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    animation: fadeInUp 0.6s ease-out backwards;
+    position: relative;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fadeInUp 0.5s ease-out backwards;
 }
-
-/* Staggered load animation for cards */
-.card:nth-child(1) { animation-delay: 0.1s; }
-.card:nth-child(2) { animation-delay: 0.2s; }
-.card:nth-child(3) { animation-delay: 0.3s; }
-.card:nth-child(4) { animation-delay: 0.4s; }
 
 .card:hover {
-    transform: translateY(-8px) scale(1.01);
-    box-shadow: var(--hover-shadow);
-    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-6px);
+    border-color: var(--border-active);
+    box-shadow: var(--shadow-hover);
+    background: var(--bg-card-hover);
 }
 
-.badge {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    background: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(8px);
-    color: white;
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    z-index: 10;
-    border: 1px solid rgba(255,255,255,0.1);
+/* Image Container & Hover Zoom */
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: #0f1523;
+    margin-bottom: 14px;
 }
 
 .p-img {
     width: 100%;
-    height: 280px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 16px;
-    margin-bottom: 15px;
-    filter: brightness(0.95);
-    transition: filter 0.3s ease;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card:hover .p-img {
-    filter: brightness(1.05);
+    transform: scale(1.06);
+}
+
+/* Badges */
+.badge-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(9, 13, 22, 0.8);
+    backdrop-filter: blur(8px);
+    color: var(--text-primary);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: 1px solid var(--border-light);
+    z-index: 2;
+}
+
+.sale-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--accent-amber);
+    color: #000;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 800;
+    z-index: 2;
+}
+
+/* Product Info */
+.card-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.rating-stars {
+    color: var(--accent-amber);
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rating-stars span.review-count {
+    color: var(--text-muted);
+    font-size: 0.7rem;
 }
 
 .card h3 {
-    font-size: 1.15rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
     font-weight: 600;
-    margin-bottom: 5px;
-    color: var(--text-main);
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.price {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: #60a5fa;
-    margin-bottom: 18px;
+.price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
     margin-top: auto;
+    margin-bottom: 14px;
 }
 
-/* ================= BUTTONS ================= */
+.price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #38bdf8;
+}
+
+.old-price {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+/* ================= 5. SHOPIFY CTA BUTTONS ================= */
 .wa-btn {
     width: 100%;
-    background: linear-gradient(135deg, var(--success), #047857);
-    color: white;
+    background: linear-gradient(135deg, var(--accent-emerald), #059669);
+    color: #ffffff;
     border: none;
-    padding: 14px;
-    border-radius: 12px;
-    font-size: 1.05rem;
-    font-weight: 600;
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Button Shine Effect */
-.wa-btn::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.25), transparent);
-    transform: skewX(-25deg);
-    transition: all 0.6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px var(--accent-emerald-glow);
 }
 
 .wa-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #10b981, #047857);
 }
 
-.wa-btn:hover::after {
-    left: 125%;
+.wa-btn:active {
+    transform: translateY(0);
 }
 
-/* ================= ANIMATIONS KEYFRAMES ================= */
+/* ================= 6. ANIMATIONS ================= */
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* ================= FOOTER ================= */
+/* Footer */
 .footer {
     text-align: center;
-    padding: 30px;
+    padding: 35px 20px;
     color: var(--text-muted);
-    font-size: 0.9rem;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    margin-top: 40px;
-}
-/* ================= CHECKOUT PAGE STYLES ================= */
-.checkout-wrapper {
-    max-width: 520px;
-    margin: 30px auto;
-    padding: 0 15px;
-}
-
-.back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    transition: color 0.3s ease;
-}
-
-.back-link:hover {
-    color: #60a5fa;
-}
-
-.checkout-card {
-    background: var(--card-bg);
-    border-radius: 24px;
-    padding: 28px;
-    box-shadow: var(--hover-shadow);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    animation: fadeInUp 0.5s ease-out;
-}
-
-.checkout-card h2 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: var(--text-main);
-}
-
-.order-summary-box {
-    background: rgba(15, 23, 42, 0.6);
-    border-radius: 16px;
-    padding: 16px 20px;
-    margin-bottom: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.order-summary-box span {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #60a5fa;
-    font-weight: 600;
-}
-
-.order-summary-box h3 {
-    font-size: 1.15rem;
-    color: var(--text-main);
-    margin: 4px 0;
-}
-
-.order-summary-box .price-tag {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--success);
-}
-
-.form-group {
-    margin-bottom: 18px;
-}
-
-.form-group label {
-    display: block;
     font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-}
-
-.form-group input, 
-.form-group textarea {
-    width: 100%;
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 14px 16px;
-    color: var(--text-main);
-    font-size: 0.95rem;
-    outline: none;
-    transition: all 0.3s ease;
-}
-
-.form-group input:focus, 
-.form-group textarea:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.25);
-}
-
-/* Success Card */
-.success-card {
-    text-align: center;
-    padding: 40px 20px;
-    display: none;
-    animation: fadeIn 0.5s ease;
-}
-
-.success-icon {
-    font-size: 4rem;
-    margin-bottom: 15px;
-    display: inline-block;
-    animation: bounce 1s infinite alternate;
-}
-
-.success-card h3 {
-    font-size: 1.5rem;
-    color: var(--success);
-    margin-bottom: 10px;
-}
-
-.success-card p {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 25px;
-}
-
-@keyframes bounce {
-    from { transform: translateY(0); }
-    to { transform: translateY(-10px); }
+    border-top: 1px solid var(--border-light);
+    margin-top: 50px;
+    background: rgba(9, 13, 22, 0.5);
 }

@@ -5,51 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Markaz Store</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="checkout-page">
+<body>
 
-    <header class="navbar">
-        <div class="logo">🛍️ Markaz Store</div>
-        <a href="index.html" class="back-link">← Store</a>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🛍️</span>
+                <span class="logo-text">Markaz Store</span>
+            </a>
+        </div>
     </header>
 
-    <!-- Normal Checkout Form Box -->
-    <div class="checkout-card" id="checkout-form-box">
-        <h2>Checkout Order</h2>
-        <div class="checkout-summary">
-            <h3 id="checkout-product-title">Product Title</h3>
-            <p id="checkout-product-price" class="price">Rs. 0</p>
-        </div>
+    <!-- Checkout Main Content -->
+    <div class="checkout-wrapper">
+        
+        <a href="index.html" class="back-link">
+            <span>←</span> Back to Store
+        </a>
 
-        <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="c-name" placeholder="Enter full name">
-        </div>
+        <div class="checkout-card">
+            
+            <!-- Form Section -->
+            <div id="checkout-form-box">
+                <h2>Complete Your Order</h2>
 
-        <div class="form-group">
-            <label>Phone Number</label>
-            <input type="tel" id="c-phone" placeholder="e.g. 03001234567">
-        </div>
+                <!-- Product Summary Box -->
+                <div class="order-summary-box">
+                    <span>Selected Item</span>
+                    <h3 id="checkout-product-title">Loading product...</h3>
+                    <div class="price-tag" id="checkout-product-price">Rs. 0</div>
+                </div>
 
-        <div class="form-group">
-            <label>Delivery Address</label>
-            <textarea id="c-address" placeholder="Complete Street Address, City"></textarea>
-        </div>
+                <!-- Customer Details Form -->
+                <div class="form-group">
+                    <label for="c-name">Full Name</label>
+                    <input type="text" id="c-name" placeholder="Enter your full name" required>
+                </div>
 
-        <button class="btn-whatsapp" onclick="submitOrder()">
-            ✅ Confirm Order
-        </button>
+                <div class="form-group">
+                    <label for="c-phone">Phone Number (WhatsApp)</label>
+                    <input type="tel" id="c-phone" placeholder="03XXXXXXXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="c-address">Complete Delivery Address</label>
+                    <textarea id="c-address" rows="3" placeholder="House no, street, area, city..." required></textarea>
+                </div>
+
+                <button type="button" class="wa-btn btn-whatsapp" onclick="submitOrder()">
+                    ✅ Confirm Order
+                </button>
+            </div>
+
+            <!-- Success Section -->
+            <div id="success-box" class="success-card">
+                <span class="success-icon">🎉</span>
+                <h3>Order Placed Successfully!</h3>
+                <p>Aapka order receive ho gaya hai. Hum bohut jald aap se rabta karenge.</p>
+                <a href="index.html" class="wa-btn" style="text-decoration: none; display: inline-block;">
+                    Continue Shopping
+                </a>
+            </div>
+
+        </div>
     </div>
 
-    <!-- Hidden Success Card (Yeh customer ko order submit hone ke baad dikhega) -->
-    <div class="checkout-card" id="success-box" style="display: none; text-align: center; padding: 40px 20px;">
-        <div style="font-size: 50px; margin-bottom: 15px;">🎉</div>
-        <h2 style="color: var(--whatsapp); margin-bottom: 10px;">Order Placed Successfully!</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Aapka order successfully register ho gaya hai. Hum jald hi aapse rabta karenge.</p>
-        <a href="index.html" class="btn-primary" style="display: block; text-decoration: none; padding: 12px;">Back to Store</a>
-    </div>
-
+    <!-- Main Script -->
     <script src="script.js"></script>
 </body>
 </html>

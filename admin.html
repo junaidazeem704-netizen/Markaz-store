@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Admin Panel</h1>
+        <p><a href="index.html" style="color: #94a3b8; text-decoration: none;">← Go to Store</a></p>
+    </header>
+
+    <div class="admin-card">
+        <h2>Add New Product</h2>
+        <input type="text" id="p-title" placeholder="Product Title">
+        <input type="number" id="p-price" placeholder="Price (PKR)">
+        
+        <!-- Category Selection -->
+        <select id="p-category" style="width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #cbd5e1; border-radius: 6px;">
+            <option value="General">General</option>
+            <option value="Watches">Watches</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Electronics">Electronics</option>
+        </select>
+
+        <input type="text" id="p-img1" placeholder="Direct Image URL 1">
+        <input type="text" id="p-img2" placeholder="Direct Image URL 2 (Optional)">
+        
+        <button onclick="addProduct()">Add Product</button>
+    </div>
+
+    <div class="admin-card" style="margin-top: 20px;">
+        <h3>Manage Products</h3>
+        <div id="admin-products-list" style="margin-top:10px;"></div>
+        
+        <button onclick="resetStorage()" style="background:#ef4444; margin-top:15px;">
+            🧹 Clear Storage & Cache
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

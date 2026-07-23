@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markaz Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">🛍️ Markaz Store</div>
+        <button class="admin-toggle-btn" onclick="toggleAdminModal()">⚙️ Admin Panel</button>
+    </header>
+
+    <!-- Categories Filter Bar -->
+    <div class="category-wrapper">
+        <div class="category-bar" id="category-bar"></div>
+    </div>
+
+    <!-- Products Grid -->
+    <main class="container" id="products-container"></main>
+
+    <!-- Modal Overlay for Embedded Admin Panel -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Store Management</h2>
+                <button class="close-btn" onclick="toggleAdminModal()">&times;</button>
+            </div>
+
+            <!-- Manage Categories Section -->
+            <section class="admin-section">
+                <h3>🏷️ Manage Categories</h3>
+                <div class="input-inline">
+                    <input type="text" id="new-cat-name" placeholder="New Category Name">
+                    <button class="btn-primary" onclick="addCategory()">Add Category</button>
+                </div>
+                <div class="manage-list" id="categories-manage-list"></div>
+            </section>
+
+            <hr class="divider">
+
+            <!-- Add Product Section -->
+            <section class="admin-section">
+                <h3>📦 Add New Product</h3>
+                <input type="text" id="p-title" placeholder="Product Title">
+                <input type="number" id="p-price" placeholder="Price (PKR)">
+                <select id="p-category" class="custom-select"></select>
+                
+                <label style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 4px;">Upload Image from Device:</label>
+                <input type="file" id="p-img-file" accept="image/*" style="margin-bottom: 8px;">
+                
+                <p style="font-size: 11px; color: var(--text-muted); text-align: center; margin: 4px 0;">-- OR --</p>
+                
+                <input type="text" id="p-img1" placeholder="Direct Image URL (Optional)">
+                <button class="btn-primary" onclick="addProduct()">Add Product</button>
+            </section>
+
+            <hr class="divider">
+
+            <!-- Delete Product Section -->
+            <section class="admin-section">
+                <h3>🗑️ Manage Products</h3>
+                <div class="manage-list" id="admin-products-list"></div>
+            </section>
+
+            <button class="btn-danger-outline" onclick="resetStorage()">🧹 Reset All Data Cache</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

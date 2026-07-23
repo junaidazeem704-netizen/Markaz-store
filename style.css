@@ -529,3 +529,79 @@ body {
     margin-bottom: 25px;
     line-height: 1.6;
 }
+/* ================= HORIZONTAL SLIDER STYLES ================= */
+.slider-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+    padding: 0 10px;
+}
+
+.products-slider {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 15px 5px 25px;
+    scrollbar-width: none; /* Firefox Scrollbar Hide */
+    -webkit-overflow-scrolling: touch;
+}
+
+.products-slider::-webkit-scrollbar {
+    display: none; /* Chrome/Safari Scrollbar Hide */
+}
+
+/* Card inside Horizontal Slider */
+.products-slider .card {
+    flex: 0 0 280px; /* Card Width in Slider */
+    scroll-snap-align: start;
+}
+
+/* Left & Right Slider Arrows */
+.slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-60%);
+    width: 44px;
+    height: 44px;
+    background: rgba(18, 25, 41, 0.9);
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.slider-arrow:hover {
+    background: #6366f1;
+    color: #ffffff;
+    border-color: transparent;
+    transform: translateY(-60%) scale(1.1);
+}
+
+.slider-arrow.left {
+    left: -12px;
+}
+
+.slider-arrow.right {
+    right: -12px;
+}
+
+/* Mobile Friendly Adjustment */
+@media (max-width: 640px) {
+    .products-slider .card {
+        flex: 0 0 82vw; /* Mobile screening slider size */
+    }
+    .slider-arrow {
+        display: none; /* Mobile par touch swipe better hota hai */
+    }
+}
+

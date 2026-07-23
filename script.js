@@ -15,22 +15,13 @@ let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCate
 let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 let currentFilterProducts = [...products];
 
-// Modal Admin Handler
-function toggleAdminModal() {
-    const modal = document.getElementById('adminModal');
-    if (!modal) return;
-    const isVisible = modal.style.display === 'flex';
-    modal.style.display = isVisible ? 'none' : 'flex';
-    if (!isVisible) renderAdminPanels();
-}
-
 // Global Image Change
 function changeImage(idx, src) {
     const el = document.getElementById(`img-${idx}`);
     if (el) el.src = src;
 }
 
-// Render Products Grid & Categories Filter
+// Render Products Grid & Categories Filter (index.html)
 window.addEventListener('DOMContentLoaded', () => {
     renderCategoriesBar();
     displayProducts(products);
@@ -54,7 +45,7 @@ function displayProducts(list) {
     currentFilterProducts = list;
 
     if (!list.length) {
-        container.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#9ca3af;">No products found.</p>`;
+        container.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#9ca3af;padding:40px 0;">No products found in this category.</p>`;
         return;
     }
 
@@ -102,7 +93,7 @@ function filterCategory(cat, btn) {
     else displayProducts(products.filter(p => p.category === cat));
 }
 
-// Checkout Page Sync & Handler
+// Checkout Page Sync & Handler (checkout.html)
 window.addEventListener('DOMContentLoaded', () => {
     const titleEl = document.getElementById('checkout-product-title');
     if (!titleEl) return;
@@ -114,7 +105,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Silent Email Order Submission (No WhatsApp Redirect)
+// Vercel API Order Submission (Silent Email Sending)
 async function submitOrder() {
     const name = document.getElementById('c-name').value.trim();
     const phone = document.getElementById('c-phone').value.trim();
@@ -122,7 +113,7 @@ async function submitOrder() {
     const item = JSON.parse(localStorage.getItem('checkoutItem'));
 
     if (!name || !phone || !address || !item) {
-        alert('Baraye meharbani apni tamam details (Name, Phone, Address) bharein!');
+        alert('Baraye meharbani apni tamam details bharein!');
         return;
     }
 
@@ -132,45 +123,35 @@ async function submitOrder() {
         submitBtn.disabled = true;
     }
 
-    // 🔴 APNI WEB3FORMS ACCESS KEY YAHAN PASTE KAREIN
-    const YOUR_ACCESS_KEY = "09271853-97ee-4438-8b51-9fad973e26dd"; 
-
-    const formData = {
-        access_key: YOUR_ACCESS_KEY,
-        subject: `🛍️ New Order: ${item.title} - Rs. ${item.price}`,
-        from_name: "Markaz Store Engine",
-        "Product Title": item.title,
-        "Product Price": `PKR ${item.price}`,
-        "Customer Name": name,
-        "Customer Phone": phone,
-        "Delivery Address": address
-    };
-
     try {
-        const response = await fetch("https://api.web3forms.com/submit", {
+        const response = await fetch("/api/send-order", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json"
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({
+                title: item.title,
+                price: item.price,
+                name: name,
+                phone: phone,
+                address: address
+            })
         });
 
         const result = await response.json();
 
         if (result.success) {
-            // Success Box Show karein
             document.getElementById('checkout-form-box').style.display = 'none';
             document.getElementById('success-box').style.display = 'block';
         } else {
-            alert("Order process karne mein masla hua. Wapas try karein.");
+            alert("Order submission mein masla hua. Wapas try karein.");
             if (submitBtn) {
                 submitBtn.innerText = "✅ Confirm Order";
                 submitBtn.disabled = false;
             }
         }
     } catch (error) {
-        alert("Network error. Internet connection check karein.");
+        alert("Network Error! Connectivity check karein.");
         if (submitBtn) {
             submitBtn.innerText = "✅ Confirm Order";
             submitBtn.disabled = false;
@@ -178,7 +159,10 @@ async function submitOrder() {
     }
 }
 
-// Embedded Admin Render Functions
+// ==========================================
+// ADMIN DASHBOARD FUNCTIONS (admin.html Only)
+// ==========================================
+
 function renderAdminPanels() {
     const select = document.getElementById('p-category');
     if (select) {
@@ -199,7 +183,7 @@ function renderAdminPanels() {
     if (prodList) {
         prodList.innerHTML = products.map((p, i) => `
             <div class="manage-item">
-                <span><b>[${p.category}]</b> ${p.title}</span>
+                <span><b>[${p.category}]</b> ${p.title} - Rs. ${p.price}</span>
                 <button class="btn-delete" onclick="deleteProduct(${i})">Delete</button>
             </div>
         `).join('');
@@ -208,13 +192,16 @@ function renderAdminPanels() {
 
 // Add & Delete Category
 function addCategory() {
-    const name = document.getElementById('new-cat-name').value.trim();
+    const input = document.getElementById('new-cat-name');
+    if (!input) return;
+    const name = input.value.trim();
+    
     if (name && !categories.includes(name)) {
         categories.push(name);
         localStorage.setItem('myCategories', JSON.stringify(categories));
-        document.getElementById('new-cat-name').value = '';
-        renderCategoriesBar();
+        input.value = '';
         renderAdminPanels();
+        alert('New category added!');
     }
 }
 
@@ -222,12 +209,11 @@ function deleteCategory(index) {
     if (confirm('Is category ko delete karein?')) {
         categories.splice(index, 1);
         localStorage.setItem('myCategories', JSON.stringify(categories));
-        renderCategoriesBar();
         renderAdminPanels();
     }
 }
 
-// Image Resizer/Compressor (Prevents Mobile Base64 Crash)
+// Image Resizer/Compressor (Prevents Storage Crash)
 function processAndCompressImage(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -274,7 +260,7 @@ function processAndCompressImage(file) {
     });
 }
 
-// Optimized Add Product
+// Add Product (Admin Only)
 async function addProduct() {
     const title = document.getElementById('p-title').value.trim();
     const price = document.getElementById('p-price').value.trim();
@@ -293,7 +279,7 @@ async function addProduct() {
         try {
             imageSrc = await processAndCompressImage(fileInput.files[0]);
         } catch (e) {
-            alert('Image process karne me masla hua. Dubara try karein.');
+            alert('Image process karne mein masla hua. Dubara try karein.');
             return;
         }
     } else if (urlInput && urlInput.value.trim()) {
@@ -320,22 +306,22 @@ async function addProduct() {
     if (fileInput) fileInput.value = '';
     if (urlInput) urlInput.value = '';
 
-    displayProducts(products);
     renderAdminPanels();
-    alert('Product add ho gaya hai!');
+    alert('Product successfully add ho gaya!');
 }
 
 function deleteProduct(index) {
-    if (confirm('Product delete karein?')) {
+    if (confirm('Is product ko delete karein?')) {
         products.splice(index, 1);
         localStorage.setItem('myProducts', JSON.stringify(products));
-        displayProducts(products);
         renderAdminPanels();
     }
 }
 
 function resetStorage() {
-    localStorage.clear();
-    alert('Storage Cleared!');
-    location.reload();
+    if (confirm('Kya aap saara data (Products & Categories) reset karna chahte hain?')) {
+        localStorage.clear();
+        alert('Storage Reset Complete!');
+        location.reload();
+    }
 }

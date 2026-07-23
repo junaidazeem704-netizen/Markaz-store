@@ -3,27 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markaz Store</title>
+    <title>Markaz Store - Premium Storefront</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Header Section -->
     <!-- Shopify Announcement Bar -->
-<div class="announcement-bar">
-    ⚡ LIMITED TIME OFFER — FREE DELIVERY ALL OVER PAKISTAN ON ORDERS ABOVE RS. 3000 🚚
-</div>
-
-<!-- Header -->
-<header class="header">
-    <div class="header-container">
-        <a href="index.html" class="logo">
-            🛍️ Markaz Store <span class="badge-store">VERIFIED</span>
-        </a>
+    <div class="announcement-bar">
+        ⚡ LIMITED TIME OFFER — FREE DELIVERY ALL OVER PAKISTAN ON ORDERS ABOVE RS. 3000 🚚
     </div>
-</header>
 
+    <!-- Header Section -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                🛍️ Markaz Store <span class="badge-store">VERIFIED</span>
+            </a>
+        </div>
+    </header>
 
     <!-- Main Container -->
     <main class="main-container">
@@ -33,9 +30,18 @@
             <!-- Categories script.js se dynamically load hongi -->
         </nav>
 
-        <!-- Product Grid Section -->
-        <section class="products-grid" id="products-container">
-            <!-- Products script.js se dynamically load honge -->
+        <!-- Horizontal Product Slider Wrapper -->
+        <section class="slider-wrapper">
+            <!-- Left Scroll Arrow -->
+            <button class="slider-arrow left" onclick="scrollSlider(-300)">❮</button>
+
+            <!-- Product Grid Slider Container -->
+            <div class="products-slider" id="products-container">
+                <!-- Products script.js se dynamically load honge -->
+            </div>
+
+            <!-- Right Scroll Arrow -->
+            <button class="slider-arrow right" onclick="scrollSlider(300)">❯</button>
         </section>
 
     </main>

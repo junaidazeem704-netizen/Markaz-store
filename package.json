@@ -1,9 +1,8 @@
 {
-  "name": "markaz-store",
+  "name": "kaz-store",
   "version": "1.0.0",
-  "description": "Shopify Style Premium Markaz Store",
-  "main": "api/send-order.js",
+  "type": "module",
   "dependencies": {
-    "nodemailer": "^6.9.1"
+    ...
   }
 }

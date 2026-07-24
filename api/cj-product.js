@@ -8,44 +8,58 @@ export default async function handler(req, res) {
     }
 
     const cleanSku = sku.trim();
-    const CJ_TOKEN = process.env.CJ_API_TOKEN || process.env.CJ_API_KEY;
+    
+    // Aap ka Vercel Environment Variable (CJ_API_KEY ya direct token)
+    const CJ_KEY_OR_TOKEN = process.env.CJ_API_TOKEN || process.env.CJ_API_KEY;
 
-    if (!CJ_TOKEN) {
+    if (!CJ_KEY_OR_TOKEN) {
         return res.status(500).json({ 
             success: false, 
-            message: "CJ_API_TOKEN / CJ_API_KEY Vercel Environment Variables mein missing hai!" 
+            message: "CJ_API_KEY / CJ_API_TOKEN Vercel Environment Variables mein missing hai!" 
         });
     }
 
     try {
-        // 1. Fetch from CJ API
+        let accessToken = CJ_KEY_OR_TOKEN;
+
+        // Step 1: Query CJ API using the provided token/key
         let cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(cleanSku)}`, {
-            headers: { 'CJ-Access-Token': CJ_TOKEN }
+            headers: { 'CJ-Access-Token': accessToken }
         });
-        
+
         let cjData = await cjRes.json();
 
-        // Check if CJ returned a specific API error (e.g. Token Expired / Unauthorized)
-        if (cjData.code && cjData.code !== 200 && !cjData.result) {
-            return res.status(400).json({
-                success: false,
-                message: `CJ API Response Error (${cjData.code}): ${cjData.message || 'Token Expired ya Invalid Request'}`
+        // Step 2: If Token is Invalid/Expired (Error 1600001), Auto-Get Fresh Access Token
+        if (cjData.code === 1600001 || (cjData.message && cjData.message.includes("Invalid API key"))) {
+            const authRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ apiKey: CJ_KEY_OR_TOKEN })
             });
+
+            const authData = await authRes.json();
+
+            if (authData.result && authData.data && authData.data.accessToken) {
+                accessToken = authData.data.accessToken;
+
+                // Retry product fetch with fresh Access Token
+                cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(cleanSku)}`, {
+                    headers: { 'CJ-Access-Token': accessToken }
+                });
+                cjData = await cjRes.json();
+            } else {
+                return res.status(401).json({
+                    success: false,
+                    message: `CJ Token Auth Failed: Baraye meharbani CJ Developer Portal se NAYA Access Token copy karke Vercel mein paste karein.`
+                });
+            }
         }
 
-        // 2. Try PID search if SKU query was empty
-        if (!cjData.data) {
-            cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${encodeURIComponent(cleanSku)}`, {
-                headers: { 'CJ-Access-Token': CJ_TOKEN }
-            });
-            cjData = await cjRes.json();
-        }
-
-        // 3. Try Auto-Trimming Variant suffix (e.g. CJYD275940804DW -> CJYD2759408)
+        // Step 3: Handle PID / Variant lookup if direct SKU fails
         if (!cjData.data && cleanSku.length > 8) {
             const trimmedSku = cleanSku.substring(0, cleanSku.length - 4);
             cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(trimmedSku)}`, {
-                headers: { 'CJ-Access-Token': CJ_TOKEN }
+                headers: { 'CJ-Access-Token': accessToken }
             });
             cjData = await cjRes.json();
         }
@@ -53,7 +67,7 @@ export default async function handler(req, res) {
         if (!cjData || !cjData.data) {
             return res.status(404).json({ 
                 success: false, 
-                message: `CJ par Code (${cleanSku}) nahi mila! Code sahi hai to CJ Access Token check karein.` 
+                message: `CJ Product (${cleanSku}) nahi mila! Code ya Token verify karein.` 
             });
         }
 
@@ -91,6 +105,7 @@ export default async function handler(req, res) {
         });
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: "CJ Server connection error!" });
+        console.error("CJ API Error:", error);
+        return res.status(500).json({ success: false, message: "CJ Server Connection Error!" });
     }
 }

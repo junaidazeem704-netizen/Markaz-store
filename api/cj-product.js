@@ -8,8 +8,6 @@ export default async function handler(req, res) {
     }
 
     const cleanSku = sku.trim();
-    
-    // Accepts BOTH 'CJ_API_TOKEN' AND 'CJ_API_KEY' from Vercel Environment Variables
     const CJ_TOKEN = process.env.CJ_API_TOKEN || process.env.CJ_API_KEY;
 
     if (!CJ_TOKEN) {
@@ -20,23 +18,39 @@ export default async function handler(req, res) {
     }
 
     try {
-        // 1. First Attempt: Query CJ Product Detail by Product SKU / PID
+        let cjData = null;
+
+        // 1. First Attempt: Query by Product SKU or PID
         let cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(cleanSku)}`, {
             headers: { 'CJ-Access-Token': CJ_TOKEN }
         });
-        
-        let cjData = await cjRes.json();
+        cjData = await cjRes.json();
 
-        // 2. Fallback Attempt: If direct lookup fails, search via Variant API / Product List
-        if (!cjData.result || !cjData.data) {
-            cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?productSku=${encodeURIComponent(cleanSku)}`, {
+        // 2. Second Attempt: Query as Variant SKU (Auto-detect PID from Variant)
+        if (!cjData || !cjData.result || !cjData.data) {
+            const variantRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/variant/query?variantSku=${encodeURIComponent(cleanSku)}`, {
                 headers: { 'CJ-Access-Token': CJ_TOKEN }
             });
-            const listData = await cjRes.json();
+            const variantData = await variantRes.json();
+
+            if (variantData.result && variantData.data && (variantData.data.pid || variantData.data.productSku)) {
+                const targetPid = variantData.data.pid || variantData.data.productSku;
+                cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${targetPid}`, {
+                    headers: { 'CJ-Access-Token': CJ_TOKEN }
+                });
+                cjData = await cjRes.json();
+            }
+        }
+
+        // 3. Third Attempt: Search via Product List API
+        if (!cjData || !cjData.result || !cjData.data) {
+            const listRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?productSku=${encodeURIComponent(cleanSku)}`, {
+                headers: { 'CJ-Access-Token': CJ_TOKEN }
+            });
+            const listData = await listRes.json();
 
             if (listData.result && listData.data && listData.data.list && listData.data.list.length > 0) {
                 const foundPid = listData.data.list[0].pid;
-                // Fetch full product details using PID
                 cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${foundPid}`, {
                     headers: { 'CJ-Access-Token': CJ_TOKEN }
                 });
@@ -44,11 +58,11 @@ export default async function handler(req, res) {
             }
         }
 
-        // Check response validity
-        if (!cjData.result || !cjData.data) {
+        // Check final response validity
+        if (!cjData || !cjData.result || !cjData.data) {
             return res.status(404).json({ 
                 success: false, 
-                message: `CJ API par Code (${cleanSku}) nahi mila! Baraye meharbani CJ se Main Product SKU ya PID copy karein.` 
+                message: `CJ API par Code (${cleanSku}) nahi mila! Baraye meharbani CJ website se Main Product SKU ya PID copy karein.` 
             });
         }
 

@@ -237,8 +237,7 @@ async function submitOrder() {
 }
 
 // ================= ADMIN: CJ DROPSHIPPING FETCH & IMPORT ================= //
-
-// Step 1: Fetch CJ Details without auto-adding
+// Step 1: Fetch CJ Details with Multi-Images & Auto-Category
 async function fetchCjProductDetails() {
     const sku = document.getElementById('cj-sku-input').value.trim();
 
@@ -248,7 +247,7 @@ async function fetchCjProductDetails() {
     }
 
     try {
-        const res = await fetch(`/api/cj-product?sku=${encodeURIComponent(sku)}&marginPercent=0`);
+        const res = await fetch(`/api/cj-product?sku=${encodeURIComponent(sku)}`);
         const json = await res.json();
 
         if (json.success) {
@@ -259,27 +258,48 @@ async function fetchCjProductDetails() {
             const previewCard = document.getElementById('cj-preview-card');
             previewCard.style.display = 'block';
 
-            // Fill inputs in Preview Card
+            // Title
             document.getElementById('cj-p-title').value = data.title;
             
+            // Cost & Margin
             const totalBaseCost = (data.basePricePKR || 0) + (data.shippingCostPKR || 0);
             document.getElementById('cj-p-cost').value = totalBaseCost;
-            document.getElementById('cj-p-margin').value = 10; // Default 10% profit
-            
-            const mainImg = (data.images && data.images.length) ? data.images[0] : '';
-            document.getElementById('cj-p-image').value = mainImg;
-            document.getElementById('cj-preview-img').src = mainImg || 'https://via.placeholder.com/150';
+            document.getElementById('cj-p-margin').value = 10;
 
-            // Populate categories dropdown
+            // Render Multi-Image Gallery
+            const galleryEl = document.getElementById('cj-preview-gallery');
+            const countEl = document.getElementById('cj-img-count');
+            
+            if (data.images && data.images.length) {
+                if (countEl) countEl.innerText = data.images.length;
+                if (galleryEl) {
+                    galleryEl.innerHTML = data.images.map((imgUrl, i) => `
+                        <img src="${imgUrl}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid ${i === 0 ? '#10b981' : '#334155'}; flex-shrink: 0;" title="Image ${i+1}">
+                    `).join('');
+                }
+            }
+
+            // AUTO CATEGORY SELECT / ADD
+            const fetchedCategory = data.categoryName || "CJ Imports";
+            let existingCat = categories.find(c => c.toLowerCase() === fetchedCategory.toLowerCase());
+
+            if (!existingCat) {
+                categories.push(fetchedCategory);
+                localStorage.setItem('myCategories', JSON.stringify(categories));
+                existingCat = fetchedCategory;
+                renderAdminPanel(); // Refresh lists
+            }
+
             const catSelect = document.getElementById('cj-p-category');
             if (catSelect) {
                 catSelect.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                catSelect.value = existingCat;
             }
 
             // Calculate Initial Selling Price
             calculateCjFinalPrice();
 
-            // Scroll down to preview box
+            // Scroll down
             previewCard.scrollIntoView({ behavior: 'smooth' });
 
         } else {
@@ -290,16 +310,7 @@ async function fetchCjProductDetails() {
     }
 }
 
-// Auto calculate price on % margin change
-function calculateCjFinalPrice() {
-    const baseCost = parseFloat(document.getElementById('cj-p-cost').value) || 0;
-    const margin = parseFloat(document.getElementById('cj-p-margin').value) || 0;
-
-    const finalPrice = Math.round(baseCost * (1 + margin / 100));
-    document.getElementById('cj-p-final').value = finalPrice;
-}
-
-// Step 2: Save CJ Product to Store after previewing
+// Step 2: Save CJ Product to Store
 function saveCjProductToStore() {
     if (!tempCjData) {
         alert("Pehle Product Fetch Karein!");
@@ -309,18 +320,22 @@ function saveCjProductToStore() {
     const title = document.getElementById('cj-p-title').value.trim();
     const finalPrice = document.getElementById('cj-p-final').value.trim();
     const category = document.getElementById('cj-p-category').value;
-    const imageUrl = document.getElementById('cj-p-image').value.trim();
 
     if (!title || !finalPrice) {
         alert("Title aur Final Price hona zaroori hai!");
         return;
     }
 
+    // Save ALL fetched images
+    const productImages = (tempCjData.images && tempCjData.images.length > 0) 
+        ? tempCjData.images 
+        : ['https://via.placeholder.com/300'];
+
     const newProd = {
         title: title,
         price: finalPrice,
         category: category,
-        images: imageUrl ? [imageUrl] : (tempCjData.images || []),
+        images: productImages, // Full Array of All Images
         sku: tempCjData.sku,
         variants: tempCjData.variants || [],
         source: "CJ"
@@ -329,13 +344,15 @@ function saveCjProductToStore() {
     products.unshift(newProd);
     localStorage.setItem('myProducts', JSON.stringify(products));
 
-    // Reset Form & Clear Preview
+    // Clear Preview Box
     document.getElementById('cj-preview-card').style.display = 'none';
     document.getElementById('cj-sku-input').value = '';
     tempCjData = null;
 
     renderAdminPanel();
-    alert("🎉 CJ Product Store Par Successfully Add Ho Gaya!");
+    alert(`🎉 Product (${productImages.length} images ke saath) Store Par Add Ho Gaya!`);
+}
+
 }
 
 // ================= GENERAL ADMIN PANEL FUNCTIONS ================= //

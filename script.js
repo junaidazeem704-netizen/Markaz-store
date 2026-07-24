@@ -1,6 +1,7 @@
 // ================= STORE DATA & INITIAL STATE ================= //
 
-const defaultCategories = ["Watches", "Clothing", "Electronics", "CJ Imports"];
+// Default Categories with Beauty included
+const defaultCategories = ["Beauty", "Watches", "Clothing", "Electronics", "Home & Garden", "CJ Imports"];
 
 const defaultProducts = [
     {
@@ -13,6 +14,13 @@ const defaultProducts = [
 ];
 
 let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCategories;
+
+// Ensure 'Beauty' exists in categories if missing from older localStorage
+if (!categories.some(c => c.toLowerCase() === 'beauty')) {
+    categories.unshift("Beauty");
+    localStorage.setItem('myCategories', JSON.stringify(categories));
+}
+
 let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 let currentFilterProducts = [...products];
 
@@ -26,7 +34,7 @@ window.addEventListener('DOMContentLoaded', () => {
     renderCategoriesBar();
     displayProducts(products);
     setupCheckoutPage();
-    renderAdminPanel(); // Auto initializes admin UI components
+    renderAdminPanel();
 });
 
 function scrollSlider(distance) {
@@ -132,7 +140,7 @@ function loadProductDetail() {
         `).join('');
     }
 
-    // Load Variants (Color & Size)
+    // Load Variants
     if (item.variants && item.variants.length) {
         const colors = [...new Set(item.variants.map(v => v.color).filter(Boolean))];
         const sizes = [...new Set(item.variants.map(v => v.size).filter(Boolean))];
@@ -268,17 +276,12 @@ async function submitOrder() {
 }
 
 // ================= ADMIN: CJ DROPSHIPPING FETCH & IMPORT ================= //
-// ================= STEP 1: FETCH CJ DETAILS (FIXED CATEGORY MATCHING) ================= //
 
 async function fetchCjProductDetails() {
     const skuInput = document.getElementById('cj-sku-input');
-    if (!skuInput) {
-        alert("Input field nahi mili!");
-        return;
-    }
+    if (!skuInput) return;
 
     const sku = skuInput.value.trim();
-
     if (!sku) {
         alert("Baraye meharbani SKU Code darj karein!");
         return;
@@ -321,45 +324,49 @@ async function fetchCjProductDetails() {
                 }
             }
 
-            // SMART CATEGORY MATCHING LOGIC
-            const rawCat = (data.categoryName || "").toLowerCase();
+            // SMART DETECTOR (TITLE + CATEGORY KEYWORDS)
+            const combinedText = ((data.title || "") + " " + (data.categoryName || "")).toLowerCase();
             let matchedCategory = "CJ Imports";
 
-            if (rawCat.includes("beauty") || rawCat.includes("health") || rawCat.includes("makeup") || rawCat.includes("care") || rawCat.includes("massage")) {
+            if (combinedText.includes("aloe") || combinedText.includes("cream") || combinedText.includes("skin") || combinedText.includes("moistur") || combinedText.includes("beauty") || combinedText.includes("health") || combinedText.includes("makeup") || combinedText.includes("care") || combinedText.includes("massage") || combinedText.includes("essence") || combinedText.includes("lotion") || combinedText.includes("serum") || combinedText.includes("facial") || combinedText.includes("lipstick") || combinedText.includes("cosmetic")) {
                 matchedCategory = "Beauty";
-            } else if (rawCat.includes("garden") || rawCat.includes("home") || rawCat.includes("household") || rawCat.includes("kitchen")) {
+            } else if (combinedText.includes("garden") || combinedText.includes("home") || combinedText.includes("kitchen") || combinedText.includes("decor") || combinedText.includes("household")) {
                 matchedCategory = "Home & Garden";
-            } else if (rawCat.includes("watch") || rawCat.includes("jewelry")) {
+            } else if (combinedText.includes("watch") || combinedText.includes("jewelry") || combinedText.includes("ring") || combinedText.includes("necklace")) {
                 matchedCategory = "Watches";
-            } else if (rawCat.includes("cloth") || rawCat.includes("apparel") || rawCat.includes("wear")) {
+            } else if (combinedText.includes("cloth") || combinedText.includes("apparel") || combinedText.includes("wear") || combinedText.includes("shirt") || combinedText.includes("suit")) {
                 matchedCategory = "Clothing";
-            } else if (rawCat.includes("electronic") || rawCat.includes("gadget") || rawCat.includes("phone")) {
+            } else if (combinedText.includes("electronic") || combinedText.includes("gadget") || combinedText.includes("phone") || combinedText.includes("charger") || combinedText.includes("cable")) {
                 matchedCategory = "Electronics";
             } else if (data.categoryName) {
                 matchedCategory = data.categoryName;
             }
 
-            // Ensure category exists in list
-            let existing = categories.find(c => c.toLowerCase() === matchedCategory.toLowerCase());
-            if (!existing) {
+            // Ensure category exists in categories array
+            let targetCategoryName = categories.find(c => c.toLowerCase() === matchedCategory.toLowerCase());
+            if (!targetCategoryName) {
                 categories.push(matchedCategory);
                 localStorage.setItem('myCategories', JSON.stringify(categories));
-                existing = matchedCategory;
+                targetCategoryName = matchedCategory;
             }
 
-            // Update All Category Dropdowns
+            // Refresh Dropdowns across admin UI
             renderAdminCategoryDropdown();
 
-            // Set Dropdown Value Explicitly
+            // Explicitly set value and index on CJ Category Select
             const catSelect = document.getElementById('cj-p-category');
             if (catSelect) {
-                catSelect.value = existing;
+                for (let i = 0; i < catSelect.options.length; i++) {
+                    if (catSelect.options[i].value.toLowerCase() === targetCategoryName.toLowerCase()) {
+                        catSelect.selectedIndex = i;
+                        break;
+                    }
+                }
             }
 
-            // Calculate Initial Selling Price
+            // Calculate Selling Price
             calculateCjFinalPrice();
 
-            // Scroll down smoothly to Step 2
             if (previewCard) previewCard.scrollIntoView({ behavior: 'smooth' });
 
         } else {
@@ -370,8 +377,6 @@ async function fetchCjProductDetails() {
     }
 }
 
-
-// Auto calculate price on % margin change
 function calculateCjFinalPrice() {
     const costInput = document.getElementById('cj-p-cost');
     const marginInput = document.getElementById('cj-p-margin');
@@ -386,7 +391,6 @@ function calculateCjFinalPrice() {
     finalInput.value = finalPrice;
 }
 
-// Step 2: Save CJ Product to Store
 function saveCjProductToStore() {
     if (!tempCjData) {
         alert("Pehle Product Fetch Karein!");
@@ -399,14 +403,13 @@ function saveCjProductToStore() {
 
     const title = titleInput ? titleInput.value.trim() : "";
     const finalPrice = finalInput ? finalInput.value.trim() : "";
-    const category = catSelect ? catSelect.value : "CJ Imports";
+    const category = catSelect ? catSelect.value : "Beauty";
 
     if (!title || !finalPrice) {
         alert("Title aur Final Price hona zaroori hai!");
         return;
     }
 
-    // Save ALL fetched images
     const productImages = (tempCjData.images && tempCjData.images.length > 0) 
         ? tempCjData.images 
         : ['https://via.placeholder.com/300'];
@@ -424,7 +427,6 @@ function saveCjProductToStore() {
     products.unshift(newProd);
     localStorage.setItem('myProducts', JSON.stringify(products));
 
-    // Reset Preview Box & SKU Input
     const previewCard = document.getElementById('cj-preview-card');
     const skuInput = document.getElementById('cj-sku-input');
     if (previewCard) previewCard.style.display = 'none';
@@ -447,7 +449,7 @@ function renderAdminCategories() {
     const listEl = document.getElementById('admin-category-list');
     if (!listEl) return;
     listEl.innerHTML = categories.map((cat, idx) => `
-        <div class="list-pill" style="display:inline-flex; align-items:center; gap:8px; background:#1e293b; padding:4px 10px; border-radius:20px; font-size:0.85rem;">
+        <div class="list-pill" style="display:inline-flex; align-items:center; gap:8px; background:#1e293b; padding:4px 10px; border-radius:20px; font-size:0.85rem; color:#e2e8f0;">
             <span>${cat}</span>
             <button class="btn-delete" style="background:none; border:none; color:#ef4444; cursor:pointer;" onclick="deleteCategory(${idx})">✕</button>
         </div>
@@ -466,7 +468,7 @@ function addNewCategory() {
     const input = document.getElementById('new-cat-name');
     if (!input) return;
     const name = input.value.trim();
-    if (name && !categories.includes(name)) {
+    if (name && !categories.some(c => c.toLowerCase() === name.toLowerCase())) {
         categories.push(name);
         localStorage.setItem('myCategories', JSON.stringify(categories));
         input.value = '';
@@ -493,7 +495,7 @@ function renderAdminProducts() {
         const img = p.images && p.images.length ? p.images[0] : 'https://via.placeholder.com/50';
         const imgCount = p.images ? p.images.length : 1;
         return `
-            <div class="admin-product-item" style="display:flex; justify-between; align-items:center; padding:10px 0; border-bottom:1px solid #1e293b;">
+            <div class="admin-product-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #1e293b;">
                 <div style="display:flex; align-items:center; gap:10px;">
                     <img src="${img}" style="width:45px; height:45px; object-fit:cover; border-radius:6px;" alt="product">
                     <div>
@@ -511,7 +513,6 @@ function renderAdminProducts() {
     }).join('');
 }
 
-// Add Manual Product (Markaz)
 function addNewProduct() {
     const titleInput = document.getElementById('p-title');
     const priceInput = document.getElementById('p-price');

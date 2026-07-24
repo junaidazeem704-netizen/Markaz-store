@@ -6,177 +6,89 @@
     <title>Admin Dashboard - Markaz Store</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .admin-wrapper {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 0 15px;
-        }
-        .admin-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow-card);
-        }
-        .admin-card h2 {
-            font-family: 'Outfit', sans-serif;
-            color: #818cf8;
-            font-size: 1.3rem;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .item-list {
-            margin-top: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .list-pill {
-            background: #0d1322;
-            border: 1px solid var(--border-light);
-            padding: 6px 14px;
-            border-radius: var(--radius-full);
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-primary);
-        }
-        .btn-delete {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        .btn-delete:hover {
-            background: #ef4444;
-            color: #fff;
-        }
-        .admin-product-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #0f1523;
-            border: 1px solid var(--border-light);
-            padding: 10px 15px;
-            border-radius: var(--radius-md);
-            margin-bottom: 10px;
-        }
-        .admin-prod-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .admin-prod-img {
-            width: 45px;
-            height: 45px;
-            object-fit: cover;
-            border-radius: var(--radius-sm);
-        }
-        select.form-input {
-            width: 100%;
-            background: #0f1523;
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-md);
-            padding: 14px 16px;
-            color: var(--text-primary);
-            outline: none;
-        }
+        .admin-wrapper { max-width: 800px; margin: 30px auto; padding: 0 15px; }
+        .admin-card { background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 25px; margin-bottom: 25px; box-shadow: var(--shadow-card); }
+        .admin-card h2 { font-family: 'Outfit', sans-serif; color: #818cf8; font-size: 1.3rem; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+        .item-list { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .list-pill { background: #0d1322; border: 1px solid var(--border-light); padding: 6px 14px; border-radius: var(--radius-full); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; color: var(--text-primary); }
+        .btn-delete { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; }
+        .admin-product-item { display: flex; align-items: center; justify-content: space-between; background: #0f1523; border: 1px solid var(--border-light); padding: 10px 15px; border-radius: var(--radius-md); margin-bottom: 10px; }
+        .admin-prod-img { width: 45px; height: 45px; object-fit: cover; border-radius: var(--radius-sm); }
+        select.form-input { width: 100%; background: #0f1523; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 14px 16px; color: var(--text-primary); outline: none; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <header class="header">
         <div class="header-container">
-            <a href="index.html" class="logo">
-                🛍️ Markaz Admin <span class="badge-store">CONTROL PANEL</span>
-            </a>
+            <a href="index.html" class="logo">🛍️ Markaz Admin <span class="badge-store">CONTROL PANEL</span></a>
             <a href="index.html" class="back-link" style="margin: 0;">View Store ↗</a>
         </div>
     </header>
 
     <div class="admin-wrapper">
 
-        <!-- 1. Category Manager -->
-        <div class="admin-card">
-            <h2>🏷️ 1. Add New Category</h2>
+        <!-- 1. CJ Dropshipping Import Section -->
+        <div class="admin-card" style="border-color: rgba(99, 102, 241, 0.4); background: linear-gradient(180deg, #121929, #0d1322);">
+            <h2>🚀 Import via CJ Dropshipping SKU</h2>
             <div class="form-group">
-                <label for="new-cat-name">Category Name</label>
-                <input type="text" id="new-cat-name" placeholder="e.g. Shoes, Suits, Watches">
+                <label for="cj-sku-input">CJ Product SKU Code *</label>
+                <input type="text" id="cj-sku-input" placeholder="e.g. CJSJ123456789">
+            </div>
+            <div class="form-group">
+                <label for="cj-margin-input">Your Profit Margin %</label>
+                <input type="number" id="cj-margin-input" value="10" placeholder="10">
+            </div>
+            <button class="wa-btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5);" onclick="fetchCjProductBySku()">
+                🔍 Fetch & Import CJ Product
+            </button>
+        </div>
+
+        <!-- 2. Category Manager -->
+        <div class="admin-card">
+            <h2>🏷️ Add Category</h2>
+            <div class="form-group">
+                <input type="text" id="new-cat-name" placeholder="Category Name (e.g. Watches, Clothing)">
             </div>
             <button class="wa-btn" style="background: var(--accent-indigo);" onclick="addNewCategory()">+ Add Category</button>
 
-            <h3 style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 20px;">Existing Categories:</h3>
-            <div class="item-list" id="admin-category-list">
-                <!-- Dynamic categories -->
-            </div>
+            <h3 style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 15px;">Existing Categories:</h3>
+            <div class="item-list" id="admin-category-list"></div>
         </div>
 
-        <!-- 2. Product Manager -->
+        <!-- 3. Manual Product Manager -->
         <div class="admin-card">
-            <h2>📦 2. Add New Product</h2>
-            
+            <h2>📦 Add Manual Product (Markaz)</h2>
             <div class="form-group">
-                <label for="p-title">Product Title *</label>
-                <input type="text" id="p-title" placeholder="e.g. Designer Suit Loan Collection">
+                <input type="text" id="p-title" placeholder="Product Title">
             </div>
-
             <div class="form-group">
-                <label for="p-price">Price (PKR) *</label>
-                <input type="number" id="p-price" placeholder="3500">
+                <input type="number" id="p-price" placeholder="Price (PKR)">
             </div>
-
             <div class="form-group">
-                <label for="p-category">Select Category *</label>
-                <select id="p-category" class="form-input">
-                    <!-- Dynamic Options -->
-                </select>
+                <select id="p-category" class="form-input"></select>
             </div>
-
             <div class="form-group">
-                <label for="p-file">Image Upload (From Phone/PC)</label>
                 <input type="file" id="p-file" accept="image/*">
             </div>
-
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin: -10px 0 15px;">— OR —</p>
-
             <div class="form-group">
-                <label for="p-url">Image URL</label>
-                <input type="url" id="p-url" placeholder="https://i.ibb.co/...">
+                <input type="url" id="p-url" placeholder="OR Image URL https://...">
             </div>
-
-            <button class="wa-btn" onclick="addNewProduct()">💾 Save Product</button>
+            <button class="wa-btn" onclick="addNewProduct()">💾 Save Manual Product</button>
         </div>
 
-        <!-- 3. Existing Products List -->
+        <!-- 4. Existing Products List -->
         <div class="admin-card">
-            <h2>🛍️ Existing Products</h2>
-            <div id="admin-products-list">
-                <!-- Dynamic Products -->
-            </div>
+            <h2>🛍️ Existing Store Products</h2>
+            <div id="admin-products-list"></div>
         </div>
 
     </div>
 
     <script src="script.js"></script>
     <script>
-        // Init Admin Panel UI
         window.addEventListener('DOMContentLoaded', () => {
-            if (typeof renderAdminPanel === 'function') {
-                renderAdminPanel();
-            }
+            if (typeof renderAdminPanel === 'function') renderAdminPanel();
         });
     </script>
 </body>

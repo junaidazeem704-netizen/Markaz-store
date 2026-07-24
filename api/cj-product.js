@@ -1,166 +1,90 @@
-// Vercel Serverless Function: Multi-Image & Auto-Category CJ Fetcher
-module.exports = async (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+// ================= VERCEL SERVERLESS FUNCTION: /api/cj-product.js ================= //
 
-    if (req.method === 'OPTIONS') return res.status(200).end();
-
-    const sku = (req.query.sku || '').trim();
+export default async function handler(req, res) {
+    const { sku } = req.query;
 
     if (!sku) {
-        return res.status(400).json({ success: false, message: 'SKU / PID Code zaroori hai!' });
+        return res.status(400).json({ success: false, message: "SKU code zaroori hai!" });
     }
 
-    const cjApiKey = process.env.CJ_API_KEY;
+    const cleanSku = sku.trim();
+    const CJ_TOKEN = process.env.CJ_API_TOKEN; // Vercel Environment Variable
 
-    if (!cjApiKey) {
-        return res.status(400).json({
-            success: false,
-            message: 'Vercel Environment Variables me CJ_API_KEY set nahi hai!'
-        });
+    if (!CJ_TOKEN) {
+        return res.status(500).json({ success: false, message: "CJ_API_TOKEN Vercel Environment Variables mein missing hai!" });
     }
 
     try {
-        // 1. Get Access Token
-        const tokenRes = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ apiKey: cjApiKey })
+        // 1. First Attempt: Query CJ Product Detail by Product SKU / PID
+        let cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(cleanSku)}`, {
+            headers: { 'CJ-Access-Token': CJ_TOKEN }
         });
-        const tokenData = await tokenRes.json();
+        
+        let cjData = await cjRes.json();
 
-        if (!tokenData.result || !tokenData.data || !tokenData.data.accessToken) {
-            return res.status(400).json({
-                success: false,
-                message: `CJ Auth Error: ${tokenData.message || 'Invalid API Key'}`
+        // 2. Fallback Attempt: If direct lookup fails, search via Variant API / Product List
+        if (!cjData.result || !cjData.data) {
+            cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?productSku=${encodeURIComponent(cleanSku)}`, {
+                headers: { 'CJ-Access-Token': CJ_TOKEN }
+            });
+            const listData = await cjRes.json();
+
+            if (listData.result && listData.data && listData.data.list && listData.data.list.length > 0) {
+                const foundPid = listData.data.list[0].pid;
+                // Fetch full product details using PID
+                cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${foundPid}`, {
+                    headers: { 'CJ-Access-Token': CJ_TOKEN }
+                });
+                cjData = await cjRes.json();
+            }
+        }
+
+        // Check response validity
+        if (!cjData.result || !cjData.data) {
+            return res.status(404).json({ 
+                success: false, 
+                message: `CJ API par Code (${cleanSku}) nahi mila! Baraye meharbani CJ se Main Product SKU ya PID copy karein.` 
             });
         }
 
-        const token = tokenData.data.accessToken;
-        const headers = { 'CJ-Access-Token': token };
+        const p = cjData.data;
 
-        let productData = null;
+        // USD to PKR Conversion (Approx 280 PKR / 1 USD)
+        const USD_TO_PKR = 280;
+        const basePriceUSD = parseFloat(p.sellPrice || 0);
+        const basePricePKR = Math.round(basePriceUSD * USD_TO_PKR);
 
-        // 2. Query Details
-        let queryRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${encodeURIComponent(sku)}`, { headers });
-        let queryJson = await queryRes.json();
-
-        if (queryJson.result && queryJson.data) {
-            productData = queryJson.data;
-        } else {
-            queryRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(sku)}`, { headers });
-            queryJson = await queryRes.json();
-            if (queryJson.result && queryJson.data) {
-                productData = queryJson.data;
-            }
+        // Collect all high-res product images
+        let images = [];
+        if (p.productImageSet && Array.isArray(p.productImageSet)) {
+            images = p.productImageSet;
+        } else if (p.productImage) {
+            images = [p.productImage];
         }
 
-        // 3. Fallback Search via List API
-        if (!productData) {
-            let listRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?productSku=${encodeURIComponent(sku)}`, { headers });
-            let listJson = await listRes.json();
-
-            let targetPid = null;
-
-            if (listJson.result && listJson.data && listJson.data.list && listJson.data.list.length > 0) {
-                targetPid = listJson.data.list[0].pid;
-            } else {
-                listRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?key=${encodeURIComponent(sku)}`, { headers });
-                listJson = await listRes.json();
-                if (listJson.result && listJson.data && listJson.data.list && listJson.data.list.length > 0) {
-                    targetPid = listJson.data.list[0].pid;
-                }
-            }
-
-            if (targetPid) {
-                queryRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${encodeURIComponent(targetPid)}`, { headers });
-                queryJson = await queryRes.json();
-                if (queryJson.result && queryJson.data) {
-                    productData = queryJson.data;
-                }
-            }
-        }
-
-        if (!productData) {
-            return res.status(404).json({
-                success: false,
-                message: `CJ API par Code (${sku}) nahi mila!`
-            });
-        }
-
-        // Category Name
-        const categoryName = productData.categoryName || productData.categoryFirst || productData.categorySecond || "CJ Imports";
-
-        // Title & Price Calculation
-        const title = productData.productNameEn || productData.productName || `CJ Product (${sku})`;
-        const pkrRate = 280;
-        let usdPrice = parseFloat(productData.sellPrice || productData.productPrice || 0);
-        let basePricePKR = Math.round(usdPrice * pkrRate);
-        let shippingCostPKR = Math.round(5 * pkrRate);
-
-        // Extract Multiple Images
-        let imagesList = [];
-
-        if (productData.productImageSet) {
-            if (Array.isArray(productData.productImageSet)) {
-                imagesList = imagesList.concat(productData.productImageSet);
-            } else if (typeof productData.productImageSet === 'string') {
-                try { imagesList = imagesList.concat(JSON.parse(productData.productImageSet)); }
-                catch(e) { imagesList = imagesList.concat(productData.productImageSet.split(',')); }
-            }
-        }
-
-        if (productData.productImage) {
-            const extra = productData.productImage.includes(',') 
-                ? productData.productImage.split(',') 
-                : [productData.productImage];
-            imagesList = imagesList.concat(extra);
-        }
-
-        // Add Variant Images
-        if (productData.variants && Array.isArray(productData.variants)) {
-            productData.variants.forEach(v => {
-                if (v.variantImage) imagesList.push(v.variantImage);
-            });
-        }
-
-        // Unique Clean Images List
-        let images = [...new Set(imagesList.map(img => (typeof img === 'string' ? img.trim() : '')).filter(Boolean))];
-
-        if (images.length === 0) {
-            images = ["https://via.placeholder.com/400?text=No+CJ+Image"];
-        }
-
-        // Variants
-        let variants = [];
-        if (productData.variants && Array.isArray(productData.variants)) {
-            variants = productData.variants.map(v => ({
+        // Structure clean data for frontend
+        const formattedData = {
+            sku: p.productSku || cleanSku,
+            pid: p.pid || "",
+            title: p.productNameEn || p.productName || "CJ Product",
+            categoryName: p.categoryName || "",
+            basePriceUSD: basePriceUSD,
+            basePricePKR: basePricePKR,
+            shippingCostPKR: 500, // Fixed estimated shipping buffer
+            images: images,
+            variants: (p.variants || []).map(v => ({
                 vid: v.vid,
-                sku: v.variantSku,
-                color: v.variantKey || v.variantColor || "Standard",
+                color: v.variantKey || v.variantStandard || "",
                 size: v.variantSize || "",
-                price: v.variantSellPrice,
-                image: v.variantImage || ""
-            }));
-        }
+                sku: v.variantSku,
+                priceUSD: v.variantSellPrice
+            }))
+        };
 
-        return res.status(200).json({
-            success: true,
-            data: {
-                sku: productData.productSku || sku,
-                title: title,
-                categoryName: categoryName,
-                basePricePKR: basePricePKR,
-                shippingCostPKR: shippingCostPKR,
-                images: images,
-                variants: variants,
-                source: "CJ"
-            }
-        });
+        return res.status(200).json({ success: true, data: formattedData });
 
-    } catch (err) {
-        console.error("CJ API Error:", err);
-        return res.status(500).json({ success: false, message: err.message });
+    } catch (error) {
+        console.error("CJ API Backend Error:", error);
+        return res.status(500).json({ success: false, message: "CJ Server se connect hone mein masla aa raha hai." });
     }
-};
+}

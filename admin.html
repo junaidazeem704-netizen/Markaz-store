@@ -41,13 +41,16 @@
                 🔍 Fetch Product Info
             </button>
         </div>
-
-        <!-- 2. CJ Product Review & Add Section (Appears after fetch) -->
+        <!-- 2. CJ Product Review & Add Section (Step 2) -->
         <div class="admin-card" id="cj-preview-card" style="display: none; border: 2px solid #818cf8; background: #0b1120;">
             <h2 style="color: #38bdf8;">📦 Step 2: Review & Set Margin</h2>
             
-            <div style="text-align: center; margin-bottom: 15px;">
-                <img id="cj-preview-img" src="" style="max-width: 140px; height: 140px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+            <!-- Multiple Images Gallery Preview -->
+            <div style="margin-bottom: 20px;">
+                <label style="font-size: 0.9rem; color: #94a3b8; display: block; margin-bottom: 8px;">
+                    🖼️ Fetched Images (<span id="cj-img-count" style="color:#38bdf8; font-weight:bold;">0</span> found):
+                </label>
+                <div id="cj-preview-gallery" style="display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; border: 1px solid var(--border-light); border-radius: var(--radius-md); background: #070c18;"></div>
             </div>
 
             <div class="form-group">
@@ -72,19 +75,15 @@
             </div>
 
             <div class="form-group">
-                <label>Category</label>
+                <label>Category (Auto-Selected)</label>
                 <select id="cj-p-category" class="form-input"></select>
-            </div>
-
-            <div class="form-group">
-                <label>Image Link (URL)</label>
-                <input type="text" id="cj-p-image">
             </div>
 
             <button class="wa-btn" style="background: #10b981;" onclick="saveCjProductToStore()">
                 ✅ Add Product To Store Now
             </button>
         </div>
+
 
         <!-- 3. Category Manager -->
         <div class="admin-card">

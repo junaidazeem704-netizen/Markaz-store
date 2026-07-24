@@ -1,113 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Preview - Markaz Store</title>
+    <title>Product Preview</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .product-detail-wrapper {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-        .main-preview-img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-light);
-        }
-        .gallery-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            overflow-x: auto;
-        }
-        .gallery-thumb {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: var(--radius-sm);
-            border: 2px solid transparent;
-            cursor: pointer;
-        }
-        .gallery-thumb.active { border-color: #6366f1; }
-        .variant-box { margin: 20px 0; }
-        .variant-title { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; }
-        .variant-options { display: flex; gap: 10px; flex-wrap: wrap; }
-        .variant-pill {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-light);
-            padding: 8px 16px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: var(--text-primary);
-        }
-        .variant-pill.active {
-            border-color: #6366f1;
-            background: rgba(99, 102, 241, 0.2);
-            color: #818cf8;
-            font-weight: 700;
-        }
-        @media (max-width: 768px) {
-            .product-detail-wrapper { grid-template-columns: 1fr; }
-        }
-    </style>
 </head>
-<body>
+<body onload="loadProductDetail()">
 
-    <header class="header">
-        <div class="header-container">
-            <a href="index.html" class="logo">🛍️ Markaz Store <span class="badge-store">VERIFIED</span></a>
-        </div>
+    <header class="navbar">
+        <a href="index.html" class="nav-btn">← Back to Store</a>
+        <span id="detail-source-badge" class="badge-tag">Markaz Verified</span>
     </header>
 
-    <div class="product-detail-wrapper">
-        <!-- Image & Gallery -->
-        <div>
-            <img id="detail-main-img" src="" class="main-preview-img" alt="Product Preview">
-            <div id="detail-gallery" class="gallery-row"></div>
+    <main class="product-detail-container">
+        
+        <!-- Main Image Container -->
+        <div class="main-img-box">
+            <img id="detail-main-img" src="" alt="Product Image">
         </div>
 
-        <!-- Product Details -->
-        <div>
-            <a href="index.html" class="back-link">← Back to Products</a>
-            <span id="detail-source-badge" class="badge-tag" style="position:static; display:inline-block; margin-top:10px;">Markaz</span>
-            <h1 id="detail-title" style="font-size:1.8rem; margin:15px 0 10px;">Loading...</h1>
+        <!-- Thumbnails Gallery -->
+        <div id="detail-gallery" class="detail-gallery"></div>
+
+        <!-- Product Information -->
+        <div class="detail-info" style="margin-top: 15px;">
+            <h1 id="detail-title" style="font-size: 1.25rem; color: #f8fafc; margin-bottom: 10px; line-height: 1.4;">Product Title</h1>
             
-            <div class="price-row" style="margin-bottom:20px;">
-                <span id="detail-price" class="price" style="font-size:1.8rem;">Rs. 0</span>
-                <span id="detail-old-price" class="old-price" style="font-size:1.1rem;">Rs. 0</span>
+            <div class="price-row" style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                <span id="detail-price" style="font-size: 1.4rem; font-weight: bold; color: #38bdf8;">Rs. 0</span>
+                <span id="detail-old-price" style="font-size: 1rem; color: #64748b; text-decoration: line-through;">Rs. 0</span>
             </div>
 
-            <!-- Color Variants -->
-            <div id="color-variant-box" class="variant-box" style="display:none;">
-                <div class="variant-title">SELECT COLOR:</div>
+            <!-- Color Options -->
+            <div id="color-variant-box" class="variant-box" style="display: none;">
+                <label style="color: #94a3b8; font-size: 0.85rem;">Select Color:</label>
                 <div id="color-options" class="variant-options"></div>
             </div>
 
-            <!-- Size Variants -->
-            <div id="size-variant-box" class="variant-box" style="display:none;">
-                <div class="variant-title">SELECT SIZE:</div>
+            <!-- Size Options -->
+            <div id="size-variant-box" class="variant-box" style="display: none;">
+                <label style="color: #94a3b8; font-size: 0.85rem;">Select Size:</label>
                 <div id="size-options" class="variant-options"></div>
             </div>
 
-            <button class="wa-btn" style="font-size:1.1rem; padding:16px; margin-top:20px;" onclick="proceedToCheckoutFromDetail()">
-                ⚡ Proceed to Checkout
+            <!-- Order Button -->
+            <button class="wa-btn" onclick="proceedToCheckoutFromDetail()" style="width: 100%; padding: 15px; font-size: 1.05rem; margin-top: 20px; background: #10b981;">
+                ⚡ Buy Now / Order Karein
             </button>
         </div>
-    </div>
+
+    </main>
 
     <script src="script.js"></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            loadProductDetail();
-        });
-    </script>
 </body>
 </html>

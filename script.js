@@ -18,7 +18,7 @@ let currentFilterProducts = [...products];
 
 let selectedColor = "";
 let selectedSize = "";
-let tempCjData = null; // Temporary storage for fetched CJ SKU product
+let tempCjData = null; // Temporary storage for fetched CJ product
 
 // ================= PAGE INITIALIZATION ================= //
 
@@ -26,6 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     renderCategoriesBar();
     displayProducts(products);
     setupCheckoutPage();
+    renderAdminPanel(); // Auto initializes admin UI components
 });
 
 function scrollSlider(distance) {
@@ -107,20 +108,29 @@ function loadProductDetail() {
     if (!raw) return;
     const item = JSON.parse(raw);
 
-    document.getElementById('detail-title').innerText = item.title;
-    document.getElementById('detail-price').innerText = `Rs. ${item.price}`;
-    document.getElementById('detail-old-price').innerText = `Rs. ${Math.round(item.price * 1.25)}`;
-    document.getElementById('detail-source-badge').innerText = item.source === 'CJ' ? 'CJ Dropshipping' : 'Markaz Verified';
+    const titleEl = document.getElementById('detail-title');
+    if (titleEl) titleEl.innerText = item.title;
+
+    const priceEl = document.getElementById('detail-price');
+    if (priceEl) priceEl.innerText = `Rs. ${item.price}`;
+
+    const oldPriceEl = document.getElementById('detail-old-price');
+    if (oldPriceEl) oldPriceEl.innerText = `Rs. ${Math.round(item.price * 1.25)}`;
+
+    const badgeEl = document.getElementById('detail-source-badge');
+    if (badgeEl) badgeEl.innerText = item.source === 'CJ' ? 'CJ Dropshipping' : 'Markaz Verified';
 
     const mainImg = document.getElementById('detail-main-img');
     const galleryContainer = document.getElementById('detail-gallery');
 
     const imgs = item.images && item.images.length ? item.images : ['https://via.placeholder.com/300'];
-    mainImg.src = imgs[0];
+    if (mainImg) mainImg.src = imgs[0];
 
-    galleryContainer.innerHTML = imgs.map((img, idx) => `
-        <img src="${img}" class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="switchDetailImg(this, '${img}')">
-    `).join('');
+    if (galleryContainer) {
+        galleryContainer.innerHTML = imgs.map((img, idx) => `
+            <img src="${img}" class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="switchDetailImg(this, '${img}')">
+        `).join('');
+    }
 
     // Load Variants (Color & Size)
     if (item.variants && item.variants.length) {
@@ -128,18 +138,26 @@ function loadProductDetail() {
         const sizes = [...new Set(item.variants.map(v => v.size).filter(Boolean))];
 
         if (colors.length) {
-            document.getElementById('color-variant-box').style.display = 'block';
-            document.getElementById('color-options').innerHTML = colors.map((c, i) => `
-                <div class="variant-pill ${i === 0 ? 'active' : ''}" onclick="selectVariantPill(this, 'color', '${c}')">${c}</div>
-            `).join('');
+            const colorBox = document.getElementById('color-variant-box');
+            if (colorBox) colorBox.style.display = 'block';
+            const colorOpts = document.getElementById('color-options');
+            if (colorOpts) {
+                colorOpts.innerHTML = colors.map((c, i) => `
+                    <div class="variant-pill ${i === 0 ? 'active' : ''}" onclick="selectVariantPill(this, 'color', '${c}')">${c}</div>
+                `).join('');
+            }
             selectedColor = colors[0];
         }
 
         if (sizes.length) {
-            document.getElementById('size-variant-box').style.display = 'block';
-            document.getElementById('size-options').innerHTML = sizes.map((s, i) => `
-                <div class="variant-pill ${i === 0 ? 'active' : ''}" onclick="selectVariantPill(this, 'size', '${s}')">${s}</div>
-            `).join('');
+            const sizeBox = document.getElementById('size-variant-box');
+            if (sizeBox) sizeBox.style.display = 'block';
+            const sizeOpts = document.getElementById('size-options');
+            if (sizeOpts) {
+                sizeOpts.innerHTML = sizes.map((s, i) => `
+                    <div class="variant-pill ${i === 0 ? 'active' : ''}" onclick="selectVariantPill(this, 'size', '${s}')">${s}</div>
+                `).join('');
+            }
             selectedSize = sizes[0];
         }
     }
@@ -148,7 +166,8 @@ function loadProductDetail() {
 function switchDetailImg(el, src) {
     document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    document.getElementById('detail-main-img').src = src;
+    const mainImg = document.getElementById('detail-main-img');
+    if (mainImg) mainImg.src = src;
 }
 
 function selectVariantPill(el, type, val) {
@@ -183,17 +202,27 @@ function setupCheckoutPage() {
     const item = JSON.parse(localStorage.getItem('checkoutItem'));
     if (item) {
         titleEl.innerText = item.title;
-        document.getElementById('checkout-product-price').innerText = `Rs. ${item.price}`;
+        const priceEl = document.getElementById('checkout-product-price');
+        if (priceEl) priceEl.innerText = `Rs. ${item.price}`;
     }
 }
 
 async function submitOrder() {
-    const name = document.getElementById('c-name').value.trim();
-    const phone = document.getElementById('c-phone').value.trim();
-    const address = document.getElementById('c-address').value.trim();
+    const nameInput = document.getElementById('c-name');
+    const phoneInput = document.getElementById('c-phone');
+    const addressInput = document.getElementById('c-address');
     const item = JSON.parse(localStorage.getItem('checkoutItem'));
 
-    if (!name || !phone || !address || !item) {
+    if (!nameInput || !phoneInput || !addressInput || !item) {
+        alert('Baraye meharbani apni tamaam details bharein!');
+        return;
+    }
+
+    const name = nameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const address = addressInput.value.trim();
+
+    if (!name || !phone || !address) {
         alert('Baraye meharbani apni tamaam details bharein!');
         return;
     }
@@ -224,8 +253,10 @@ async function submitOrder() {
         const result = await response.json();
 
         if (response.ok && result.success) {
-            document.getElementById('checkout-form-box').style.display = 'none';
-            document.getElementById('success-box').style.display = 'block';
+            const formBox = document.getElementById('checkout-form-box');
+            const successBox = document.getElementById('success-box');
+            if (formBox) formBox.style.display = 'none';
+            if (successBox) successBox.style.display = 'block';
         } else {
             alert(`Order Error: ${result.message || 'Server Error'}`);
             if (btn) { btn.innerText = "⚡ Confirm Order"; btn.disabled = false; }
@@ -237,9 +268,16 @@ async function submitOrder() {
 }
 
 // ================= ADMIN: CJ DROPSHIPPING FETCH & IMPORT ================= //
-// Step 1: Fetch CJ Details with Multi-Images & Auto-Category
+
+// Step 1: Fetch CJ Details
 async function fetchCjProductDetails() {
-    const sku = document.getElementById('cj-sku-input').value.trim();
+    const skuInput = document.getElementById('cj-sku-input');
+    if (!skuInput) {
+        alert("Input field nahi mili!");
+        return;
+    }
+
+    const sku = skuInput.value.trim();
 
     if (!sku) {
         alert("Baraye meharbani SKU Code darj karein!");
@@ -256,15 +294,19 @@ async function fetchCjProductDetails() {
 
             // Display Preview Card
             const previewCard = document.getElementById('cj-preview-card');
-            previewCard.style.display = 'block';
+            if (previewCard) previewCard.style.display = 'block';
 
-            // Title
-            document.getElementById('cj-p-title').value = data.title;
+            // Fill Title
+            const titleInput = document.getElementById('cj-p-title');
+            if (titleInput) titleInput.value = data.title;
             
             // Cost & Margin
             const totalBaseCost = (data.basePricePKR || 0) + (data.shippingCostPKR || 0);
-            document.getElementById('cj-p-cost').value = totalBaseCost;
-            document.getElementById('cj-p-margin').value = 10;
+            const costInput = document.getElementById('cj-p-cost');
+            if (costInput) costInput.value = totalBaseCost;
+            
+            const marginInput = document.getElementById('cj-p-margin');
+            if (marginInput) marginInput.value = 10;
 
             // Render Multi-Image Gallery
             const galleryEl = document.getElementById('cj-preview-gallery');
@@ -287,7 +329,7 @@ async function fetchCjProductDetails() {
                 categories.push(fetchedCategory);
                 localStorage.setItem('myCategories', JSON.stringify(categories));
                 existingCat = fetchedCategory;
-                renderAdminPanel(); // Refresh lists
+                renderAdminPanel();
             }
 
             const catSelect = document.getElementById('cj-p-category');
@@ -299,8 +341,8 @@ async function fetchCjProductDetails() {
             // Calculate Initial Selling Price
             calculateCjFinalPrice();
 
-            // Scroll down
-            previewCard.scrollIntoView({ behavior: 'smooth' });
+            // Scroll down to preview box
+            if (previewCard) previewCard.scrollIntoView({ behavior: 'smooth' });
 
         } else {
             alert("CJ Product Fetch Error: " + json.message);
@@ -310,6 +352,21 @@ async function fetchCjProductDetails() {
     }
 }
 
+// Auto calculate price on % margin change
+function calculateCjFinalPrice() {
+    const costInput = document.getElementById('cj-p-cost');
+    const marginInput = document.getElementById('cj-p-margin');
+    const finalInput = document.getElementById('cj-p-final');
+
+    if (!costInput || !marginInput || !finalInput) return;
+
+    const baseCost = parseFloat(costInput.value) || 0;
+    const margin = parseFloat(marginInput.value) || 0;
+
+    const finalPrice = Math.round(baseCost * (1 + margin / 100));
+    finalInput.value = finalPrice;
+}
+
 // Step 2: Save CJ Product to Store
 function saveCjProductToStore() {
     if (!tempCjData) {
@@ -317,9 +374,13 @@ function saveCjProductToStore() {
         return;
     }
 
-    const title = document.getElementById('cj-p-title').value.trim();
-    const finalPrice = document.getElementById('cj-p-final').value.trim();
-    const category = document.getElementById('cj-p-category').value;
+    const titleInput = document.getElementById('cj-p-title');
+    const finalInput = document.getElementById('cj-p-final');
+    const catSelect = document.getElementById('cj-p-category');
+
+    const title = titleInput ? titleInput.value.trim() : "";
+    const finalPrice = finalInput ? finalInput.value.trim() : "";
+    const category = catSelect ? catSelect.value : "CJ Imports";
 
     if (!title || !finalPrice) {
         alert("Title aur Final Price hona zaroori hai!");
@@ -335,7 +396,7 @@ function saveCjProductToStore() {
         title: title,
         price: finalPrice,
         category: category,
-        images: productImages, // Full Array of All Images
+        images: productImages,
         sku: tempCjData.sku,
         variants: tempCjData.variants || [],
         source: "CJ"
@@ -344,15 +405,15 @@ function saveCjProductToStore() {
     products.unshift(newProd);
     localStorage.setItem('myProducts', JSON.stringify(products));
 
-    // Clear Preview Box
-    document.getElementById('cj-preview-card').style.display = 'none';
-    document.getElementById('cj-sku-input').value = '';
+    // Reset Preview Box & SKU Input
+    const previewCard = document.getElementById('cj-preview-card');
+    const skuInput = document.getElementById('cj-sku-input');
+    if (previewCard) previewCard.style.display = 'none';
+    if (skuInput) skuInput.value = '';
     tempCjData = null;
 
     renderAdminPanel();
-    alert(`🎉 Product (${productImages.length} images ke saath) Store Par Add Ho Gaya!`);
-}
-
+    alert(`🎉 Product (${productImages.length} images ke saath) Store Par Successfully Add Ho Gaya!`);
 }
 
 // ================= GENERAL ADMIN PANEL FUNCTIONS ================= //
@@ -367,9 +428,9 @@ function renderAdminCategories() {
     const listEl = document.getElementById('admin-category-list');
     if (!listEl) return;
     listEl.innerHTML = categories.map((cat, idx) => `
-        <div class="list-pill">
+        <div class="list-pill" style="display:inline-flex; align-items:center; gap:8px; background:#1e293b; padding:4px 10px; border-radius:20px; font-size:0.85rem;">
             <span>${cat}</span>
-            <button class="btn-delete" onclick="deleteCategory(${idx})">✕</button>
+            <button class="btn-delete" style="background:none; border:none; color:#ef4444; cursor:pointer;" onclick="deleteCategory(${idx})">✕</button>
         </div>
     `).join('');
 }
@@ -377,10 +438,14 @@ function renderAdminCategories() {
 function renderAdminCategoryDropdown() {
     const selectEl = document.getElementById('p-category');
     if (selectEl) selectEl.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+    
+    const cjSelectEl = document.getElementById('cj-p-category');
+    if (cjSelectEl) cjSelectEl.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
 }
 
 function addNewCategory() {
     const input = document.getElementById('new-cat-name');
+    if (!input) return;
     const name = input.value.trim();
     if (name && !categories.includes(name)) {
         categories.push(name);
@@ -400,18 +465,28 @@ function renderAdminProducts() {
     const listEl = document.getElementById('admin-products-list');
     if (!listEl) return;
 
+    if (!products.length) {
+        listEl.innerHTML = `<p style="color:#64748b; font-size:0.9rem;">Koi product mojood nahi hai.</p>`;
+        return;
+    }
+
     listEl.innerHTML = products.map((p, idx) => {
         const img = p.images && p.images.length ? p.images[0] : 'https://via.placeholder.com/50';
+        const imgCount = p.images ? p.images.length : 1;
         return `
-            <div class="admin-product-item">
+            <div class="admin-product-item" style="display:flex; justify-between; align-items:center; padding:10px 0; border-bottom:1px solid #1e293b;">
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <img src="${img}" class="admin-prod-img" alt="product">
+                    <img src="${img}" style="width:45px; height:45px; object-fit:cover; border-radius:6px;" alt="product">
                     <div>
-                        <strong>${p.title}</strong>
-                        <div style="font-size:0.8rem; color:#38bdf8;">Rs. ${p.price} | <span style="color:${p.source==='CJ'?'#818cf8':'#10b981'}">${p.source || 'Markaz'}</span></div>
+                        <strong style="color:#f8fafc; font-size:0.95rem;">${p.title}</strong>
+                        <div style="font-size:0.8rem; color:#38bdf8;">
+                            Rs. ${p.price} | 
+                            <span style="color:${p.source==='CJ'?'#818cf8':'#10b981'}">${p.source || 'Markaz'}</span> | 
+                            🖼️ ${imgCount} img
+                        </div>
                     </div>
                 </div>
-                <button class="btn-delete" onclick="deleteProduct(${idx})">✕</button>
+                <button class="btn-delete" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:6px; cursor:pointer;" onclick="deleteProduct(${idx})">✕</button>
             </div>
         `;
     }).join('');
@@ -419,44 +494,38 @@ function renderAdminProducts() {
 
 // Add Manual Product (Markaz)
 function addNewProduct() {
-    const title = document.getElementById('p-title').value.trim();
-    const price = document.getElementById('p-price').value.trim();
-    const category = document.getElementById('p-category').value;
-    const fileInput = document.getElementById('p-file');
-    const urlInput = document.getElementById('p-url').value.trim();
+    const titleInput = document.getElementById('p-title');
+    const priceInput = document.getElementById('p-price');
+    const catInput = document.getElementById('p-category');
+    const urlInput = document.getElementById('p-url');
+
+    if (!titleInput || !priceInput) return;
+
+    const title = titleInput.value.trim();
+    const price = priceInput.value.trim();
+    const category = catInput ? catInput.value : "General";
+    const urlValue = urlInput ? urlInput.value.trim() : "";
 
     if (!title || !price) {
         alert("Title aur Price likhein!");
         return;
     }
 
-    const saveAndRefresh = (imgSrc) => {
-        products.unshift({
-            title: title,
-            price: price,
-            category: category,
-            images: [imgSrc || 'https://via.placeholder.com/300'],
-            source: "Markaz"
-        });
-        localStorage.setItem('myProducts', JSON.stringify(products));
+    products.unshift({
+        title: title,
+        price: price,
+        category: category,
+        images: [urlValue || 'https://via.placeholder.com/300'],
+        source: "Markaz"
+    });
+    localStorage.setItem('myProducts', JSON.stringify(products));
 
-        // Form reset
-        document.getElementById('p-title').value = '';
-        document.getElementById('p-price').value = '';
-        document.getElementById('p-file').value = '';
-        document.getElementById('p-url').value = '';
+    titleInput.value = '';
+    priceInput.value = '';
+    if (urlInput) urlInput.value = '';
 
-        renderAdminPanel();
-        alert("Markaz Product Saved!");
-    };
-
-    if (fileInput.files && fileInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => saveAndRefresh(e.target.result);
-        reader.readAsDataURL(fileInput.files[0]);
-    } else {
-        saveAndRefresh(urlInput);
-    }
+    renderAdminPanel();
+    alert("Markaz Product Saved!");
 }
 
 function deleteProduct(idx) {
@@ -465,4 +534,4 @@ function deleteProduct(idx) {
         localStorage.setItem('myProducts', JSON.stringify(products));
         renderAdminPanel();
     }
-        }
+}

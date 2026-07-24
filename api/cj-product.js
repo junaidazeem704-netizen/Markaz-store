@@ -17,56 +17,65 @@ export default async function handler(req, res) {
         });
     }
 
+    // Helper Function to Query CJ API
+    async function queryCj(productSkuOrPid) {
+        try {
+            // Try by productSku
+            let r = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(productSkuOrPid)}`, {
+                headers: { 'CJ-Access-Token': CJ_TOKEN }
+            });
+            let d = await r.json();
+            if (d && d.result && d.data) return d.data;
+
+            // Try by pid
+            r = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${encodeURIComponent(productSkuOrPid)}`, {
+                headers: { 'CJ-Access-Token': CJ_TOKEN }
+            });
+            d = await r.json();
+            if (d && d.result && d.data) return d.data;
+
+            // Try via list API
+            r = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?productSku=${encodeURIComponent(productSkuOrPid)}`, {
+                headers: { 'CJ-Access-Token': CJ_TOKEN }
+            });
+            d = await r.json();
+            if (d && d.result && d.data && d.data.list && d.data.list.length > 0) {
+                const pid = d.data.list[0].pid;
+                r = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${pid}`, {
+                    headers: { 'CJ-Access-Token': CJ_TOKEN }
+                });
+                const fullData = await r.json();
+                if (fullData && fullData.result && fullData.data) return fullData.data;
+            }
+        } catch (e) {
+            console.error("Attempt failed for:", productSkuOrPid);
+        }
+        return null;
+    }
+
     try {
-        let cjData = null;
+        let p = null;
 
-        // 1. First Attempt: Query by Product SKU or PID
-        let cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(cleanSku)}`, {
-            headers: { 'CJ-Access-Token': CJ_TOKEN }
-        });
-        cjData = await cjRes.json();
+        // 1. Attempt with EXACT input SKU
+        p = await queryCj(cleanSku);
 
-        // 2. Second Attempt: Query as Variant SKU (Auto-detect PID from Variant)
-        if (!cjData || !cjData.result || !cjData.data) {
-            const variantRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/variant/query?variantSku=${encodeURIComponent(cleanSku)}`, {
-                headers: { 'CJ-Access-Token': CJ_TOKEN }
-            });
-            const variantData = await variantRes.json();
-
-            if (variantData.result && variantData.data && (variantData.data.pid || variantData.data.productSku)) {
-                const targetPid = variantData.data.pid || variantData.data.productSku;
-                cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${targetPid}`, {
-                    headers: { 'CJ-Access-Token': CJ_TOKEN }
-                });
-                cjData = await cjRes.json();
-            }
+        // 2. Fallback: Auto-Strip Variant Suffix (e.g. CJYD275940804DW -> CJYD2759408)
+        if (!p && cleanSku.length > 10) {
+            const strippedSku4 = cleanSku.substring(0, cleanSku.length - 4); // Trim 4 chars (04DW)
+            p = await queryCj(strippedSku4);
         }
 
-        // 3. Third Attempt: Search via Product List API
-        if (!cjData || !cjData.result || !cjData.data) {
-            const listRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?productSku=${encodeURIComponent(cleanSku)}`, {
-                headers: { 'CJ-Access-Token': CJ_TOKEN }
-            });
-            const listData = await listRes.json();
-
-            if (listData.result && listData.data && listData.data.list && listData.data.list.length > 0) {
-                const foundPid = listData.data.list[0].pid;
-                cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${foundPid}`, {
-                    headers: { 'CJ-Access-Token': CJ_TOKEN }
-                });
-                cjData = await cjRes.json();
-            }
+        if (!p && cleanSku.length > 8) {
+            const strippedSku2 = cleanSku.substring(0, cleanSku.length - 2); // Trim 2 chars
+            p = await queryCj(strippedSku2);
         }
 
-        // Check final response validity
-        if (!cjData || !cjData.result || !cjData.data) {
+        if (!p) {
             return res.status(404).json({ 
                 success: false, 
-                message: `CJ API par Code (${cleanSku}) nahi mila! Baraye meharbani CJ website se Main Product SKU ya PID copy karein.` 
+                message: `CJ API par Code (${cleanSku}) nahi mila! Baraye meharbani CJ website se Main Product SKU ya PID check karein.` 
             });
         }
-
-        const p = cjData.data;
 
         // USD to PKR Conversion (Approx 280 PKR / 1 USD)
         const USD_TO_PKR = 280;
@@ -81,7 +90,7 @@ export default async function handler(req, res) {
             images = [p.productImage];
         }
 
-        // Structure clean data for frontend
+        // Format final response
         const formattedData = {
             sku: p.productSku || cleanSku,
             pid: p.pid || "",
@@ -89,7 +98,7 @@ export default async function handler(req, res) {
             categoryName: p.categoryName || "",
             basePriceUSD: basePriceUSD,
             basePricePKR: basePricePKR,
-            shippingCostPKR: 500, // Fixed estimated shipping buffer
+            shippingCostPKR: 500,
             images: images,
             variants: (p.variants || []).map(v => ({
                 vid: v.vid,

@@ -1,38 +1,32 @@
-// Default Datasets
-const defaultCategories = ["Watches", "Clothing", "Electronics"];
+// Store Data State
+const defaultCategories = ["Watches", "Clothing", "Electronics", "CJ Imports"];
 
 const defaultProducts = [
     {
-        title: "Trending Smart Watch",
-        price: "2500",
-        category: "Watches",
-        images: ["https://i.ibb.co/YT0WLQPr/1784793502879.webp"]
+        title: "Trending suit loan",
+        price: "3500",
+        category: "Clothing",
+        images: ["https://i.ibb.co/YT0WLQPr/1784793502879.webp"],
+        source: "Markaz"
     }
 ];
 
-// Memory Data State
 let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCategories;
 let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 let currentFilterProducts = [...products];
 
-// Horizontal Slider Scroll Function
+let selectedColor = "";
+let selectedSize = "";
+
 function scrollSlider(distance) {
     const container = document.getElementById('products-container');
-    if (container) {
-        container.scrollBy({ left: distance, behavior: 'smooth' });
-    }
+    if (container) container.scrollBy({ left: distance, behavior: 'smooth' });
 }
 
-// Global Image Change
-function changeImage(idx, src) {
-    const el = document.getElementById(`img-${idx}`);
-    if (el) el.src = src;
-}
-
-// Render Products & Categories
 window.addEventListener('DOMContentLoaded', () => {
     renderCategoriesBar();
     displayProducts(products);
+    setupCheckoutPage();
 });
 
 function renderCategoriesBar() {
@@ -53,53 +47,35 @@ function displayProducts(list) {
     currentFilterProducts = list;
 
     if (!list.length) {
-        container.innerHTML = `<p style="width:100%;text-align:center;color:#9ca3af;padding:40px 0;">No products found in this category.</p>`;
+        container.innerHTML = `<p style="width:100%;text-align:center;color:#9ca3af;padding:40px 0;">No products found.</p>`;
         return;
     }
 
     let cards = '';
     list.forEach((p, i) => {
         const imgs = p.images && p.images.length ? p.images : ['https://via.placeholder.com/200'];
-        let thumbs = '';
-        if (imgs.length > 1) {
-            thumbs = `<div class="thumb-box">` + 
-                imgs.map(img => `<img src="${img}" class="t-img" onclick="changeImage(${i}, '${img}')">`).join('') + 
-                `</div>`;
-        }
+        const badgeText = p.source === 'CJ' ? 'CJ DROPSHIP' : (p.category || 'MARKAZ');
 
         cards += `
-            <div class="card">
-                <span class="badge-tag">${p.category || 'General'}</span>
+            <div class="card" onclick="openProductPreview(${i})">
+                <span class="badge-tag">${badgeText}</span>
                 <span class="sale-badge">SALE</span>
                 <div class="image-wrapper">
                     <img id="img-${i}" src="${imgs[0]}" class="p-img" loading="lazy" alt="Product">
                 </div>
-                ${thumbs}
                 <div class="card-content">
-                    <div class="rating-stars">★★★★★ <span class="review-count">(24)</span></div>
+                    <div class="rating-stars">★★★★★ <span class="review-count">(32)</span></div>
                     <h3>${p.title}</h3>
                     <div class="price-row">
                         <span class="price">Rs. ${p.price}</span>
-                        <span class="old-price">Rs. ${Math.round(p.price * 1.25)}</span>
+                        <span class="old-price">Rs. ${Math.round(p.price * 1.2)}</span>
                     </div>
-                    <button class="wa-btn" onclick="goToCheckout(${i})">🛍️ Order Now</button>
+                    <button class="wa-btn" onclick="event.stopPropagation(); openProductPreview(${i})">👁️ Preview & Buy</button>
                 </div>
             </div>
         `;
     });
     container.innerHTML = cards;
-}
-
-// Direct Checkout Navigation
-function goToCheckout(index) {
-    const item = currentFilterProducts[index];
-    if (item) {
-        localStorage.setItem('checkoutItem', JSON.stringify({
-            title: item.title,
-            price: item.price
-        }));
-        window.location.href = 'checkout.html';
-    }
 }
 
 function filterCategory(cat, btn) {
@@ -110,8 +86,89 @@ function filterCategory(cat, btn) {
     else displayProducts(products.filter(p => p.category === cat));
 }
 
+function openProductPreview(index) {
+    const item = currentFilterProducts[index];
+    if (item) {
+        localStorage.setItem('selectedPreviewProduct', JSON.stringify(item));
+        window.location.href = 'product.html';
+    }
+}
+
+// Product Preview Detail Handler
+function loadProductDetail() {
+    const raw = localStorage.getItem('selectedPreviewProduct');
+    if (!raw) return;
+    const item = JSON.parse(raw);
+
+    document.getElementById('detail-title').innerText = item.title;
+    document.getElementById('detail-price').innerText = `Rs. ${item.price}`;
+    document.getElementById('detail-old-price').innerText = `Rs. ${Math.round(item.price * 1.25)}`;
+    document.getElementById('detail-source-badge').innerText = item.source === 'CJ' ? 'CJ Dropshipping' : 'Markaz Verified';
+
+    const mainImg = document.getElementById('detail-main-img');
+    const galleryContainer = document.getElementById('detail-gallery');
+
+    const imgs = item.images && item.images.length ? item.images : ['https://via.placeholder.com/300'];
+    mainImg.src = imgs[0];
+
+    galleryContainer.innerHTML = imgs.map((img, idx) => `
+        <img src="${img}" class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="switchDetailImg(this, '${img}')">
+    `).join('');
+
+    // Load Color/Size Variants
+    if (item.variants && item.variants.length) {
+        const colors = [...new Set(item.variants.map(v => v.color).filter(Boolean))];
+        const sizes = [...new Set(item.variants.map(v => v.size).filter(Boolean))];
+
+        if (colors.length) {
+            document.getElementById('color-variant-box').style.display = 'block';
+            document.getElementById('color-options').innerHTML = colors.map((c, i) => `
+                <div class="variant-pill ${i === 0 ? 'active' : ''}" onclick="selectVariantPill(this, 'color', '${c}')">${c}</div>
+            `).join('');
+            selectedColor = colors[0];
+        }
+
+        if (sizes.length) {
+            document.getElementById('size-variant-box').style.display = 'block';
+            document.getElementById('size-options').innerHTML = sizes.map((s, i) => `
+                <div class="variant-pill ${i === 0 ? 'active' : ''}" onclick="selectVariantPill(this, 'size', '${s}')">${s}</div>
+            `).join('');
+            selectedSize = sizes[0];
+        }
+    }
+}
+
+function switchDetailImg(el, src) {
+    document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('detail-main-img').src = src;
+}
+
+function selectVariantPill(el, type, val) {
+    const parent = el.parentElement;
+    parent.querySelectorAll('.variant-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    if (type === 'color') selectedColor = val;
+    if (type === 'size') selectedSize = val;
+}
+
+function proceedToCheckoutFromDetail() {
+    const item = JSON.parse(localStorage.getItem('selectedPreviewProduct'));
+    if (item) {
+        localStorage.setItem('checkoutItem', JSON.stringify({
+            title: item.title,
+            price: item.price,
+            selectedColor: selectedColor,
+            selectedSize: selectedSize,
+            cjSku: item.sku || "",
+            isCjProduct: item.source === "CJ"
+        }));
+        window.location.href = 'checkout.html';
+    }
+}
+
 // Checkout Page Handler
-window.addEventListener('DOMContentLoaded', () => {
+function setupCheckoutPage() {
     const titleEl = document.getElementById('checkout-product-title');
     if (!titleEl) return;
 
@@ -120,9 +177,8 @@ window.addEventListener('DOMContentLoaded', () => {
         titleEl.innerText = item.title;
         document.getElementById('checkout-product-price').innerText = `Rs. ${item.price}`;
     }
-});
+}
 
-// Fixed Order Submission Handler
 async function submitOrder() {
     const name = document.getElementById('c-name').value.trim();
     const phone = document.getElementById('c-phone').value.trim();
@@ -130,75 +186,97 @@ async function submitOrder() {
     const item = JSON.parse(localStorage.getItem('checkoutItem'));
 
     if (!name || !phone || !address || !item) {
-        alert('Baraye meharbani apni tamam details bharein!');
+        alert('Baraye meharbani apni tamaam details bharein!');
         return;
     }
 
-    const submitBtn = document.querySelector('.btn-whatsapp');
-    if (submitBtn) {
-        submitBtn.innerText = "Processing Order...";
-        submitBtn.disabled = true;
+    const btn = document.getElementById('btn-submit-order');
+    if (btn) {
+        btn.innerText = "Processing Order...";
+        btn.disabled = true;
     }
 
     try {
         const response = await fetch("/api/send-order", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 title: item.title,
                 price: item.price,
                 name: name,
                 phone: phone,
-                address: address
+                address: address,
+                selectedColor: item.selectedColor || "",
+                selectedSize: item.selectedSize || "",
+                cjSku: item.cjSku || "",
+                isCjProduct: item.isCjProduct || false
             })
         });
 
-        // Response Error Check
-        if (!response.ok) {
-            throw new Error(`Server returned HTTP status ${response.status}`);
-        }
-
         const result = await response.json();
 
-        if (result.success) {
+        if (response.ok && result.success) {
             document.getElementById('checkout-form-box').style.display = 'none';
             document.getElementById('success-box').style.display = 'block';
         } else {
-            alert("Order submission mein masla hua: " + (result.message || "Unknown Error"));
-            if (submitBtn) {
-                submitBtn.innerText = "✅ Confirm Order";
-                submitBtn.disabled = false;
-            }
+            alert(`Order Error: ${result.message || 'Server Error'}`);
+            if (btn) { btn.innerText = "⚡ Confirm Order"; btn.disabled = false; }
         }
-    } catch (error) {
-        alert("Network Error / API Server offline! Pehle check karein ke site Live Vercel URL par khuli hai.");
-        console.error("Order error:", error);
-        if (submitBtn) {
-            submitBtn.innerText = "✅ Confirm Order";
-            submitBtn.disabled = false;
-        }
+    } catch (err) {
+        alert("Network Error!");
+        if (btn) { btn.innerText = "⚡ Confirm Order"; btn.disabled = false; }
     }
 }
-// ================= ADMIN PANEL FUNCTIONS ================= //
 
+// CJ Admin SKU Importer
+async function fetchCjProductBySku() {
+    const sku = document.getElementById('cj-sku-input').value.trim();
+    const margin = document.getElementById('cj-margin-input').value.trim() || "10";
+
+    if (!sku) {
+        alert("SKU Code likhna zaroori hai!");
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/cj-product?sku=${encodeURIComponent(sku)}&marginPercent=${margin}`);
+        const json = await res.json();
+
+        if (json.success) {
+            const data = json.data;
+            const newProd = {
+                title: data.title,
+                price: data.finalPricePKR,
+                category: "CJ Imports",
+                images: data.images,
+                sku: data.sku,
+                variants: data.variants,
+                source: "CJ"
+            };
+
+            products.unshift(newProd);
+            localStorage.setItem('myProducts', JSON.stringify(products));
+            renderAdminPanel();
+            alert(`🎉 CJ Product "${data.title}" Successfully Imported (+${margin}% Profit Added)!`);
+            document.getElementById('cj-sku-input').value = '';
+        } else {
+            alert("CJ Product Fetch Error: " + json.message);
+        }
+    } catch (e) {
+        alert("Failed to connect to CJ API endpoint!");
+    }
+}
+
+// Admin Panel Functions
 function renderAdminPanel() {
     renderAdminCategories();
     renderAdminCategoryDropdown();
     renderAdminProducts();
 }
 
-// 1. Categories Functions
 function renderAdminCategories() {
     const listEl = document.getElementById('admin-category-list');
     if (!listEl) return;
-
-    if (!categories.length) {
-        listEl.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem;">No categories added yet.</span>`;
-        return;
-    }
-
     listEl.innerHTML = categories.map((cat, idx) => `
         <div class="list-pill">
             <span>${cat}</span>
@@ -209,64 +287,42 @@ function renderAdminCategories() {
 
 function renderAdminCategoryDropdown() {
     const selectEl = document.getElementById('p-category');
-    if (!selectEl) return;
-
-    selectEl.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+    if (selectEl) selectEl.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
 }
 
 function addNewCategory() {
     const input = document.getElementById('new-cat-name');
     const name = input.value.trim();
-
-    if (!name) {
-        alert("Category name likhna zaroori hai!");
-        return;
-    }
-
-    if (categories.includes(name)) {
-        alert("Yeh category pehle se maujood hai!");
-        return;
-    }
-
-    categories.push(name);
-    localStorage.setItem('myCategories', JSON.stringify(categories));
-    input.value = '';
-
-    renderAdminPanel();
-    alert(`Category "${name}" add ho gayi!`);
-}
-
-function deleteCategory(index) {
-    if (confirm(`Kya aap "${categories[index]}" category delete karna chahte hain?`)) {
-        categories.splice(index, 1);
+    if (name && !categories.includes(name)) {
+        categories.push(name);
         localStorage.setItem('myCategories', JSON.stringify(categories));
+        input.value = '';
         renderAdminPanel();
     }
 }
 
-// 2. Products Functions
+function deleteCategory(idx) {
+    categories.splice(idx, 1);
+    localStorage.setItem('myCategories', JSON.stringify(categories));
+    renderAdminPanel();
+}
+
 function renderAdminProducts() {
     const listEl = document.getElementById('admin-products-list');
     if (!listEl) return;
-
-    if (!products.length) {
-        listEl.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">No products in store.</p>`;
-        return;
-    }
 
     listEl.innerHTML = products.map((p, idx) => {
         const img = p.images && p.images.length ? p.images[0] : 'https://via.placeholder.com/50';
         return `
             <div class="admin-product-item">
-                <div class="admin-prod-info">
+                <div style="display:flex; align-items:center; gap:10px;">
                     <img src="${img}" class="admin-prod-img" alt="product">
                     <div>
-                        <strong style="display:block; font-size:0.95rem;">${p.title}</strong>
-                        <span style="font-size:0.8rem; color:#38bdf8;">Rs. ${p.price}</span> | 
-                        <span style="font-size:0.8rem; color:var(--text-muted);">${p.category || 'General'}</span>
+                        <strong>${p.title}</strong>
+                        <div style="font-size:0.8rem; color:#38bdf8;">Rs. ${p.price} | <span style="color:${p.source==='CJ'?'#818cf8':'#10b981'}">${p.source || 'Markaz'}</span></div>
                     </div>
                 </div>
-                <button class="btn-delete" style="width:28px; height:28px; font-size:0.9rem;" onclick="deleteProduct(${idx})">✕</button>
+                <button class="btn-delete" onclick="deleteProduct(${idx})">✕</button>
             </div>
         `;
     }).join('');
@@ -280,50 +336,34 @@ function addNewProduct() {
     const urlInput = document.getElementById('p-url').value.trim();
 
     if (!title || !price) {
-        alert("Product Title aur Price likhna zaroori hai!");
+        alert("Title aur Price likhein!");
         return;
     }
 
     const saveAndRefresh = (imgSrc) => {
-        const newProd = {
+        products.unshift({
             title: title,
             price: price,
             category: category,
-            images: [imgSrc || 'https://via.placeholder.com/300']
-        };
-
-        products.unshift(newProd);
+            images: [imgSrc || 'https://via.placeholder.com/300'],
+            source: "Markaz"
+        });
         localStorage.setItem('myProducts', JSON.stringify(products));
-
-        // Form Clear
-        document.getElementById('p-title').value = '';
-        document.getElementById('p-price').value = '';
-        document.getElementById('p-file').value = '';
-        document.getElementById('p-url').value = '';
-
         renderAdminPanel();
-        alert("🎉 Product Store Par Add Ho Gaya!");
+        alert("Markaz Product Saved!");
     };
 
-    // Check if File Uploaded
     if (fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
-            saveAndRefresh(e.target.result);
-        };
+        reader.onload = (e) => saveAndRefresh(e.target.result);
         reader.readAsDataURL(fileInput.files[0]);
-    } else if (urlInput) {
-        saveAndRefresh(urlInput);
     } else {
-        saveAndRefresh('https://via.placeholder.com/300');
+        saveAndRefresh(urlInput);
     }
 }
 
-function deleteProduct(index) {
-    if (confirm(`Kya aap "${products[index].title}" ko delete karna chahte hain?`)) {
-        products.splice(index, 1);
-        localStorage.setItem('myProducts', JSON.stringify(products));
-        renderAdminPanel();
-    }
+function deleteProduct(idx) {
+    products.splice(idx, 1);
+    localStorage.setItem('myProducts', JSON.stringify(products));
+    renderAdminPanel();
 }
-

@@ -465,4 +465,4 @@ function deleteProduct(idx) {
         localStorage.setItem('myProducts', JSON.stringify(products));
         renderAdminPanel();
     }
-}
+        }

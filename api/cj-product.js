@@ -1,4 +1,4 @@
-// Vercel Serverless Function: CJ Dropshipping Product & Shipping Fetcher
+// Vercel Serverless Function: Real CJ Dropshipping Product & Image Fetcher
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -6,72 +6,98 @@ module.exports = async (req, res) => {
 
     if (req.method === 'OPTIONS') return res.status(200).end();
 
-    const { sku, marginPercent = 10 } = req.query;
+    const { sku } = req.query;
 
     if (!sku) {
-        return res.status(400).json({ success: false, message: 'SKU Code is required!' });
+        return res.status(400).json({ success: false, message: 'SKU Code zaroori hai!' });
     }
 
     const cjApiKey = process.env.CJ_API_KEY;
 
+    if (!cjApiKey) {
+        return res.status(400).json({
+            success: false,
+            message: 'Vercel Environment Variables me CJ_API_KEY nahi mili! Pehle Vercel me API Key add karein.'
+        });
+    }
+
     try {
-        let token = "";
-        
-        // Get Access Token from CJ
-        if (cjApiKey) {
-            const tokenRes = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ apiKey: cjApiKey })
+        // 1. Get Access Token from CJ Dropshipping
+        const tokenRes = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ apiKey: cjApiKey })
+        });
+        const tokenData = await tokenRes.json();
+
+        if (!tokenData.result || !tokenData.data || !tokenData.data.accessToken) {
+            return res.status(400).json({
+                success: false,
+                message: `CJ Auth Error: ${tokenData.message || 'Invalid API Key'}`
             });
-            const tokenData = await tokenRes.json();
-            if (tokenData.result && tokenData.data) {
-                token = tokenData.data.accessToken;
-            }
         }
 
-        // Query Product from CJ API
-        let productData = null;
-        if (token) {
-            const prodRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${sku}`, {
-                headers: { 'CJ-Access-Token': token }
+        const token = tokenData.data.accessToken;
+
+        // 2. Fetch Product Details by SKU
+        const prodRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(sku)}`, {
+            headers: { 'CJ-Access-Token': token }
+        });
+        const pJson = await prodRes.json();
+
+        if (!pJson.result || !pJson.data) {
+            return res.status(404).json({
+                success: false,
+                message: `CJ SKU (${sku}) nahi mila! Error: ${pJson.message || 'Product not found'}`
             });
-            const pJson = await prodRes.json();
-            if (pJson.result && pJson.data) {
-                productData = pJson.data;
-            }
         }
 
-        // If API Key is active, parse live data, else return standard structured response
-        let title = productData ? productData.productNameEn : `CJ Imported Item (${sku})`;
-        let basePrice = productData ? parseFloat(productData.sellPrice || 15) : 18.00; // in USD or converted
-        let shippingCost = 5.00; // Default estimate or calculated via CJ freight API
+        const productData = pJson.data;
+
+        // Product Title
+        const title = productData.productNameEn || productData.productName || `CJ Product (${sku})`;
         
-        // Convert USD to PKR (Assuming 1 USD ~ 280 PKR for Pakistan Store, or keep PKR directly)
+        // Price Calculation (USD to PKR conversion @ 280)
         const pkrRate = 280;
-        let basePricePKR = Math.round(basePrice * pkrRate);
-        let shippingCostPKR = Math.round(shippingCost * pkrRate);
+        let basePriceUSD = parseFloat(productData.sellPrice || 0);
+        let basePricePKR = Math.round(basePriceUSD * pkrRate);
+        let shippingCostPKR = Math.round(5 * pkrRate); // Default shipping estimate ~5 USD
+
+        // Extract Real Images from CJ
+        let images = [];
+        if (productData.productImageSet) {
+            if (Array.isArray(productData.productImageSet)) {
+                images = productData.productImageSet;
+            } else if (typeof productData.productImageSet === 'string') {
+                try { images = JSON.parse(productData.productImageSet); }
+                catch(e) { images = productData.productImageSet.split(','); }
+            }
+        }
         
-        // Calculate Total with Margin %
-        let subtotal = basePricePKR + shippingCostPKR;
-        let finalPrice = Math.round(subtotal * (1 + parseFloat(marginPercent) / 100));
+        if ((!images || images.length === 0) && productData.productImage) {
+            images = productData.productImage.includes(',') 
+                ? productData.productImage.split(',') 
+                : [productData.productImage];
+        }
 
-        // Images array
-        let images = productData && productData.productImageSet 
-            ? productData.productImageSet 
-            : ["https://i.ibb.co/YT0WLQPr/1784793502879.webp"];
+        // Clean up Image URLs
+        images = images.map(img => img ? img.trim() : '').filter(Boolean);
 
-        // Variations (Colors / Sizes)
-        let variants = productData && productData.variants ? productData.variants.map(v => ({
-            vid: v.vid,
-            sku: v.variantSku,
-            color: v.variantKey || v.variantColor || "Standard",
-            size: v.variantSize || "",
-            price: v.variantSellPrice
-        })) : [
-            { vid: "v1", sku: `${sku}-RED`, color: "Red", size: "Medium" },
-            { vid: "v2", sku: `${sku}-BLK`, color: "Black", size: "Large" }
-        ];
+        if (images.length === 0) {
+            images = ["https://via.placeholder.com/400?text=No+CJ+Image+Found"];
+        }
+
+        // Variants (Color & Size)
+        let variants = [];
+        if (productData.variants && Array.isArray(productData.variants)) {
+            variants = productData.variants.map(v => ({
+                vid: v.vid,
+                sku: v.variantSku,
+                color: v.variantKey || v.variantColor || "Standard",
+                size: v.variantSize || "",
+                price: v.variantSellPrice
+            }));
+        }
 
         return res.status(200).json({
             success: true,
@@ -80,8 +106,6 @@ module.exports = async (req, res) => {
                 title: title,
                 basePricePKR: basePricePKR,
                 shippingCostPKR: shippingCostPKR,
-                marginPercent: marginPercent,
-                finalPricePKR: finalPrice,
                 images: images,
                 variants: variants,
                 source: "CJ"
@@ -93,4 +117,3 @@ module.exports = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
-

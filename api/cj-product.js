@@ -1,4 +1,4 @@
-// Vercel Serverless Function: Smart CJ Dropshipping Product & Image Fetcher
+// Vercel Serverless Function: Official CJ Dropshipping API v2 Endpoint
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
 
     if (req.method === 'OPTIONS') return res.status(200).end();
 
-    const { sku } = req.query;
+    const sku = (req.query.sku || '').trim();
 
     if (!sku) {
         return res.status(400).json({ success: false, message: 'SKU / PID Code zaroori hai!' });
@@ -17,12 +17,12 @@ module.exports = async (req, res) => {
     if (!cjApiKey) {
         return res.status(400).json({
             success: false,
-            message: 'Vercel Environment Variables me CJ_API_KEY nahi mili! Pehle Vercel me API Key add karein.'
+            message: 'Vercel Environment Variables me CJ_API_KEY set nahi hai!'
         });
     }
 
     try {
-        // 1. Get Access Token from CJ Dropshipping
+        // 1. Get Access Token (CJ API V2 Docs)
         const tokenRes = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -38,40 +38,66 @@ module.exports = async (req, res) => {
         }
 
         const token = tokenData.data.accessToken;
+        const headers = { 'CJ-Access-Token': token };
 
-        // 2. Fetch Details: Pehle SKU se search karein
-        let prodRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(sku)}`, {
-            headers: { 'CJ-Access-Token': token }
-        });
-        let pJson = await prodRes.json();
+        let productData = null;
 
-        // 3. Fallback: Agar SKU se na miley, toh PID se search karein
-        if (!pJson.result || !pJson.data) {
-            prodRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${encodeURIComponent(sku)}`, {
-                headers: { 'CJ-Access-Token': token }
-            });
-            pJson = await prodRes.json();
+        // 2. Try Direct Query by PID or productSku
+        let queryRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${encodeURIComponent(sku)}`, { headers });
+        let queryJson = await queryRes.json();
+
+        if (queryJson.result && queryJson.data) {
+            productData = queryJson.data;
+        } else {
+            queryRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(sku)}`, { headers });
+            queryJson = await queryRes.json();
+            if (queryJson.result && queryJson.data) {
+                productData = queryJson.data;
+            }
         }
 
-        if (!pJson.result || !pJson.data) {
+        // 3. Fallback: Search via Product List API if Direct Query fails
+        if (!productData) {
+            let listRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?productSku=${encodeURIComponent(sku)}`, { headers });
+            let listJson = await listRes.json();
+
+            let targetPid = null;
+
+            if (listJson.result && listJson.data && listJson.data.list && listJson.data.list.length > 0) {
+                targetPid = listJson.data.list[0].pid;
+            } else {
+                // Keyword Search Fallback
+                listRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?key=${encodeURIComponent(sku)}`, { headers });
+                listJson = await listRes.json();
+                if (listJson.result && listJson.data && listJson.data.list && listJson.data.list.length > 0) {
+                    targetPid = listJson.data.list[0].pid;
+                }
+            }
+
+            if (targetPid) {
+                queryRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${encodeURIComponent(targetPid)}`, { headers });
+                queryJson = await queryRes.json();
+                if (queryJson.result && queryJson.data) {
+                    productData = queryJson.data;
+                }
+            }
+        }
+
+        if (!productData) {
             return res.status(404).json({
                 success: false,
-                message: `CJ par Yeh Code (${sku}) nahi mila! Sahi SKU/PID copy karein.`
+                message: `CJ API par Code (${sku}) nahi mila! Kripya SKU / PID verify karein.`
             });
         }
 
-        const productData = pJson.data;
-
-        // Product Title
+        // Extract Title & Conversion USD to PKR (Rate: 280)
         const title = productData.productNameEn || productData.productName || `CJ Product (${sku})`;
-        
-        // Price Calculation (USD to PKR @ 280)
         const pkrRate = 280;
-        let basePriceUSD = parseFloat(productData.sellPrice || productData.productPrice || 0);
-        let basePricePKR = Math.round(basePriceUSD * pkrRate);
-        let shippingCostPKR = Math.round(5 * pkrRate); // ~5 USD shipping estimate
+        let usdPrice = parseFloat(productData.sellPrice || productData.productPrice || 0);
+        let basePricePKR = Math.round(usdPrice * pkrRate);
+        let shippingCostPKR = Math.round(5 * pkrRate); // Standard ~5 USD Shipping Estimate
 
-        // Extract Real Images from CJ
+        // Extract Product Images
         let images = [];
         if (productData.productImageSet) {
             if (Array.isArray(productData.productImageSet)) {
@@ -81,20 +107,20 @@ module.exports = async (req, res) => {
                 catch(e) { images = productData.productImageSet.split(','); }
             }
         }
-        
+
         if ((!images || images.length === 0) && productData.productImage) {
-            images = productData.productImage.includes(',') 
-                ? productData.productImage.split(',') 
+            images = productData.productImage.includes(',')
+                ? productData.productImage.split(',')
                 : [productData.productImage];
         }
 
-        images = images.map(img => img ? img.trim() : '').filter(Boolean);
+        images = images.map(img => (typeof img === 'string' ? img.trim() : '')).filter(Boolean);
 
         if (images.length === 0) {
-            images = ["https://via.placeholder.com/400?text=No+CJ+Image+Found"];
+            images = ["https://via.placeholder.com/400?text=No+CJ+Image"];
         }
 
-        // Variants (Color & Size)
+        // Extract Variants
         let variants = [];
         if (productData.variants && Array.isArray(productData.variants)) {
             variants = productData.variants.map(v => ({
@@ -119,8 +145,9 @@ module.exports = async (req, res) => {
             }
         });
 
-    } catch (error) {
-        console.error("CJ Fetch Error:", error);
-        return res.status(500).json({ success: false, message: error.message });
+    } catch (err) {
+        console.error("CJ API Execution Error:", err);
+        return res.status(500).json({ success: false, message: err.message });
     }
 };
+

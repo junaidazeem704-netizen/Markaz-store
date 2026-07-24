@@ -1,4 +1,5 @@
-// Store Data State
+// ================= STORE DATA & INITIAL STATE ================= //
+
 const defaultCategories = ["Watches", "Clothing", "Electronics", "CJ Imports"];
 
 const defaultProducts = [
@@ -17,17 +18,22 @@ let currentFilterProducts = [...products];
 
 let selectedColor = "";
 let selectedSize = "";
+let tempCjData = null; // Temporary storage for fetched CJ SKU product
 
-function scrollSlider(distance) {
-    const container = document.getElementById('products-container');
-    if (container) container.scrollBy({ left: distance, behavior: 'smooth' });
-}
+// ================= PAGE INITIALIZATION ================= //
 
 window.addEventListener('DOMContentLoaded', () => {
     renderCategoriesBar();
     displayProducts(products);
     setupCheckoutPage();
 });
+
+function scrollSlider(distance) {
+    const container = document.getElementById('products-container');
+    if (container) container.scrollBy({ left: distance, behavior: 'smooth' });
+}
+
+// ================= STORE FRONT UI FUNCTIONS ================= //
 
 function renderCategoriesBar() {
     const catBar = document.getElementById('category-bar');
@@ -68,7 +74,7 @@ function displayProducts(list) {
                     <h3>${p.title}</h3>
                     <div class="price-row">
                         <span class="price">Rs. ${p.price}</span>
-                        <span class="old-price">Rs. ${Math.round(p.price * 1.2)}</span>
+                        <span class="old-price">Rs. ${Math.round(p.price * 1.25)}</span>
                     </div>
                     <button class="wa-btn" onclick="event.stopPropagation(); openProductPreview(${i})">👁️ Preview & Buy</button>
                 </div>
@@ -94,7 +100,8 @@ function openProductPreview(index) {
     }
 }
 
-// Product Preview Detail Handler
+// ================= PRODUCT PREVIEW PAGE (product.html) ================= //
+
 function loadProductDetail() {
     const raw = localStorage.getItem('selectedPreviewProduct');
     if (!raw) return;
@@ -115,7 +122,7 @@ function loadProductDetail() {
         <img src="${img}" class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="switchDetailImg(this, '${img}')">
     `).join('');
 
-    // Load Color/Size Variants
+    // Load Variants (Color & Size)
     if (item.variants && item.variants.length) {
         const colors = [...new Set(item.variants.map(v => v.color).filter(Boolean))];
         const sizes = [...new Set(item.variants.map(v => v.size).filter(Boolean))];
@@ -167,7 +174,8 @@ function proceedToCheckoutFromDetail() {
     }
 }
 
-// Checkout Page Handler
+// ================= CHECKOUT PAGE FUNCTIONS ================= //
+
 function setupCheckoutPage() {
     const titleEl = document.getElementById('checkout-product-title');
     if (!titleEl) return;
@@ -228,37 +236,52 @@ async function submitOrder() {
     }
 }
 
-// CJ Admin SKU Importer
-async function fetchCjProductBySku() {
+// ================= ADMIN: CJ DROPSHIPPING FETCH & IMPORT ================= //
+
+// Step 1: Fetch CJ Details without auto-adding
+async function fetchCjProductDetails() {
     const sku = document.getElementById('cj-sku-input').value.trim();
-    const margin = document.getElementById('cj-margin-input').value.trim() || "10";
 
     if (!sku) {
-        alert("SKU Code likhna zaroori hai!");
+        alert("Baraye meharbani SKU Code darj karein!");
         return;
     }
 
     try {
-        const res = await fetch(`/api/cj-product?sku=${encodeURIComponent(sku)}&marginPercent=${margin}`);
+        const res = await fetch(`/api/cj-product?sku=${encodeURIComponent(sku)}&marginPercent=0`);
         const json = await res.json();
 
         if (json.success) {
             const data = json.data;
-            const newProd = {
-                title: data.title,
-                price: data.finalPricePKR,
-                category: "CJ Imports",
-                images: data.images,
-                sku: data.sku,
-                variants: data.variants,
-                source: "CJ"
-            };
+            tempCjData = data;
 
-            products.unshift(newProd);
-            localStorage.setItem('myProducts', JSON.stringify(products));
-            renderAdminPanel();
-            alert(`🎉 CJ Product "${data.title}" Successfully Imported (+${margin}% Profit Added)!`);
-            document.getElementById('cj-sku-input').value = '';
+            // Display Preview Card
+            const previewCard = document.getElementById('cj-preview-card');
+            previewCard.style.display = 'block';
+
+            // Fill inputs in Preview Card
+            document.getElementById('cj-p-title').value = data.title;
+            
+            const totalBaseCost = (data.basePricePKR || 0) + (data.shippingCostPKR || 0);
+            document.getElementById('cj-p-cost').value = totalBaseCost;
+            document.getElementById('cj-p-margin').value = 10; // Default 10% profit
+            
+            const mainImg = (data.images && data.images.length) ? data.images[0] : '';
+            document.getElementById('cj-p-image').value = mainImg;
+            document.getElementById('cj-preview-img').src = mainImg || 'https://via.placeholder.com/150';
+
+            // Populate categories dropdown
+            const catSelect = document.getElementById('cj-p-category');
+            if (catSelect) {
+                catSelect.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            }
+
+            // Calculate Initial Selling Price
+            calculateCjFinalPrice();
+
+            // Scroll down to preview box
+            previewCard.scrollIntoView({ behavior: 'smooth' });
+
         } else {
             alert("CJ Product Fetch Error: " + json.message);
         }
@@ -267,7 +290,56 @@ async function fetchCjProductBySku() {
     }
 }
 
-// Admin Panel Functions
+// Auto calculate price on % margin change
+function calculateCjFinalPrice() {
+    const baseCost = parseFloat(document.getElementById('cj-p-cost').value) || 0;
+    const margin = parseFloat(document.getElementById('cj-p-margin').value) || 0;
+
+    const finalPrice = Math.round(baseCost * (1 + margin / 100));
+    document.getElementById('cj-p-final').value = finalPrice;
+}
+
+// Step 2: Save CJ Product to Store after previewing
+function saveCjProductToStore() {
+    if (!tempCjData) {
+        alert("Pehle Product Fetch Karein!");
+        return;
+    }
+
+    const title = document.getElementById('cj-p-title').value.trim();
+    const finalPrice = document.getElementById('cj-p-final').value.trim();
+    const category = document.getElementById('cj-p-category').value;
+    const imageUrl = document.getElementById('cj-p-image').value.trim();
+
+    if (!title || !finalPrice) {
+        alert("Title aur Final Price hona zaroori hai!");
+        return;
+    }
+
+    const newProd = {
+        title: title,
+        price: finalPrice,
+        category: category,
+        images: imageUrl ? [imageUrl] : (tempCjData.images || []),
+        sku: tempCjData.sku,
+        variants: tempCjData.variants || [],
+        source: "CJ"
+    };
+
+    products.unshift(newProd);
+    localStorage.setItem('myProducts', JSON.stringify(products));
+
+    // Reset Form & Clear Preview
+    document.getElementById('cj-preview-card').style.display = 'none';
+    document.getElementById('cj-sku-input').value = '';
+    tempCjData = null;
+
+    renderAdminPanel();
+    alert("🎉 CJ Product Store Par Successfully Add Ho Gaya!");
+}
+
+// ================= GENERAL ADMIN PANEL FUNCTIONS ================= //
+
 function renderAdminPanel() {
     renderAdminCategories();
     renderAdminCategoryDropdown();
@@ -328,6 +400,7 @@ function renderAdminProducts() {
     }).join('');
 }
 
+// Add Manual Product (Markaz)
 function addNewProduct() {
     const title = document.getElementById('p-title').value.trim();
     const price = document.getElementById('p-price').value.trim();
@@ -349,6 +422,13 @@ function addNewProduct() {
             source: "Markaz"
         });
         localStorage.setItem('myProducts', JSON.stringify(products));
+
+        // Form reset
+        document.getElementById('p-title').value = '';
+        document.getElementById('p-price').value = '';
+        document.getElementById('p-file').value = '';
+        document.getElementById('p-url').value = '';
+
         renderAdminPanel();
         alert("Markaz Product Saved!");
     };
@@ -363,7 +443,9 @@ function addNewProduct() {
 }
 
 function deleteProduct(idx) {
-    products.splice(idx, 1);
-    localStorage.setItem('myProducts', JSON.stringify(products));
-    renderAdminPanel();
+    if (confirm("Kya aap is product ko delete karna chahte hain?")) {
+        products.splice(idx, 1);
+        localStorage.setItem('myProducts', JSON.stringify(products));
+        renderAdminPanel();
+    }
 }

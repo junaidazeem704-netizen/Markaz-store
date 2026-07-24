@@ -268,8 +268,8 @@ async function submitOrder() {
 }
 
 // ================= ADMIN: CJ DROPSHIPPING FETCH & IMPORT ================= //
+// ================= STEP 1: FETCH CJ DETAILS (FIXED CATEGORY MATCHING) ================= //
 
-// Step 1: Fetch CJ Details
 async function fetchCjProductDetails() {
     const skuInput = document.getElementById('cj-sku-input');
     if (!skuInput) {
@@ -316,32 +316,50 @@ async function fetchCjProductDetails() {
                 if (countEl) countEl.innerText = data.images.length;
                 if (galleryEl) {
                     galleryEl.innerHTML = data.images.map((imgUrl, i) => `
-                        <img src="${imgUrl}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid ${i === 0 ? '#10b981' : '#334155'}; flex-shrink: 0;" title="Image ${i+1}">
+                        <img src="${imgUrl}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; border: 2px solid ${i === 0 ? '#10b981' : '#374151'}; flex-shrink: 0;" title="Image ${i+1}">
                     `).join('');
                 }
             }
 
-            // AUTO CATEGORY SELECT / ADD
-            const fetchedCategory = data.categoryName || "CJ Imports";
-            let existingCat = categories.find(c => c.toLowerCase() === fetchedCategory.toLowerCase());
+            // SMART CATEGORY MATCHING LOGIC
+            const rawCat = (data.categoryName || "").toLowerCase();
+            let matchedCategory = "CJ Imports";
 
-            if (!existingCat) {
-                categories.push(fetchedCategory);
-                localStorage.setItem('myCategories', JSON.stringify(categories));
-                existingCat = fetchedCategory;
-                renderAdminPanel();
+            if (rawCat.includes("beauty") || rawCat.includes("health") || rawCat.includes("makeup") || rawCat.includes("care") || rawCat.includes("massage")) {
+                matchedCategory = "Beauty";
+            } else if (rawCat.includes("garden") || rawCat.includes("home") || rawCat.includes("household") || rawCat.includes("kitchen")) {
+                matchedCategory = "Home & Garden";
+            } else if (rawCat.includes("watch") || rawCat.includes("jewelry")) {
+                matchedCategory = "Watches";
+            } else if (rawCat.includes("cloth") || rawCat.includes("apparel") || rawCat.includes("wear")) {
+                matchedCategory = "Clothing";
+            } else if (rawCat.includes("electronic") || rawCat.includes("gadget") || rawCat.includes("phone")) {
+                matchedCategory = "Electronics";
+            } else if (data.categoryName) {
+                matchedCategory = data.categoryName;
             }
 
+            // Ensure category exists in list
+            let existing = categories.find(c => c.toLowerCase() === matchedCategory.toLowerCase());
+            if (!existing) {
+                categories.push(matchedCategory);
+                localStorage.setItem('myCategories', JSON.stringify(categories));
+                existing = matchedCategory;
+            }
+
+            // Update All Category Dropdowns
+            renderAdminCategoryDropdown();
+
+            // Set Dropdown Value Explicitly
             const catSelect = document.getElementById('cj-p-category');
             if (catSelect) {
-                catSelect.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-                catSelect.value = existingCat;
+                catSelect.value = existing;
             }
 
             // Calculate Initial Selling Price
             calculateCjFinalPrice();
 
-            // Scroll down to preview box
+            // Scroll down smoothly to Step 2
             if (previewCard) previewCard.scrollIntoView({ behavior: 'smooth' });
 
         } else {
@@ -351,6 +369,7 @@ async function fetchCjProductDetails() {
         alert("Failed to connect to CJ API endpoint!");
     }
 }
+
 
 // Auto calculate price on % margin change
 function calculateCjFinalPrice() {

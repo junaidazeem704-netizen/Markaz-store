@@ -15,6 +15,8 @@
         .admin-product-item { display: flex; align-items: center; justify-content: space-between; background: #0f1523; border: 1px solid var(--border-light); padding: 10px 15px; border-radius: var(--radius-md); margin-bottom: 10px; }
         .admin-prod-img { width: 45px; height: 45px; object-fit: cover; border-radius: var(--radius-sm); }
         select.form-input { width: 100%; background: #0f1523; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 14px 16px; color: var(--text-primary); outline: none; }
+        .flex-row { display: flex; gap: 12px; }
+        .flex-row .form-group { flex: 1; }
     </style>
 </head>
 <body>
@@ -28,23 +30,63 @@
 
     <div class="admin-wrapper">
 
-        <!-- 1. CJ Dropshipping Import Section -->
+        <!-- 1. Fetch CJ SKU Step -->
         <div class="admin-card" style="border-color: rgba(99, 102, 241, 0.4); background: linear-gradient(180deg, #121929, #0d1322);">
-            <h2>🚀 Import via CJ Dropshipping SKU</h2>
+            <h2>🚀 Step 1: Fetch CJ Product Details</h2>
             <div class="form-group">
                 <label for="cj-sku-input">CJ Product SKU Code *</label>
                 <input type="text" id="cj-sku-input" placeholder="e.g. CJSJ123456789">
             </div>
-            <div class="form-group">
-                <label for="cj-margin-input">Your Profit Margin %</label>
-                <input type="number" id="cj-margin-input" value="10" placeholder="10">
-            </div>
-            <button class="wa-btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5);" onclick="fetchCjProductBySku()">
-                🔍 Fetch & Import CJ Product
+            <button class="wa-btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5);" onclick="fetchCjProductDetails()">
+                🔍 Fetch Product Info
             </button>
         </div>
 
-        <!-- 2. Category Manager -->
+        <!-- 2. CJ Product Review & Add Section (Appears after fetch) -->
+        <div class="admin-card" id="cj-preview-card" style="display: none; border: 2px solid #818cf8; background: #0b1120;">
+            <h2 style="color: #38bdf8;">📦 Step 2: Review & Set Margin</h2>
+            
+            <div style="text-align: center; margin-bottom: 15px;">
+                <img id="cj-preview-img" src="" style="max-width: 140px; height: 140px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+            </div>
+
+            <div class="form-group">
+                <label>Product Title</label>
+                <input type="text" id="cj-p-title">
+            </div>
+
+            <div class="flex-row">
+                <div class="form-group">
+                    <label>Cost + Shipping (PKR)</label>
+                    <input type="number" id="cj-p-cost" readonly style="background: #1e293b; color: #94a3b8; cursor: not-allowed;">
+                </div>
+                <div class="form-group">
+                    <label>Profit Margin (%)</label>
+                    <input type="number" id="cj-p-margin" value="10" oninput="calculateCjFinalPrice()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Final Selling Price (PKR)</label>
+                <input type="number" id="cj-p-final" style="font-weight: bold; color: #10b981; font-size: 1.1rem; background: #0f172a;">
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select id="cj-p-category" class="form-input"></select>
+            </div>
+
+            <div class="form-group">
+                <label>Image Link (URL)</label>
+                <input type="text" id="cj-p-image">
+            </div>
+
+            <button class="wa-btn" style="background: #10b981;" onclick="saveCjProductToStore()">
+                ✅ Add Product To Store Now
+            </button>
+        </div>
+
+        <!-- 3. Category Manager -->
         <div class="admin-card">
             <h2>🏷️ Add Category</h2>
             <div class="form-group">
@@ -56,7 +98,7 @@
             <div class="item-list" id="admin-category-list"></div>
         </div>
 
-        <!-- 3. Manual Product Manager -->
+        <!-- 4. Manual Product Manager (Markaz) -->
         <div class="admin-card">
             <h2>📦 Add Manual Product (Markaz)</h2>
             <div class="form-group">
@@ -77,7 +119,7 @@
             <button class="wa-btn" onclick="addNewProduct()">💾 Save Manual Product</button>
         </div>
 
-        <!-- 4. Existing Products List -->
+        <!-- 5. Existing Products List -->
         <div class="admin-card">
             <h2>🛍️ Existing Store Products</h2>
             <div id="admin-products-list"></div>

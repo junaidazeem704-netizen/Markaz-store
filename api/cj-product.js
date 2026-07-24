@@ -1,4 +1,4 @@
-// Vercel Serverless Function: Real CJ Dropshipping Product & Image Fetcher
+// Vercel Serverless Function: Smart CJ Dropshipping Product & Image Fetcher
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
     const { sku } = req.query;
 
     if (!sku) {
-        return res.status(400).json({ success: false, message: 'SKU Code zaroori hai!' });
+        return res.status(400).json({ success: false, message: 'SKU / PID Code zaroori hai!' });
     }
 
     const cjApiKey = process.env.CJ_API_KEY;
@@ -39,16 +39,24 @@ module.exports = async (req, res) => {
 
         const token = tokenData.data.accessToken;
 
-        // 2. Fetch Product Details by SKU
-        const prodRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(sku)}`, {
+        // 2. Fetch Details: Pehle SKU se search karein
+        let prodRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(sku)}`, {
             headers: { 'CJ-Access-Token': token }
         });
-        const pJson = await prodRes.json();
+        let pJson = await prodRes.json();
+
+        // 3. Fallback: Agar SKU se na miley, toh PID se search karein
+        if (!pJson.result || !pJson.data) {
+            prodRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?pid=${encodeURIComponent(sku)}`, {
+                headers: { 'CJ-Access-Token': token }
+            });
+            pJson = await prodRes.json();
+        }
 
         if (!pJson.result || !pJson.data) {
             return res.status(404).json({
                 success: false,
-                message: `CJ SKU (${sku}) nahi mila! Error: ${pJson.message || 'Product not found'}`
+                message: `CJ par Yeh Code (${sku}) nahi mila! Sahi SKU/PID copy karein.`
             });
         }
 
@@ -57,11 +65,11 @@ module.exports = async (req, res) => {
         // Product Title
         const title = productData.productNameEn || productData.productName || `CJ Product (${sku})`;
         
-        // Price Calculation (USD to PKR conversion @ 280)
+        // Price Calculation (USD to PKR @ 280)
         const pkrRate = 280;
-        let basePriceUSD = parseFloat(productData.sellPrice || 0);
+        let basePriceUSD = parseFloat(productData.sellPrice || productData.productPrice || 0);
         let basePricePKR = Math.round(basePriceUSD * pkrRate);
-        let shippingCostPKR = Math.round(5 * pkrRate); // Default shipping estimate ~5 USD
+        let shippingCostPKR = Math.round(5 * pkrRate); // ~5 USD shipping estimate
 
         // Extract Real Images from CJ
         let images = [];
@@ -80,7 +88,6 @@ module.exports = async (req, res) => {
                 : [productData.productImage];
         }
 
-        // Clean up Image URLs
         images = images.map(img => img ? img.trim() : '').filter(Boolean);
 
         if (images.length === 0) {
@@ -102,7 +109,7 @@ module.exports = async (req, res) => {
         return res.status(200).json({
             success: true,
             data: {
-                sku: sku,
+                sku: productData.productSku || sku,
                 title: title,
                 basePricePKR: basePricePKR,
                 shippingCostPKR: shippingCostPKR,

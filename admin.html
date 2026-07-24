@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markaz Admin Panel</title>
+    <title>Markaz Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,17 +11,18 @@
     <header class="navbar">
         <div class="logo">🛍️ Markaz Admin</div>
         <div class="nav-links">
+            <span style="background: #1e1b4b; color: #818cf8; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">CONTROL PANEL</span>
             <a href="index.html" class="nav-btn">View Store ↗</a>
         </div>
     </header>
 
-    <main class="container" style="max-width: 800px; margin: 20px auto; padding: 0 15px;">
+    <main class="container" style="max-width: 650px; margin: 20px auto; padding: 0 15px;">
         
         <!-- STEP 1: FETCH CJ PRODUCT -->
         <div class="admin-card">
             <h2>🚀 Step 1: Fetch CJ Product Details</h2>
             <div class="form-group">
-                <label>CJ Product SKU Code ya PID *</label>
+                <label>CJ Product SKU Code *</label>
                 <input type="text" id="cj-sku-input" placeholder="e.g. CJAM130816105EV">
             </div>
             <button class="wa-btn" onclick="fetchCjProductDetails()" style="width: 100%; margin-top: 10px;">
@@ -29,50 +30,47 @@
             </button>
         </div>
 
-        <!-- STEP 2: REVIEW & ADD TO STORE (Hidden by default) -->
-        <div class="admin-card" id="cj-preview-card" style="display: none; border: 2px solid #818cf8; background: #0b1120; margin-top: 20px;">
-            <h2 style="color: #38bdf8;">📦 Step 2: Review & Set Margin</h2>
+        <!-- STEP 2: REVIEW & ADD TO STORE (Hidden initially) -->
+        <div class="admin-card" id="cj-preview-card" style="display: none; border: 1px solid #6366f1;">
+            <h2 style="color: #818cf8;">📦 Step 2: Review & Set Margin</h2>
             
-            <!-- Multi Images Preview Gallery -->
-            <div style="margin-bottom: 20px;">
-                <label style="font-size: 0.9rem; color: #94a3b8; display: block; margin-bottom: 8px;">
-                    🖼️ Fetched Images (<span id="cj-img-count" style="color:#38bdf8; font-weight:bold;">0</span> found):
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 0.85rem; color: #9ca3af; display: block; margin-bottom: 8px;">
+                    🖼️ Fetched Images (<span id="cj-img-count" style="color:#38bdf8;">0</span>):
                 </label>
-                <div id="cj-preview-gallery" style="display: flex; gap: 10px; overflow-x: auto; padding: 10px; border: 1px solid var(--border-light, #334155); border-radius: 8px; background: #070c18;"></div>
+                <div id="cj-preview-gallery" style="display: flex; gap: 8px; overflow-x: auto; padding: 8px; background: #1f2937; border-radius: 10px;"></div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom: 12px;">
                 <label>Product Title</label>
                 <input type="text" id="cj-p-title">
             </div>
 
-            <div class="flex-row" style="display: flex; gap: 15px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
                 <div class="form-group" style="flex: 1;">
-                    <label>Cost + Shipping (PKR)</label>
-                    <input type="number" id="cj-p-cost" readonly style="background: #1e293b; color: #94a3b8; cursor: not-allowed;">
+                    <label>Base Cost (PKR)</label>
+                    <input type="number" id="cj-p-cost" readonly style="opacity: 0.7;">
                 </div>
                 <div class="form-group" style="flex: 1;">
-                    <label>Profit Margin (%)</label>
+                    <label>Margin (%)</label>
                     <input type="number" id="cj-p-margin" value="10" oninput="calculateCjFinalPrice()">
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Final Selling Price (PKR)</label>
-                <input type="number" id="cj-p-final" style="font-weight: bold; color: #10b981; font-size: 1.1rem; background: #0f172a;">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Selling Price (PKR)</label>
+                <input type="number" id="cj-p-final" style="color: #34d399; font-weight: bold;">
             </div>
 
-            <div class="form-group">
-                <label>Category (Auto-Selected)</label>
-                <select id="cj-p-category" class="form-input"></select>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Category</label>
+                <select id="cj-p-category"></select>
             </div>
 
-            <button class="wa-btn" style="background: #10b981; width: 100%; margin-top: 15px;" onclick="saveCjProductToStore()">
-                ✅ Add Product To Store Now
+            <button class="wa-btn" style="background: linear-gradient(135deg, #10b981, #059669); width: 100%;" onclick="saveCjProductToStore()">
+                ✅ Add Product To Store
             </button>
         </div>
-
-        <hr style="border-color: #334155; margin: 30px 0;">
 
         <!-- CATEGORY MANAGEMENT -->
         <div class="admin-card">
@@ -84,30 +82,26 @@
             <div id="admin-category-list" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;"></div>
         </div>
 
-        <!-- MANUAL PRODUCT ADD (MARKAZ) -->
-        <div class="admin-card" style="margin-top: 20px;">
+        <!-- MANUAL PRODUCT ADD -->
+        <div class="admin-card">
             <h2>🛒 Add Manual Product (Markaz)</h2>
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" id="p-title">
+            <div class="form-group" style="margin-bottom: 10px;">
+                <input type="text" id="p-title" placeholder="Title">
             </div>
-            <div class="form-group">
-                <label>Price (PKR)</label>
-                <input type="number" id="p-price">
+            <div class="form-group" style="margin-bottom: 10px;">
+                <input type="number" id="p-price" placeholder="Price (PKR)">
             </div>
-            <div class="form-group">
-                <label>Category</label>
+            <div class="form-group" style="margin-bottom: 10px;">
                 <select id="p-category"></select>
             </div>
-            <div class="form-group">
-                <label>Image URL</label>
-                <input type="text" id="p-url" placeholder="https://...">
+            <div class="form-group" style="margin-bottom: 10px;">
+                <input type="text" id="p-url" placeholder="Image URL">
             </div>
-            <button class="wa-btn" onclick="addNewProduct()" style="width: 100%; margin-top: 10px;">Save Markaz Product</button>
+            <button class="wa-btn" onclick="addNewProduct()" style="width: 100%;">Save Product</button>
         </div>
 
-        <!-- STORE PRODUCTS LIST -->
-        <div class="admin-card" style="margin-top: 20px;">
+        <!-- PRODUCTS LIST -->
+        <div class="admin-card">
             <h2>📋 Store Products</h2>
             <div id="admin-products-list"></div>
         </div>

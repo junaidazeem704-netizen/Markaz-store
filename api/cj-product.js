@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     }
 
     const cleanSku = sku.trim();
-    const CJ_TOKEN = process.env.CJ_API_TOKEN; // Vercel Environment Variable
+    const CJ_TOKEN = "Aap_Ka_CJ_Access_Token_Yahan_Paste_Karein";
 
     if (!CJ_TOKEN) {
         return res.status(500).json({ success: false, message: "CJ_API_TOKEN Vercel Environment Variables mein missing hai!" });

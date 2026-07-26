@@ -39,28 +39,67 @@
                 </div>
 
                 <!-- Customer Details Form -->
-                <div class="form-group">
-                    <label for="c-name">Full Name</label>
-                    <input type="text" id="c-name" placeholder="Enter your full name" required>
-                </div>
+                <form id="orderForm" onsubmit="submitOrder(event)">
+                    
+                    <!-- SECTION 1: CONTACT DETAILS -->
+                    <h4 style="margin-top: 15px; margin-bottom: 10px; color: #38bdf8;">📞 Contact Details</h4>
+                    
+                    <div class="form-group">
+                        <label for="c-name">Full Name *</label>
+                        <input type="text" id="c-name" placeholder="Customer Name" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="c-phone">Phone Number (WhatsApp)</label>
-                    <input type="tel" id="c-phone" placeholder="03XXXXXXXXX" required>
-                </div>
+                    <div class="form-group">
+                        <label for="c-phone">Phone Number *</label>
+                        <input type="tel" id="c-phone" placeholder="03XXXXXXXXX" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="c-address">Complete Delivery Address</label>
-                    <textarea id="c-address" rows="3" placeholder="House no, street, area, city..." required></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="c-whatsapp">Customer WhatsApp Number (Optional)</label>
+                        <input type="tel" id="c-whatsapp" placeholder="03XXXXXXXXX">
+                    </div>
 
-                <button type="button" class="wa-btn btn-whatsapp" onclick="submitOrder()">
-                    ✅ Confirm Order
-                </button>
+                    <!-- SECTION 2: ADDRESS DETAILS -->
+                    <h4 style="margin-top: 20px; margin-bottom: 10px; color: #38bdf8;">📍 Address Details</h4>
+
+                    <div class="form-group">
+                        <label for="c-city">City *</label>
+                        <select id="c-city" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                            <option value="" disabled selected>Select City</option>
+                            <option value="Karachi">Karachi</option>
+                            <option value="Lahore">Lahore</option>
+                            <option value="Islamabad">Islamabad</option>
+                            <option value="Rawalpindi">Rawalpindi</option>
+                            <option value="Faisalabad">Faisalabad</option>
+                            <option value="Multan">Multan</option>
+                            <option value="Peshawar">Peshawar</option>
+                            <option value="Quetta">Quetta</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="c-area">Sector / Block / Area Name *</label>
+                        <input type="text" id="c-area" placeholder="e.g. Block 4, Gulshan-e-Iqbal" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="c-address">Complete Delivery Address *</label>
+                        <textarea id="c-address" rows="3" placeholder="House no, street no, building name..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="c-landmark">Mashoor Jagah (Optional Landmark)</label>
+                        <input type="text" id="c-landmark" placeholder="Near Masjid, Main Market, etc.">
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="wa-btn btn-whatsapp" style="width: 100%; cursor: pointer;">
+                        ✅ Confirm Order
+                    </button>
+                </form>
             </div>
 
             <!-- Success Section -->
-            <div id="success-box" class="success-card">
+            <div id="success-box" class="success-card" style="display: none;">
                 <span class="success-icon">🎉</span>
                 <h3>Order Placed Successfully!</h3>
                 <p>Aapka order receive ho gaya hai. Hum bohut jald aap se rabta karenge.</p>
@@ -73,6 +112,71 @@
     </div>
 
     <!-- Main Script -->
+    <script>
+        // Selected Product Details (LocalStorage ya Default)
+        let selectedProduct = JSON.parse(localStorage.getItem('selectedProduct')) || {
+            title: "CJ Product Item",
+            price: 1500,
+            cjSku: "CJAM130816",
+            isCjProduct: true
+        };
+
+        // Page load par title & price update karein
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('checkout-product-title').innerText = selectedProduct.title || "Product";
+            document.getElementById('checkout-product-price').innerText = "Rs. " + (selectedProduct.price || 0);
+        });
+
+        // Submit Order Function
+        async function submitOrder(event) {
+            event.preventDefault();
+
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.innerText = "Processing Order...";
+
+            const payload = {
+                title: selectedProduct.title,
+                price: selectedProduct.price,
+                cjSku: selectedProduct.cjSku || "",
+                isCjProduct: selectedProduct.isCjProduct || false,
+                selectedColor: selectedProduct.color || "",
+                selectedSize: selectedProduct.size || "",
+                name: document.getElementById('c-name').value,
+                phone: document.getElementById('c-phone').value,
+                whatsapp: document.getElementById('c-whatsapp').value,
+                city: document.getElementById('c-city').value,
+                area: document.getElementById('c-area').value,
+                address: document.getElementById('c-address').value,
+                landmark: document.getElementById('c-landmark').value
+            };
+
+            try {
+                const res = await fetch('/api/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('checkout-form-box').style.display = 'none';
+                    document.getElementById('success-box').style.display = 'block';
+                    localStorage.removeItem('selectedProduct'); // Clear cart after success
+                } else {
+                    alert("Order Error: " + data.message);
+                }
+            } catch (err) {
+                console.error("Order Submission Failed:", err);
+                alert("Server Connection Error! Dobara koshish karein.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "✅ Confirm Order";
+            }
+        }
+    </script>
+
     <script src="script.js"></script>
 </body>
 </html>

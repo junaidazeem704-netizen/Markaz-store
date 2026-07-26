@@ -8,63 +8,61 @@ module.exports = async function handler(req, res) {
     }
 
     const cleanSku = sku.trim();
-    const CJ_KEY_OR_TOKEN = process.env.CJ_API_TOKEN || process.env.CJ_API_KEY;
+    const CJ_KEY = process.env.CJ_API_KEY || process.env.CJ_API_TOKEN;
 
-    if (!CJ_KEY_OR_TOKEN) {
+    if (!CJ_KEY) {
         return res.status(500).json({ 
             success: false, 
-            message: "CJ_API_KEY / CJ_API_TOKEN Vercel Environment Variables mein missing hai!" 
+            message: "CJ_API_KEY Vercel Environment Variables mein missing hai!" 
         });
     }
 
     try {
-        let accessToken = CJ_KEY_OR_TOKEN;
+        let accessToken = CJ_KEY;
 
-        // Step 1: Query CJ API
-        let cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(cleanSku)}`, {
-            headers: { 'CJ-Access-Token': accessToken }
-        });
+        // Helper function to fetch product from CJ
+        async function fetchFromCj(token, skuCode) {
+            const r = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(skuCode)}`, {
+                headers: { 'CJ-Access-Token': token }
+            });
+            return await r.json();
+        }
 
-        let cjData = await cjRes.json();
+        // 1. First Attempt using existing token/key
+        let cjData = await fetchFromCj(accessToken, cleanSku);
 
-        // Step 2: Auto-refresh token if invalid
-        if (cjData.code === 1600001 || (cjData.message && cjData.message.includes("Invalid API key"))) {
+        // 2. If token is invalid/expired (Error 1600001), auto-generate fresh Access Token using API Key
+        if (cjData.code === 1600001 || (cjData.message && cjData.message.toLowerCase().includes("invalid"))) {
             const authRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ apiKey: CJ_KEY_OR_TOKEN })
+                body: JSON.stringify({ apiKey: CJ_KEY })
             });
 
             const authData = await authRes.json();
 
             if (authData.result && authData.data && authData.data.accessToken) {
                 accessToken = authData.data.accessToken;
-
-                cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(cleanSku)}`, {
-                    headers: { 'CJ-Access-Token': accessToken }
-                });
-                cjData = await cjRes.json();
+                // Retry product fetch with fresh Access Token
+                cjData = await fetchFromCj(accessToken, cleanSku);
             } else {
                 return res.status(401).json({
                     success: false,
-                    message: `CJ Token Auth Failed: Fresh Access Token copy karke Vercel mein paste karein.`
+                    message: `CJ Auth Error: Vercel mein CJ_API_KEY check karein. (${authData.message || 'Invalid API Key'})`
                 });
             }
         }
 
-        // Step 3: Trim Variant Suffix if direct fetch failed
-        if (!cjData.data && cleanSku.length > 8) {
+        // 3. Fallback: Trim variant suffix (e.g., CJAM130816105EV -> CJAM130816) if direct search yields no data
+        if ((!cjData.data || !cjData.result) && cleanSku.length > 8) {
             const trimmedSku = cleanSku.substring(0, cleanSku.length - 4);
-            cjRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(trimmedSku)}`, {
-                headers: { 'CJ-Access-Token': accessToken }
-            });
-            cjData = await cjRes.json();
+            cjData = await fetchFromCj(accessToken, trimmedSku);
         }
 
         if (!cjData || !cjData.data) {
             return res.status(404).json({ 
                 success: false, 
-                message: `CJ Product (${cleanSku}) nahi mila!` 
+                message: `CJ Product (${cleanSku}) nahi mila! SKU Code verify karein.` 
             });
         }
 

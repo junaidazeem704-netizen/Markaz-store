@@ -1,8 +1,6 @@
 {
-  "name": "kaz-store",
+  "name": "markaz-store",
   "version": "1.0.0",
   "type": "module",
-  "dependencies": {
-    ...
-  }
+  "private": true
 }

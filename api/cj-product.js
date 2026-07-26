@@ -1,6 +1,6 @@
 // ================= VERCEL SERVERLESS FUNCTION: /api/cj-product.js ================= //
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
     const { sku } = req.query;
 
     if (!sku) {
@@ -20,49 +20,59 @@ module.exports = async function handler(req, res) {
     try {
         let accessToken = CJ_KEY;
 
-        // Helper function to fetch product from CJ
-        async function fetchFromCj(token, skuCode) {
-            const r = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?productSku=${encodeURIComponent(skuCode)}`, {
-                headers: { 'CJ-Access-Token': token }
-            });
-            return await r.json();
+        // 1. Helper: CJ se fresh Access Token hasil karne ke liye
+        async function getFreshAccessToken() {
+            try {
+                const response = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ apiKey: CJ_KEY })
+                });
+                const data = await response.json();
+                if (data.result && data.data && data.data.accessToken) {
+                    return data.data.accessToken;
+                }
+            } catch (e) {
+                console.error("Token Auth Error:", e);
+            }
+            return null;
         }
 
-        // 1. First Attempt using existing token/key
-        let cjData = await fetchFromCj(accessToken, cleanSku);
-
-        // 2. If token is invalid/expired (Error 1600001), auto-generate fresh Access Token using API Key
-        if (cjData.code === 1600001 || (cjData.message && cjData.message.toLowerCase().includes("invalid"))) {
-            const authRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ apiKey: CJ_KEY })
+        // 2. Helper: Product query run karne ke liye
+        async function fetchProduct(token, queryParam) {
+            const response = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?${queryParam}`, {
+                headers: { 'CJ-Access-Token': token }
             });
+            return await response.json();
+        }
 
-            const authData = await authRes.json();
+        // Attempt 1: Direct Product SKU Query
+        let cjData = await fetchProduct(accessToken, `productSku=${encodeURIComponent(cleanSku)}`);
 
-            if (authData.result && authData.data && authData.data.accessToken) {
-                accessToken = authData.data.accessToken;
-                // Retry product fetch with fresh Access Token
-                cjData = await fetchFromCj(accessToken, cleanSku);
-            } else {
-                return res.status(401).json({
-                    success: false,
-                    message: `CJ Auth Error: Vercel mein CJ_API_KEY check karein. (${authData.message || 'Invalid API Key'})`
-                });
+        // If Token Expired / Invalid (Error Code 1600001), fetch fresh token automatically
+        if (cjData.code === 1600001 || (cjData.message && cjData.message.toLowerCase().includes("invalid"))) {
+            const freshToken = await getFreshAccessToken();
+            if (freshToken) {
+                accessToken = freshToken;
+                cjData = await fetchProduct(accessToken, `productSku=${encodeURIComponent(cleanSku)}`);
             }
         }
 
-        // 3. Fallback: Trim variant suffix (e.g., CJAM130816105EV -> CJAM130816) if direct search yields no data
-        if ((!cjData.data || !cjData.result) && cleanSku.length > 8) {
-            const trimmedSku = cleanSku.substring(0, cleanSku.length - 4);
-            cjData = await fetchFromCj(accessToken, trimmedSku);
+        // Attempt 2: PID Query
+        if (!cjData || !cjData.data) {
+            cjData = await fetchProduct(accessToken, `pid=${encodeURIComponent(cleanSku)}`);
+        }
+
+        // Attempt 3: Variant Suffix Auto-Trim (e.g. CJAM130816105EV -> CJAM130816)
+        if ((!cjData || !cjData.data) && cleanSku.length > 8) {
+            const trimmedSku = cleanSku.substring(0, cleanSku.length - 5);
+            cjData = await fetchProduct(accessToken, `productSku=${encodeURIComponent(trimmedSku)}`);
         }
 
         if (!cjData || !cjData.data) {
             return res.status(404).json({ 
                 success: false, 
-                message: `CJ Product (${cleanSku}) nahi mila! SKU Code verify karein.` 
+                message: `CJ Product (${cleanSku}) nahi mila! Baraye meharbani main SKU check karein.` 
             });
         }
 
@@ -103,4 +113,4 @@ module.exports = async function handler(req, res) {
         console.error("CJ API Error:", error);
         return res.status(500).json({ success: false, message: "CJ Server Connection Error!" });
     }
-};
+}

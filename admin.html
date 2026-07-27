@@ -267,5 +267,70 @@
             document.getElementById('uploadStatusText').innerText = "";
         }
     </script>
+    <!-- ADMIN PANEL HISTROY SECTION (Ye Code Admin Form Ke Niche Paste Karein) -->
+<div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60 shadow-lg space-y-4 mt-6">
+    <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-indigo-400">📋 Saved Products History</h2>
+        <button onclick="clearAllProducts()" class="text-xs bg-rose-600/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg hover:bg-rose-600 hover:text-white">
+            Clear All
+        </button>
+    </div>
+    
+    <div id="adminProductHistory" class="space-y-2">
+        <!-- Live History Here -->
+    </div>
+</div>
+
+<script>
+    // 1. History Display Function
+    function renderAdminHistory() {
+        const historyBox = document.getElementById('adminProductHistory');
+        if (!historyBox) return;
+
+        const products = JSON.parse(localStorage.getItem('markazProducts')) || [];
+
+        if (products.length === 0) {
+            historyBox.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">Abhi koi manual product save nahi hua.</p>`;
+            return;
+        }
+
+        historyBox.innerHTML = products.map((p, index) => `
+            <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs">
+                <div class="flex items-center gap-3">
+                    <img src="${p.imageUrl || 'https://via.placeholder.com/50'}" class="w-10 h-10 object-cover rounded-lg border border-slate-700" />
+                    <div>
+                        <p class="font-bold text-white">${p.title}</p>
+                        <p class="text-emerald-400 font-semibold">Rs. ${p.price} | <span class="text-slate-400">${p.category}</span></p>
+                    </div>
+                </div>
+                <button onclick="deleteProduct(${index})" class="text-rose-400 hover:bg-rose-900/50 p-2 rounded-lg">
+                    🗑️
+                </button>
+            </div>
+        `).join('');
+    }
+
+    // 2. Delete Single Product
+    function deleteProduct(index) {
+        let products = JSON.parse(localStorage.getItem('markazProducts')) || [];
+        products.splice(index, 1);
+        localStorage.setItem('markazProducts', JSON.stringify(products));
+        renderAdminHistory();
+    }
+
+    // 3. Clear All Products
+    function clearAllProducts() {
+        if (confirm("Kya aap saare saved products delete karna chahte hain?")) {
+            localStorage.removeItem('markazProducts');
+            renderAdminHistory();
+        }
+    }
+
+    // Page load par history show karein
+    document.addEventListener("DOMContentLoaded", () => {
+        renderAdminHistory();
+    });
+</script>
+
 </body>
 </html>

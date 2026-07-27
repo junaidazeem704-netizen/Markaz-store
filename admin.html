@@ -3,111 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markaz Admin</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Markaz Admin Control Panel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 font-sans">
 
-    <header class="navbar">
-        <div class="logo">🛍️ Markaz Admin</div>
-        <div class="nav-links">
-            <span style="background: #1e1b4b; color: #818cf8; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">CONTROL PANEL</span>
-            <a href="index.html" class="nav-btn">View Store ↗</a>
-        </div>
-    </header>
+    <div class="max-w-xl mx-auto space-y-6">
 
-    <main class="container" style="max-width: 650px; margin: 20px auto; padding: 0 15px;">
-        
+        <!-- Top Header -->
+        <header class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div>
+                <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                    🛍️ Markaz Admin
+                </h1>
+                <p class="text-xs text-slate-400">CONTROL PANEL</p>
+            </div>
+            <a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-indigo-400 px-3 py-2 rounded-lg font-semibold border border-slate-700">
+                View Store ↗
+            </a>
+        </header>
+
         <!-- STEP 1: FETCH CJ PRODUCT -->
-        <div class="admin-card">
-            <h2>🚀 Step 1: Fetch CJ Product Details</h2>
-            <div class="form-group">
-                <label>CJ Product SKU Code *</label>
-                <input type="text" id="cj-sku-input" placeholder="e.g. CJAM130816105EV">
-            </div>
-            <button class="wa-btn" onclick="fetchCjProductDetails()" style="width: 100%; margin-top: 10px;">
-                🔍 Fetch Product Info
-            </button>
-        </div>
-
-        <!-- STEP 2: REVIEW & ADD TO STORE (Hidden initially) -->
-        <div class="admin-card" id="cj-preview-card" style="display: none; border: 1px solid #6366f1;">
-            <h2 style="color: #818cf8;">📦 Step 2: Review & Set Margin</h2>
+        <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60 shadow-lg space-y-4">
+            <h2 class="text-lg font-bold text-indigo-400 flex items-center gap-2">
+                🚀 Step 1: Fetch CJ Product Details
+            </h2>
             
-            <div style="margin-bottom: 15px;">
-                <label style="font-size: 0.85rem; color: #9ca3af; display: block; margin-bottom: 8px;">
-                    🖼️ Fetched Images (<span id="cj-img-count" style="color:#38bdf8;">0</span>):
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">
+                    CJ Product SKU Code *
                 </label>
-                <div id="cj-preview-gallery" style="display: flex; gap: 8px; overflow-x: auto; padding: 8px; background: #1f2937; border-radius: 10px;"></div>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 12px;">
-                <label>Product Title</label>
-                <input type="text" id="cj-p-title">
-            </div>
-
-            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>Base Cost (PKR)</label>
-                    <input type="number" id="cj-p-cost" readonly style="opacity: 0.7;">
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        id="cjSkuInput" 
+                        placeholder="e.g. CJAM130816" 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    />
+                    <button 
+                        type="button" 
+                        onclick="fetchCjProduct()" 
+                        id="fetchBtn"
+                        class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-3 rounded-xl transition duration-200 shadow-md whitespace-nowrap"
+                    >
+                        Fetch Info
+                    </button>
                 </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Margin (%)</label>
-                    <input type="number" id="cj-p-margin" value="10" oninput="calculateCjFinalPrice()">
+            </div>
+
+            <!-- CJ Status / Result Display -->
+            <div id="cjResultBox" class="hidden p-3 bg-slate-900/90 rounded-xl border border-indigo-500/30 text-sm">
+                <p id="cjTitle" class="font-bold text-white"></p>
+                <p id="cjPrice" class="text-emerald-400 font-semibold"></p>
+            </div>
+        </div>
+
+
+        <!-- STEP 2: ADD MANUAL PRODUCT (MARKAZ / LOCAL) WITH GALLERY UPLOAD -->
+        <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60 shadow-lg space-y-4">
+            <h2 class="text-lg font-bold text-indigo-400 flex items-center gap-2">
+                🛒 Add Manual Product (Markaz)
+            </h2>
+
+            <form id="manualProductForm" onsubmit="handleProductSubmit(event)" class="space-y-4">
+
+                <!-- Product Name -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">
+                        Product Name *
+                    </label>
+                    <input 
+                        type="text" 
+                        id="pName" 
+                        placeholder="e.g. Smart Watch Series 8" 
+                        required 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    />
                 </div>
-            </div>
 
-            <div class="form-group" style="margin-bottom: 12px;">
-                <label>Selling Price (PKR)</label>
-                <input type="number" id="cj-p-final" style="color: #34d399; font-weight: bold;">
-            </div>
+                <!-- Product Price (PKR) -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">
+                        Price (PKR) *
+                    </label>
+                    <input 
+                        type="number" 
+                        id="pPrice" 
+                        placeholder="e.g. 2500" 
+                        required 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    />
+                </div>
 
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label>Category</label>
-                <select id="cj-p-category"></select>
-            </div>
+                <!-- Category -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">
+                        Category *
+                    </label>
+                    <select 
+                        id="pCategory" 
+                        required 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500"
+                    >
+                        <option value="Electronics">Electronics</option>
+                        <option value="Beauty">Beauty</option>
+                        <option value="Watches">Watches</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Home & Garden">Home & Garden</option>
+                    </select>
+                </div>
 
-            <button class="wa-btn" style="background: linear-gradient(135deg, #10b981, #059669); width: 100%;" onclick="saveCjProductToStore()">
-                ✅ Add Product To Store
-            </button>
+                <!-- 📸 GALLERY PHOTO UPLOAD SECTION (STORAGE SAFE) -->
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <label class="block text-xs font-bold text-indigo-300">
+                        📸 Product Photo (Mobile Gallery Se Select Karein)
+                    </label>
+                    
+                    <!-- File Input -->
+                    <input 
+                        type="file" 
+                        id="productFileInput" 
+                        accept="image/*" 
+                        onchange="autoUploadToImgBB(event)"
+                        class="w-full text-xs text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer"
+                    />
+
+                    <!-- Status Text -->
+                    <p id="uploadStatusText" class="text-xs font-medium text-slate-400"></p>
+
+                    <!-- Preview Tag -->
+                    <div id="previewContainer" class="hidden">
+                        <p class="text-[10px] text-slate-400 mb-1">Uploaded Photo Preview:</p>
+                        <img id="imagePreviewTag" src="" alt="Preview" class="w-24 h-24 object-cover rounded-xl border-2 border-emerald-500 shadow-md" />
+                    </div>
+
+                    <!-- Hidden Input for ImgBB URL -->
+                    <input type="hidden" id="finalImageUrl" value="" />
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    id="saveProductBtn"
+                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition duration-200 shadow-lg text-center"
+                >
+                    ➕ Save Product To Store
+                </button>
+
+            </form>
         </div>
 
-        <!-- CATEGORY MANAGEMENT -->
-        <div class="admin-card">
-            <h2>🏷️ Add Category</h2>
-            <div class="form-group">
-                <input type="text" id="new-cat-name" placeholder="Category Name (e.g. Watches, Clothing)">
-            </div>
-            <button class="wa-btn" onclick="addNewCategory()" style="width: 100%; margin-top: 10px;">+ Add Category</button>
-            <div id="admin-category-list" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;"></div>
-        </div>
+    </div>
 
-        <!-- MANUAL PRODUCT ADD -->
-        <div class="admin-card">
-            <h2>🛒 Add Manual Product (Markaz)</h2>
-            <div class="form-group" style="margin-bottom: 10px;">
-                <input type="text" id="p-title" placeholder="Title">
-            </div>
-            <div class="form-group" style="margin-bottom: 10px;">
-                <input type="number" id="p-price" placeholder="Price (PKR)">
-            </div>
-            <div class="form-group" style="margin-bottom: 10px;">
-                <select id="p-category"></select>
-            </div>
-            <div class="form-group" style="margin-bottom: 10px;">
-                <input type="text" id="p-url" placeholder="Image URL">
-            </div>
-            <button class="wa-btn" onclick="addNewProduct()" style="width: 100%;">Save Product</button>
-        </div>
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // 1. AUTO UPLOAD TO IMGBB (Zero Server Storage Use)
+        async function autoUploadToImgBB(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-        <!-- PRODUCTS LIST -->
-        <div class="admin-card">
-            <h2>📋 Store Products</h2>
-            <div id="admin-products-list"></div>
-        </div>
+            const statusText = document.getElementById('uploadStatusText');
+            const previewContainer = document.getElementById('previewContainer');
+            const previewImg = document.getElementById('imagePreviewTag');
+            const finalUrlInput = document.getElementById('finalImageUrl');
 
-    </main>
+            statusText.innerText = "⏳ Photo upload ho rahi hai...";
+            statusText.className = "text-xs font-medium text-amber-400";
 
-    <script src="script.js"></script>
+            const IMGBB_API_KEY = "3b0a7dd514f1640a35db4057884ff358";
+            const formData = new FormData();
+            formData.append("image", file);
+
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    const imageUrl = result.data.display_url;
+                    finalUrlInput.value = imageUrl;
+                    previewImg.src = imageUrl;
+                    previewContainer.classList.remove('hidden');
+
+                    statusText.innerText = "✅ Photo kamyabi se upload ho gayi!";
+                    statusText.className = "text-xs font-medium text-emerald-400";
+                } else {
+                    statusText.innerText = "❌ Photo upload nahi ho saki!";
+                    statusText.className = "text-xs font-medium text-rose-500";
+                }
+            } catch (err) {
+                console.error(err);
+                statusText.innerText = "❌ Network Error! Dobara koshish karein.";
+                statusText.className = "text-xs font-medium text-rose-500";
+            }
+        }
+
+        // 2. FETCH CJ PRODUCT API
+        async function fetchCjProduct() {
+            const sku = document.getElementById('cjSkuInput').value.trim();
+            const btn = document.getElementById('fetchBtn');
+            const resultBox = document.getElementById('cjResultBox');
+
+            if (!sku) {
+                alert("Pehle CJ SKU Code daalein!");
+                return;
+            }
+
+            btn.innerText = "Fetching...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/cj-product?sku=${encodeURIComponent(sku)}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    resultBox.classList.remove('hidden');
+                    document.getElementById('cjTitle').innerText = data.data.title;
+                    document.getElementById('cjPrice').innerText = `Price: Rs. ${data.data.basePricePKR}`;
+                    
+                    // Form fields auto fill
+                    document.getElementById('pName').value = data.data.title;
+                    document.getElementById('pPrice').value = data.data.basePricePKR;
+                    if (data.data.images && data.data.images.length > 0) {
+                        document.getElementById('finalImageUrl').value = data.data.images[0];
+                        document.getElementById('imagePreviewTag').src = data.data.images[0];
+                        document.getElementById('previewContainer').classList.remove('hidden');
+                    }
+                } else {
+                    alert("CJ Error: " + data.message);
+                }
+            } catch (err) {
+                alert("Server Connection Error!");
+            } finally {
+                btn.innerText = "Fetch Info";
+                btn.disabled = false;
+            }
+        }
+
+        // 3. SAVE MANUAL PRODUCT FORM SUBMIT
+        function handleProductSubmit(event) {
+            event.preventDefault();
+
+            const productData = {
+                title: document.getElementById('pName').value,
+                price: document.getElementById('pPrice').value,
+                category: document.getElementById('pCategory').value,
+                imageUrl: document.getElementById('finalImageUrl').value || "https://via.placeholder.com/300"
+            };
+
+            // LocalStorage ya backend DB mein store karna
+            let storeProducts = JSON.parse(localStorage.getItem('markazProducts')) || [];
+            storeProducts.push(productData);
+            localStorage.setItem('markazProducts', JSON.stringify(storeProducts));
+
+            alert("🎉 Product Store Mein Successfully Add Ho Gaya!");
+            document.getElementById('manualProductForm').reset();
+            document.getElementById('previewContainer').classList.add('hidden');
+            document.getElementById('uploadStatusText').innerText = "";
+        }
+    </script>
 </body>
 </html>

@@ -147,21 +147,21 @@ function setupCategoryFilters() {
 }
 
 // Preview & Buy Handler
+// Preview Button Handler (Opens Product Preview Page)
 function previewAndBuy(productEncoded) {
     try {
         const product = JSON.parse(decodeURIComponent(productEncoded));
-        localStorage.setItem('selectedProduct', JSON.stringify({
-            title: product.title || "Product",
-            price: product.price || 0,
-            cjSku: product.sku || product.cjSku || "",
-            isCjProduct: product.isCjProduct || false,
-            imageUrl: (product.images && product.images[0]) || product.imageUrl || product.image || ""
-        }));
-        window.location.href = "checkout.html";
+        
+        // Save to Preview Storage
+        localStorage.setItem('previewProduct', JSON.stringify(product));
+        
+        // Redirect to New Preview Page
+        window.location.href = "product.html";
     } catch (err) {
-        console.error("Select error:", err);
+        console.error("Preview select error:", err);
     }
 }
+
 
 // Auto Load
 document.addEventListener("DOMContentLoaded", () => {

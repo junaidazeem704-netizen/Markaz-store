@@ -3,55 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Preview</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Product Details - Markaz Store</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Smooth Slide Animation Keyframe */
+        @keyframes slideFade {
+            0% { opacity: 0.4; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .slide-anim {
+            animation: slideFade 0.35s ease-in-out;
+        }
+    </style>
 </head>
-<body onload="loadProductDetail()">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans pb-10">
 
-    <header class="navbar">
-        <a href="index.html" class="nav-btn">← Back to Store</a>
-        <span id="detail-source-badge" class="badge-tag">Markaz Verified</span>
+    <!-- Top Announcement -->
+    <div class="bg-indigo-600 text-white text-[11px] font-semibold text-center py-2 px-4 shadow-md">
+        ⚡ FREE DELIVERY ALL OVER PAKISTAN ON ORDERS ABOVE RS. 3000 🚚
+    </div>
+
+    <!-- Header Section -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-indigo-400 font-bold text-sm">
+                ← Back to Store
+            </a>
+            <span class="text-xs font-bold text-slate-300">Markaz Store</span>
+        </div>
     </header>
 
-    <main class="product-detail-container">
-        
-        <!-- Main Image Container -->
-        <div class="main-img-box">
-            <img id="detail-main-img" src="" alt="Product Image">
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto p-4 space-y-6">
+
+        <!-- 📸 ANIMATED IMAGE SLIDER BOX -->
+        <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl relative">
+            
+            <span class="absolute top-3 left-3 z-20 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-md">
+                HIGH QUALITY
+            </span>
+
+            <!-- Main Slide Image Container -->
+            <div class="relative w-full aspect-[4/5] bg-slate-950 flex items-center justify-center overflow-hidden">
+                <img 
+                    id="sliderMainImg" 
+                    src="https://via.placeholder.com/400x500" 
+                    alt="Product Image" 
+                    class="w-full h-full object-cover slide-anim"
+                />
+
+                <!-- Left Slide Arrow -->
+                <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-indigo-600 text-white w-9 h-9 rounded-full flex items-center justify-center border border-slate-700 shadow-lg transition">
+                    ❮
+                </button>
+
+                <!-- Right Slide Arrow -->
+                <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-indigo-600 text-white w-9 h-9 rounded-full flex items-center justify-center border border-slate-700 shadow-lg transition">
+                    ❯
+                </button>
+            </div>
+
+            <!-- Slide Dots Indicator -->
+            <div id="dotsContainer" class="flex items-center justify-center gap-2 py-3 bg-slate-900/90 border-t border-slate-800">
+                <!-- Dots injected via JS -->
+            </div>
         </div>
 
-        <!-- Thumbnails Gallery -->
-        <div id="detail-gallery" class="detail-gallery"></div>
-
-        <!-- Product Information -->
-        <div class="detail-info" style="margin-top: 15px;">
-            <h1 id="detail-title" style="font-size: 1.25rem; color: #f8fafc; margin-bottom: 10px; line-height: 1.4;">Product Title</h1>
+        <!-- 🏷️ PRODUCT DETAILS BOX -->
+        <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
             
-            <div class="price-row" style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
-                <span id="detail-price" style="font-size: 1.4rem; font-weight: bold; color: #38bdf8;">Rs. 0</span>
-                <span id="detail-old-price" style="font-size: 1rem; color: #64748b; text-decoration: line-through;">Rs. 0</span>
+            <div class="text-xs text-amber-400 font-semibold" id="pRating">
+                ⭐⭐⭐⭐⭐ (32 Reviews)
             </div>
 
-            <!-- Color Options -->
-            <div id="color-variant-box" class="variant-box" style="display: none;">
-                <label style="color: #94a3b8; font-size: 0.85rem;">Select Color:</label>
-                <div id="color-options" class="variant-options"></div>
+            <h1 id="pTitle" class="text-xl font-bold text-white leading-snug">
+                Loading Product Title...
+            </h1>
+
+            <div class="flex items-baseline gap-3">
+                <span id="pPrice" class="text-2xl font-extrabold text-emerald-400">Rs. 0</span>
+                <span id="pOriginalPrice" class="text-sm text-slate-500 line-through">Rs. 0</span>
+                <span class="text-xs bg-rose-900/60 text-rose-300 border border-rose-700 px-2 py-0.5 rounded-md font-bold">SAVE 20%</span>
             </div>
 
-            <!-- Size Options -->
-            <div id="size-variant-box" class="variant-box" style="display: none;">
-                <label style="color: #94a3b8; font-size: 0.85rem;">Select Size:</label>
-                <div id="size-options" class="variant-options"></div>
+            <!-- Description -->
+            <div class="border-t border-slate-800 pt-3">
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Product Highlights</h4>
+                <p id="pDesc" class="text-xs text-slate-300 leading-relaxed">
+                    Premium quality product with durable materials. Best suited for everyday style and casual comfort.
+                </p>
             </div>
 
             <!-- Order Button -->
-            <button class="wa-btn" onclick="proceedToCheckoutFromDetail()" style="width: 100%; padding: 15px; font-size: 1.05rem; margin-top: 20px; background: #10b981;">
-                ⚡ Buy Now / Order Karein
+            <button onclick="proceedToCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold py-3.5 rounded-xl transition duration-150 text-base shadow-lg flex items-center justify-center gap-2 mt-2">
+                🛍️ Buy Now (Order Karein)
             </button>
         </div>
 
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        let currentProduct = null;
+        let imagesList = [];
+        let currentIndex = 0;
+
+        // Load Product Details on Page Startup
+        document.addEventListener("DOMContentLoaded", () => {
+            const rawData = localStorage.getItem('previewProduct');
+            if (!rawData) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            currentProduct = JSON.parse(rawData);
+
+            // Populate Text Fields
+            document.getElementById('pTitle').innerText = currentProduct.title || "Product";
+            document.getElementById('pPrice').innerText = "Rs. " + (currentProduct.price || 0);
+            
+            const origPrice = currentProduct.originalPrice || Math.round((currentProduct.price || 1000) * 1.25);
+            document.getElementById('pOriginalPrice').innerText = "Rs. " + origPrice;
+            
+            if(currentProduct.rating) {
+                document.getElementById('pRating').innerText = currentProduct.rating;
+            }
+
+            // Image List Logic
+            if (currentProduct.images && Array.isArray(currentProduct.images) && currentProduct.images.length > 0) {
+                imagesList = currentProduct.images;
+            } else if (currentProduct.imageUrl || currentProduct.image) {
+                imagesList = [currentProduct.imageUrl || currentProduct.image];
+            } else {
+                imagesList = ["https://via.placeholder.com/400x500"];
+            }
+
+            renderSlider();
+        });
+
+        // Render Slide Image & Dots
+        function renderSlider() {
+            const imgTag = document.getElementById('sliderMainImg');
+            const dotsBox = document.getElementById('dotsContainer');
+
+            // Set main image with animation restart
+            imgTag.classList.remove('slide-anim');
+            void imgTag.offsetWidth; // Trigger reflow for animation restart
+            imgTag.src = imagesList[currentIndex];
+            imgTag.classList.add('slide-anim');
+
+            // Dots HTML
+            dotsBox.innerHTML = imagesList.map((_, i) => `
+                <button onclick="goToSlide(${i})" class="h-2 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-6 bg-indigo-500' : 'w-2 bg-slate-700'}"></button>
+            `).join('');
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % imagesList.length;
+            renderSlider();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + imagesList.length) % imagesList.length;
+            renderSlider();
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            renderSlider();
+        }
+
+        // Proceed to Checkout Handler
+        function proceedToCheckout() {
+            localStorage.setItem('selectedProduct', JSON.stringify({
+                title: currentProduct.title,
+                price: currentProduct.price,
+                cjSku: currentProduct.sku || currentProduct.cjSku || "",
+                isCjProduct: currentProduct.isCjProduct || false,
+                imageUrl: imagesList[currentIndex] || imagesList[0]
+            }));
+
+            window.location.href = "checkout.html";
+        }
+    </script>
 </body>
 </html>

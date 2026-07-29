@@ -1,6 +1,6 @@
 const https = require('https');
 
-// Helper function: Pure HTTPS Requests processing without node-fetch dependency
+// Pure Node.js Standard HTTPS Request Processing
 function makeRequest(url, method, headers, postData = null) {
     return new Promise((resolve, reject) => {
         const urlObj = new URL(url);
@@ -26,7 +26,7 @@ function makeRequest(url, method, headers, postData = null) {
         });
 
         req.on('error', (err) => reject(err));
-        req.on('timeout', () => { req.destroy(); reject(new Error('CJ Server Timeout')); });
+        req.on('timeout', () => { req.destroy(); reject(new Error('CJ Gateway Timeout')); });
 
         if (postData && (method === 'POST' || method === 'PUT')) {
             req.write(JSON.stringify(postData));
@@ -36,7 +36,7 @@ function makeRequest(url, method, headers, postData = null) {
 }
 
 module.exports = async function handler(req, res) {
-    // CORS validation rules setting up for client UI handshake
+    // Handshake configuration headers setup
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Content-Type', 'application/json');
 
@@ -46,25 +46,31 @@ module.exports = async function handler(req, res) {
 
     const { sku } = req.query;
     if (!sku) {
-        return res.status(400).json({ success: false, message: 'SKU Code provided is blank!' });
+        return res.status(400).json({ success: false, message: 'SKU field input is required!' });
     }
 
-    const apiKey = process.env.CJ_API_KEY; 
+    // Vercel backend environment setup check
+    let apiKey = process.env.CJ_API_KEY; 
     if (!apiKey) {
-        return res.status(500).json({ success: false, message: 'Vercel Env Key Error: CJ_API_KEY Missing!' });
+        return res.status(500).json({ success: false, message: 'Vercel Config Error: Dashboard mein CJ_API_KEY environment variable nahi mila!' });
     }
+
+    // Koshish karein k agar koi accidental space ho to trim ho jaye
+    apiKey = apiKey.trim();
 
     try {
-        // Step 1: Secure authentication endpoint access
+        // Step 1: Getting validation session handshake token
         const tokenUrl = 'https://cjdropshipping.com';
         const tokenHeaders = { 'Content-Type': 'application/json' };
         
-        const tokenRes = await makeRequest(tokenUrl, 'POST', tokenHeaders, { apiKey: apiKey.trim() });
+        const tokenRes = await makeRequest(tokenUrl, 'POST', tokenHeaders, { apiKey: apiKey });
         
+        // Agar CJ Server JSON ke bajaye HTML throw kar raha hai to iska mukammal detail handle karna
         if (!tokenRes.isJson) {
+            const serverRawText = typeof tokenRes.body === 'string' ? tokenRes.body.substring(0, 100) : 'Blank String';
             return res.status(502).json({ 
                 success: false, 
-                message: 'Authentication Failure: Invalid text response from core gateway.' 
+                message: `CJ Security Refused (Invalid Key): Apni Vercel Dashboard key check karein. CJ Server Response Text snippet: "${serverRawText}"`
             });
         }
 
@@ -72,13 +78,13 @@ module.exports = async function handler(req, res) {
         if (!tokenData || tokenData.code !== 200 || !tokenData.data || !tokenData.data.accessToken) {
             return res.status(401).json({ 
                 success: false, 
-                message: `CJ Security Token Rejected: ${tokenData.message || 'Check your environment API key string'}` 
+                message: `CJ Token Refused: ${tokenData.message || 'Apni API Key dobara check karein, CJ ne reject kar di.'}` 
             });
         }
 
         const accessToken = tokenData.data.accessToken;
 
-        // Step 2: Querying the explicit search mapping catalog tree via listV2
+        // Step 2: Catalog mapping queries
         const productUrl = `https://cjdropshipping.com{sku.trim()}&pageNum=1&pageSize=1`;
         const productHeaders = {
             'CJ-Access-Token': accessToken,
@@ -88,36 +94,29 @@ module.exports = async function handler(req, res) {
         const productRes = await makeRequest(productUrl, 'GET', productHeaders);
 
         if (!productRes.isJson) {
-            return res.status(502).json({ success: false, message: 'Data Parsing Error: API endpoint configuration format conflict.' });
+            return res.status(502).json({ success: false, message: 'Product Mapping Error: CJ gateway returned non-json data.' });
         }
 
         const productData = productRes.body;
 
-        // Checking array index structural mapping layout robustly
         if (productData && productData.code === 200 && productData.data && productData.data.list) {
             const rootList = productData.data.list;
 
             if (Array.isArray(rootList) && rootList.length > 0) {
-                // Safely indexing the root element node
                 const targetProduct = rootList[0];
                 
-                // CJ response structural nesting validation layers
-                const extractedTitle = targetProduct.productNameEn || targetProduct.productName || "CJ Imported Product";
-                const extractedPrice = targetProduct.productPrice || targetProduct.sellPrice || "0";
-                const extractedImage = targetProduct.productImage || targetProduct.productImg || targetProduct.img || 'https://placeholder.com';
-
                 return res.status(200).json({
                     success: true,
-                    title: extractedTitle,
-                    price: extractedPrice,
-                    image: extractedImage
+                    title: targetProduct.productNameEn || targetProduct.productName || "CJ Product",
+                    price: targetProduct.productPrice || targetProduct.sellPrice || "0",
+                    image: targetProduct.productImage || targetProduct.productImg || targetProduct.img || 'https://placeholder.com'
                 });
             }
         }
         
-        return res.status(404).json({ success: false, message: `Product variant with SKU (${sku}) not found inside catalog.` });
+        return res.status(404).json({ success: false, message: `Product Variant with SKU (${sku}) not found inside CJ Catalog.` });
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: 'Server Core Processing Exception: ' + error.message });
+        return res.status(500).json({ success: false, message: 'Internal Processor Error: ' + error.message });
     }
 };

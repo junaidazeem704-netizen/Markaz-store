@@ -1,6 +1,6 @@
 const https = require('https');
 
-// Helper function: API calls ko handle karne ke liye bina kisi external package ke
+// Helper function: API requests handle karne ke liye bina node-fetch ke
 function makeRequest(url, method, headers, postData = null) {
     return new Promise((resolve, reject) => {
         const urlObj = new URL(url);
@@ -18,7 +18,7 @@ function makeRequest(url, method, headers, postData = null) {
                 try {
                     resolve(JSON.parse(data));
                 } catch (e) {
-                    reject(new Error('Invalid JSON response from server'));
+                    reject(new Error('Invalid JSON format from server'));
                 }
             });
         });
@@ -33,7 +33,7 @@ function makeRequest(url, method, headers, postData = null) {
 }
 
 module.exports = async function handler(req, res) {
-    // Browser ke connection blocks bypass karne ke liye headers
+    // CORS aur JSON configuration set karna
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Content-Type', 'application/json');
 
@@ -46,14 +46,13 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ success: false, message: 'SKU Code zaroori hai!' });
     }
 
-    // Vercel Environment se aapki API Key uthana
     const apiKey = process.env.CJ_API_KEY; 
     if (!apiKey) {
-        return res.status(500).json({ success: false, message: 'Vercel Settings check karein: CJ_API_KEY missing hai!' });
+        return res.status(500).json({ success: false, message: 'Vercel Config Error: CJ_API_KEY missing!' });
     }
 
     try {
-        // Step 1: CJ Server se Access Token generate karna
+        // Step 1: Access Token generate karna
         const tokenUrl = 'https://cjdropshipping.com';
         const tokenHeaders = { 'Content-Type': 'application/json' };
         
@@ -62,13 +61,13 @@ module.exports = async function handler(req, res) {
         if (!tokenData || tokenData.code !== 200 || !tokenData.data || !tokenData.data.accessToken) {
             return res.status(401).json({ 
                 success: false, 
-                message: 'CJ API Key reject ho gayi hai ya key sahi tarike se set nahi hui.' 
+                message: 'CJ API Key galat hai ya Vercel mein theek tarike se save nahi hui.' 
             });
         }
 
         const accessToken = tokenData.data.accessToken;
 
-        // Step 2: Access Token ko use kar ke SKU product list fetch karna
+        // Step 2: SKU product detail list fetch karna
         const productUrl = `https://cjdropshipping.com{sku}`;
         const productHeaders = {
             'CJ-Access-Token': accessToken,
@@ -78,7 +77,7 @@ module.exports = async function handler(req, res) {
         const productData = await makeRequest(productUrl, 'GET', productHeaders);
 
         if (productData && productData.code === 200 && productData.data && productData.data.list && productData.data.list.length > 0) {
-            const item = productData.data.list[0]; // Pehla confirm match product uthana
+            const item = productData.data.list[0]; // Pehla array item uthana
             
             return res.status(200).json({
                 success: true,
@@ -91,6 +90,6 @@ module.exports = async function handler(req, res) {
         }
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: 'Backend Error: ' + error.message });
+        return res.status(500).json({ success: false, message: 'Backend Connection Error: ' + error.message });
     }
 };

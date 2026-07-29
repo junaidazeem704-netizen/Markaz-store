@@ -1,116 +1,90 @@
-// ================= VERCEL SERVERLESS FUNCTION: /api/cj-product.js ================= //
+const fetch = require('node-fetch');
 
-export default async function handler(req, res) {
-    const { sku } = req.query;
+// Token ko cache karne ke liye variables (bar bar API call na karni pare)
+let cachedToken = null;
+let tokenExpiry = null;
 
-    if (!sku) {
-        return res.status(400).json({ success: false, message: "SKU code zaroori hai!" });
-    }
-
-    const cleanSku = sku.trim();
-    const CJ_KEY = process.env.CJ_API_KEY || process.env.CJ_API_TOKEN;
-
-    if (!CJ_KEY) {
-        return res.status(500).json({ 
-            success: false, 
-            message: "CJ_API_KEY Vercel Environment Variables mein missing hai!" 
-        });
+// Function: CJ API Key se Access Token nikalne ke liye
+async function getCJAccessToken(apiKey) {
+    // Agar token pehle se majood hai aur expire nahi hua to wahi return karein
+    if (cachedToken && tokenExpiry && Date.now() < tokenExpiry) {
+        return cachedToken;
     }
 
     try {
-        let accessToken = CJ_KEY;
+        const response = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ apiKey: apiKey })
+        });
 
-        // 1. Helper: CJ se fresh Access Token hasil karne ke liye
-        async function getFreshAccessToken() {
-            try {
-                const response = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ apiKey: CJ_KEY })
-                });
-                const data = await response.json();
-                if (data.result && data.data && data.data.accessToken) {
-                    return data.data.accessToken;
-                }
-            } catch (e) {
-                console.error("Token Auth Error:", e);
-            }
-            return null;
+        const result = await response.json();
+        
+        if (result.code === 200 && result.data && result.data.accessToken) {
+            cachedToken = result.data.accessToken;
+            // Token 7 din ke liye valid hota hai, hum safe side ke liye 6 din set karte hain
+            tokenExpiry = Date.now() + 6 * 24 * 60 * 60 * 1000; 
+            return cachedToken;
+        } else {
+            throw new Error(result.message || 'Token generation failed');
         }
+    } catch (error) {
+        console.error('CJ Token Error:', error);
+        return null;
+    }
+}
 
-        // 2. Helper: Product query run karne ke liye
-        async function fetchProduct(token, queryParam) {
-            const response = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/query?${queryParam}`, {
-                headers: { 'CJ-Access-Token': token }
-            });
-            return await response.json();
-        }
+module.exports = async function handler(req, res) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ success: false, message: 'Method Not Allowed' });
+    }
 
-        // Attempt 1: Direct Product SKU Query
-        let cjData = await fetchProduct(accessToken, `productSku=${encodeURIComponent(cleanSku)}`);
+    const { sku } = req.query;
+    if (!sku) {
+        return res.status(400).json({ success: false, message: 'SKU code is required' });
+    }
 
-        // If Token Expired / Invalid (Error Code 1600001), fetch fresh token automatically
-        if (cjData.code === 1600001 || (cjData.message && cjData.message.toLowerCase().includes("invalid"))) {
-            const freshToken = await getFreshAccessToken();
-            if (freshToken) {
-                accessToken = freshToken;
-                cjData = await fetchProduct(accessToken, `productSku=${encodeURIComponent(cleanSku)}`);
-            }
-        }
+    // 1. Vercel dashboard se aapki save ki hui API Key uthana
+    // Check karein k Vercel mein aapne naam "CJ_API_KEY" hi rakha hai
+    const apiKey = process.env.CJ_API_KEY; 
 
-        // Attempt 2: PID Query
-        if (!cjData || !cjData.data) {
-            cjData = await fetchProduct(accessToken, `pid=${encodeURIComponent(cleanSku)}`);
-        }
+    if (!apiKey) {
+        return res.status(500).json({ success: false, message: 'Vercel configuration error: CJ_API_KEY missing' });
+    }
 
-        // Attempt 3: Variant Suffix Auto-Trim (e.g. CJAM130816105EV -> CJAM130816)
-        if ((!cjData || !cjData.data) && cleanSku.length > 8) {
-            const trimmedSku = cleanSku.substring(0, cleanSku.length - 5);
-            cjData = await fetchProduct(accessToken, `productSku=${encodeURIComponent(trimmedSku)}`);
-        }
+    // 2. Access Token lena
+    const accessToken = await getCJAccessToken(apiKey);
+    if (!accessToken) {
+        return res.status(501).json({ success: false, message: 'CJ Server se temporary Access Token nahi ban saka' });
+    }
 
-        if (!cjData || !cjData.data) {
-            return res.status(404).json({ 
-                success: false, 
-                message: `CJ Product (${cleanSku}) nahi mila! Baraye meharbani main SKU check karein.` 
-            });
-        }
-
-        const p = cjData.data;
-        const USD_TO_PKR = 280;
-        const basePriceUSD = parseFloat(p.sellPrice || 0);
-        const basePricePKR = Math.round(basePriceUSD * USD_TO_PKR);
-
-        let images = [];
-        if (p.productImageSet && Array.isArray(p.productImageSet)) {
-            images = p.productImageSet;
-        } else if (p.productImage) {
-            images = [p.productImage];
-        }
-
-        return res.status(200).json({
-            success: true,
-            data: {
-                sku: p.productSku || cleanSku,
-                pid: p.pid || "",
-                title: p.productNameEn || p.productName || "CJ Product",
-                categoryName: p.categoryName || "",
-                basePriceUSD: basePriceUSD,
-                basePricePKR: basePricePKR,
-                shippingCostPKR: 500,
-                images: images,
-                variants: (p.variants || []).map(v => ({
-                    vid: v.vid,
-                    color: v.variantKey || v.variantStandard || "",
-                    size: v.variantSize || "",
-                    sku: v.variantSku,
-                    priceUSD: v.variantSellPrice
-                }))
+    try {
+        // 3. Product List V2 Endpoint se SKU check karna
+        const cjResponse = await fetch(`https://cjdropshipping.com{sku}`, {
+            method: 'GET',
+            headers: {
+                'CJ-Access-Token': accessToken,
+                'Content-Type': 'application/json'
             }
         });
 
+        const result = await cjResponse.json();
+
+        // CJ ka code 200 ka matlab success hota hai
+        if (result.code === 200 && result.data && result.data.list && result.data.list.length > 0) {
+            const product = result.data.list[0]; // Pehla product match uthana
+            
+            return res.status(200).json({
+                success: true,
+                title: product.productNameEn || product.productName,
+                price: product.productPrice || "0",
+                image: product.productImage || 'https://placeholder.com'
+            });
+        } else {
+            return res.status(404).json({ success: false, message: `Product SKU (${sku}) CJ par nahi mila!` });
+        }
     } catch (error) {
-        console.error("CJ API Error:", error);
-        return res.status(500).json({ success: false, message: "CJ Server Connection Error!" });
+        console.error('CJ Product Fetch Error:', error);
+        return res.status(500).json({ success: false, message: 'Network error or CJ API change' });
     }
-}
+};

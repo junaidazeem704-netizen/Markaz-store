@@ -1,21 +1,19 @@
 const https = require('https');
 
-// Robust Network Handshake processor with anti-bot firewall bypass headers
+// Pure Node.js Standard HTTPS Request Processing
 function makeRequest(url, method, headers, postData = null) {
     return new Promise((resolve, reject) => {
         const urlObj = new URL(url);
         
-        // Anti-Bot / Cloudflare bypass simulation headers block
+        // Anti-Bot / Firewall safety parameters block
         const defaultHeaders = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.9',
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
+            'Content-Type': 'application/json',
             'Connection': 'keep-alive'
         };
 
-        // Custom parameters sync with default blueprint layers
         const finalHeaders = { ...defaultHeaders, ...headers };
         
         const options = {
@@ -23,7 +21,7 @@ function makeRequest(url, method, headers, postData = null) {
             path: urlObj.pathname + urlObj.search,
             method: method,
             headers: finalHeaders,
-            timeout: 12000 // 12 seconds backup processing latency
+            timeout: 12000
         };
 
         const req = https.request(options, (res) => {
@@ -40,7 +38,7 @@ function makeRequest(url, method, headers, postData = null) {
         });
 
         req.on('error', (err) => reject(err));
-        req.on('timeout', () => { req.destroy(); reject(new Error('CJ Server Route Timeout')); });
+        req.on('timeout', () => { req.destroy(); reject(new Error('CJ Gateway Timeout')); });
 
         if (postData && (method === 'POST' || method === 'PUT')) {
             req.write(JSON.stringify(postData));
@@ -59,40 +57,41 @@ module.exports = async function handler(req, res) {
 
     const { sku } = req.query;
     if (!sku) {
-        return res.status(400).json({ success: false, message: 'SKU code context missing!' });
+        return res.status(400).json({ success: false, message: 'SKU query is blank!' });
     }
 
     const apiKey = process.env.CJ_API_KEY; 
     if (!apiKey) {
-        return res.status(500).json({ success: false, message: 'Vercel Configuration Alert: CJ_API_KEY missing from Dashboard Settings!' });
+        return res.status(500).json({ success: false, message: 'Vercel Config Error: Dashboard variable CJ_API_KEY missing!' });
     }
 
     try {
-        // Step 1: Requesting temporary core validation session access token
-        const tokenUrl = 'https://api.cjdropshipping.com/api2.0/v1/authentication/getAccessToken';
+        // 🔴 Step 1: Corrected Global API Token URL Path (Removed /v1)
+        const tokenUrl = 'https://cjdropshipping.com';
         const tokenHeaders = { 'Content-Type': 'application/json' };
         
         const tokenRes = await makeRequest(tokenUrl, 'POST', tokenHeaders, { apiKey: apiKey.trim() });
         
         if (!tokenRes.isJson) {
-            const rawBodyStr = typeof tokenRes.body === 'string' ? tokenRes.body.replace(/<[^>]*>/g, '').substring(0, 120) : 'Non-readable layout';
             return res.status(502).json({ 
                 success: false, 
-                message: `CJ Firewall Blocked Request: Firewall/Cloudflare security ne request reject kar di. Clean Text Snippet: "${rawBodyStr.trim()}"`
+                message: `CJ Gateway Structure Error: Expected JSON but received raw response: "${tokenRes.body.toString().substring(0, 100)}"`
             });
         }
 
         const tokenData = tokenRes.body;
-        if (!tokenData || tokenData.code !== 200 || !tokenData.data || !tokenData.data.accessToken) {
+        
+        // CJ V2 Responses use 200 or "200" string as success code
+        if (!tokenData || (tokenData.code !== 200 && tokenData.code !== "200") || !tokenData.data || !tokenData.data.accessToken) {
             return res.status(401).json({ 
                 success: false, 
-                message: `CJ Security Token Failure: ${tokenData.message || 'Apni API key re-generate kar ke Vercel mein update karein.'}` 
+                message: `CJ Token Refused: ${tokenData.message || 'Apni API Key check karein, CJ ne authorize nahi kiya.'}` 
             });
         }
 
         const accessToken = tokenData.data.accessToken;
 
-        // Step 2: Fetching the target SKU mapped entity model from catalog tree node
+        // 🔴 Step 2: Corrected Global Product List V2 URL Path (Removed /v1)
         const productUrl = `https://cjdropshipping.com{sku.trim()}&pageNum=1&pageSize=1`;
         const productHeaders = {
             'CJ-Access-Token': accessToken,
@@ -102,29 +101,29 @@ module.exports = async function handler(req, res) {
         const productRes = await makeRequest(productUrl, 'GET', productHeaders);
 
         if (!productRes.isJson) {
-            return res.status(502).json({ success: false, message: 'Catalog Request Dropped: Firewall mismatch on product routing node.' });
+            return res.status(502).json({ success: false, message: 'Product Mapping Error: CJ gateway structure layout mismatched.' });
         }
 
         const productData = productRes.body;
 
-        if (productData && productData.code === 200 && productData.data && productData.data.list) {
+        if (productData && (productData.code === 200 || productData.code === "200") && productData.data && productData.data.list) {
             const rootList = productData.data.list;
 
             if (Array.isArray(rootList) && rootList.length > 0) {
-                const targetProduct = rootList[0];
+                const targetProduct = rootList[0]; // Safely target first array node item
                 
                 return res.status(200).json({
                     success: true,
-                    title: targetProduct.productNameEn || targetProduct.productName || "Imported SKU Item",
+                    title: targetProduct.productNameEn || targetProduct.productName || "CJ Item",
                     price: targetProduct.productPrice || targetProduct.sellPrice || "0",
                     image: targetProduct.productImage || targetProduct.productImg || targetProduct.img || 'https://placeholder.com'
                 });
             }
         }
         
-        return res.status(404).json({ success: false, message: `Product variant SKU (${sku}) not found inside active live catalogs.` });
+        return res.status(404).json({ success: false, message: `Product SKU (${sku}) CJ database mein nahi mila.` });
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: 'System Core Engine Interruption: ' + error.message });
+        return res.status(500).json({ success: false, message: 'Server Exception Interruption: ' + error.message });
     }
 };

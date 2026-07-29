@@ -1,90 +1,96 @@
-const fetch = require('node-fetch');
+const https = require('https');
 
-// Token ko cache karne ke liye variables (bar bar API call na karni pare)
-let cachedToken = null;
-let tokenExpiry = null;
+// Helper function: API calls ko handle karne ke liye bina kisi external package ke
+function makeRequest(url, method, headers, postData = null) {
+    return new Promise((resolve, reject) => {
+        const urlObj = new URL(url);
+        const options = {
+            hostname: urlObj.hostname,
+            path: urlObj.pathname + urlObj.search,
+            method: method,
+            headers: headers
+        };
 
-// Function: CJ API Key se Access Token nikalne ke liye
-async function getCJAccessToken(apiKey) {
-    // Agar token pehle se majood hai aur expire nahi hua to wahi return karein
-    if (cachedToken && tokenExpiry && Date.now() < tokenExpiry) {
-        return cachedToken;
-    }
-
-    try {
-        const response = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ apiKey: apiKey })
+        const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', (chunk) => { data += chunk; });
+            res.on('end', () => {
+                try {
+                    resolve(JSON.parse(data));
+                } catch (e) {
+                    reject(new Error('Invalid JSON response from server'));
+                }
+            });
         });
 
-        const result = await response.json();
-        
-        if (result.code === 200 && result.data && result.data.accessToken) {
-            cachedToken = result.data.accessToken;
-            // Token 7 din ke liye valid hota hai, hum safe side ke liye 6 din set karte hain
-            tokenExpiry = Date.now() + 6 * 24 * 60 * 60 * 1000; 
-            return cachedToken;
-        } else {
-            throw new Error(result.message || 'Token generation failed');
+        req.on('error', (err) => reject(err));
+
+        if (postData && (method === 'POST' || method === 'PUT')) {
+            req.write(JSON.stringify(postData));
         }
-    } catch (error) {
-        console.error('CJ Token Error:', error);
-        return null;
-    }
+        req.end();
+    });
 }
 
 module.exports = async function handler(req, res) {
+    // Browser ke connection blocks bypass karne ke liye headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'application/json');
+
     if (req.method !== 'GET') {
         return res.status(405).json({ success: false, message: 'Method Not Allowed' });
     }
 
     const { sku } = req.query;
     if (!sku) {
-        return res.status(400).json({ success: false, message: 'SKU code is required' });
+        return res.status(400).json({ success: false, message: 'SKU Code zaroori hai!' });
     }
 
-    // 1. Vercel dashboard se aapki save ki hui API Key uthana
-    // Check karein k Vercel mein aapne naam "CJ_API_KEY" hi rakha hai
+    // Vercel Environment se aapki API Key uthana
     const apiKey = process.env.CJ_API_KEY; 
-
     if (!apiKey) {
-        return res.status(500).json({ success: false, message: 'Vercel configuration error: CJ_API_KEY missing' });
-    }
-
-    // 2. Access Token lena
-    const accessToken = await getCJAccessToken(apiKey);
-    if (!accessToken) {
-        return res.status(501).json({ success: false, message: 'CJ Server se temporary Access Token nahi ban saka' });
+        return res.status(500).json({ success: false, message: 'Vercel Settings check karein: CJ_API_KEY missing hai!' });
     }
 
     try {
-        // 3. Product List V2 Endpoint se SKU check karna
-        const cjResponse = await fetch(`https://cjdropshipping.com{sku}`, {
-            method: 'GET',
-            headers: {
-                'CJ-Access-Token': accessToken,
-                'Content-Type': 'application/json'
-            }
-        });
+        // Step 1: CJ Server se Access Token generate karna
+        const tokenUrl = 'https://cjdropshipping.com';
+        const tokenHeaders = { 'Content-Type': 'application/json' };
+        
+        const tokenData = await makeRequest(tokenUrl, 'POST', tokenHeaders, { apiKey: apiKey });
+        
+        if (!tokenData || tokenData.code !== 200 || !tokenData.data || !tokenData.data.accessToken) {
+            return res.status(401).json({ 
+                success: false, 
+                message: 'CJ API Key reject ho gayi hai ya key sahi tarike se set nahi hui.' 
+            });
+        }
 
-        const result = await cjResponse.json();
+        const accessToken = tokenData.data.accessToken;
 
-        // CJ ka code 200 ka matlab success hota hai
-        if (result.code === 200 && result.data && result.data.list && result.data.list.length > 0) {
-            const product = result.data.list[0]; // Pehla product match uthana
+        // Step 2: Access Token ko use kar ke SKU product list fetch karna
+        const productUrl = `https://cjdropshipping.com{sku}`;
+        const productHeaders = {
+            'CJ-Access-Token': accessToken,
+            'Content-Type': 'application/json'
+        };
+
+        const productData = await makeRequest(productUrl, 'GET', productHeaders);
+
+        if (productData && productData.code === 200 && productData.data && productData.data.list && productData.data.list.length > 0) {
+            const item = productData.data.list[0]; // Pehla confirm match product uthana
             
             return res.status(200).json({
                 success: true,
-                title: product.productNameEn || product.productName,
-                price: product.productPrice || "0",
-                image: product.productImage || 'https://placeholder.com'
+                title: item.productNameEn || item.productName,
+                price: item.productPrice || "0",
+                image: item.productImage || 'https://placeholder.com'
             });
         } else {
             return res.status(404).json({ success: false, message: `Product SKU (${sku}) CJ par nahi mila!` });
         }
+
     } catch (error) {
-        console.error('CJ Product Fetch Error:', error);
-        return res.status(500).json({ success: false, message: 'Network error or CJ API change' });
+        return res.status(500).json({ success: false, message: 'Backend Error: ' + error.message });
     }
 };

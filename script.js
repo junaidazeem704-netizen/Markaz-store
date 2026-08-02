@@ -1,6 +1,6 @@
 // ================= MARKAZ STORE FRONTEND SCRIPT ================= //
 
-const defaultCategories = ["Watches", "Clothing", "Electronics", "Beauty"];
+const defaultCategories = ["Watches", "Clothing", "Electronics", "Beauty", "Accessories", "Home & Garden"];
 
 const defaultProducts = [
     {
@@ -11,6 +11,7 @@ const defaultProducts = [
     }
 ];
 
+// Load stored data or fall back to defaults
 let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCategories;
 let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 let currentFilterProducts = [...products];
@@ -20,7 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
     displayProducts(products);
 });
 
-// Render Category Bar Buttons
+// Render Dynamic Category Buttons Bar
 function renderCategoriesBar() {
     const catBar = document.getElementById('category-bar');
     if (!catBar) return;
@@ -33,7 +34,7 @@ function renderCategoriesBar() {
     catBar.innerHTML = html;
 }
 
-// Display Products Card in Horizontal Deck
+// Render Products in Horizontal Card Container
 function displayProducts(list) {
     const container = document.getElementById('product-container');
     if (!container) return;
@@ -70,7 +71,7 @@ function displayProducts(list) {
     container.innerHTML = cards;
 }
 
-// Filter Products
+// Filter Category Click Handler
 function filterCategory(cat, btn) {
     document.querySelectorAll('#category-bar button').forEach(b => {
         b.className = "cat-btn bg-slate-900 text-slate-300 border border-slate-800 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition hover:border-slate-700";
@@ -84,7 +85,7 @@ function filterCategory(cat, btn) {
     else displayProducts(products.filter(p => p.category === cat));
 }
 
-// Go To Checkout
+// Save Selected Item and Redirect to Checkout
 function goToCheckout(index) {
     const item = currentFilterProducts[index];
     if (item) {

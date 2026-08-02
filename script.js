@@ -1,114 +1,343 @@
-// ================= MARKAZ STORE MAIN SCRIPT ================= //
+// ================= MARKAZ STORE COMPLETE SCRIPT ================= //
 
-// Default initial products (Agar storage empty ho)
+// 1. Initial Default Datasets
+const defaultCategories = ["Watches", "Clothing", "Electronics"];
+
 const defaultProducts = [
     {
-        id: "101",
-        title: "Designer Stitched Suit 3 Pcs",
-        price: 2850,
-        category: "Clothing",
-        sizes: ["Small", "Medium", "Large"],
-        colors: ["Emerald Green", "Royal Blue"],
-        images: ["https://i.ibb.co/6P0YpP6/suit-sample.jpg"]
+        title: "Trending Smart Watch",
+        price: "2500",
+        category: "Watches",
+        images: ["https://i.ibb.co/YT0WLQPr/1784793502879.webp"]
     }
 ];
 
-// Local Storage se products fetch karne ka function
-function getAllProducts() {
-    const saved = localStorage.getItem('markazProducts');
-    if (saved) {
-        try {
-            const parsed = JSON.parse(saved);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        } catch (e) {
-            console.error("Error reading storage:", e);
-        }
-    }
-    return defaultProducts;
+// Memory Data State via LocalStorage
+let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCategories;
+let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
+let currentFilterProducts = [...products];
+
+// ImgBB API Configuration
+const IMGBB_API_KEY = "311cba478ef03480a9e99f45226dc6ac";
+
+// Modal Admin Handler
+function toggleAdminModal() {
+    const modal = document.getElementById('adminModal');
+    if (!modal) return;
+    const isVisible = modal.style.display === 'flex';
+    modal.style.display = isVisible ? 'none' : 'flex';
+    if (!isVisible) renderAdminPanels();
 }
 
-// Home Page Slider Deck Render Function
-function renderProducts(categoryFilter = "All") {
-    const container = document.getElementById('product-container');
+// Global Image Change (Thumbnails)
+function changeImage(idx, src) {
+    const el = document.getElementById(`img-${idx}`);
+    if (el) el.src = src;
+}
+
+// 2. Initialize Page Content & Listeners
+window.addEventListener('DOMContentLoaded', () => {
+    renderCategoriesBar();
+    displayProducts(products);
+
+    // Sync Checkout Page Details if on checkout page
+    const titleEl = document.getElementById('checkout-product-title');
+    if (titleEl) {
+        const item = JSON.parse(localStorage.getItem('checkoutItem'));
+        if (item) {
+            titleEl.innerText = item.title;
+            const priceEl = document.getElementById('checkout-product-price');
+            if (priceEl) priceEl.innerText = `Rs. ${item.price}`;
+        }
+    }
+});
+
+// Render Category Filter Buttons
+function renderCategoriesBar() {
+    const catBar = document.getElementById('category-bar');
+    if (!catBar) return;
+
+    let html = `<button class="cat-btn active" onclick="filterCategory('All', this)">All</button>`;
+    categories.forEach(cat => {
+        html += `<button class="cat-btn" onclick="filterCategory('${cat}', this)">${cat}</button>`;
+    });
+    catBar.innerHTML = html;
+}
+
+// Display Products in Main Grid
+function displayProducts(list) {
+    const container = document.getElementById('products-container');
     if (!container) return;
 
-    const products = getAllProducts();
-    const filtered = (categoryFilter === "All") 
-        ? products 
-        : products.filter(p => (p.category || "").toLowerCase() === categoryFilter.toLowerCase());
+    currentFilterProducts = list;
 
-    if (filtered.length === 0) {
-        container.innerHTML = `
-            <div class="w-full text-center py-10 text-slate-500 text-xs">
-                Is category mein abhi koi product majood nahi hai.
-            </div>`;
+    if (!list.length) {
+        container.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#9ca3af;">No products found.</p>`;
         return;
     }
 
-    container.innerHTML = filtered.map((p) => {
-        const mainPhoto = (p.images && p.images.length > 0) ? p.images[0] : (p.imageUrl || "https://via.placeholder.com/400x500");
-        const encodedData = encodeURIComponent(JSON.stringify(p));
+    let cards = '';
+    list.forEach((p, i) => {
+        const imgs = p.images && p.images.length ? p.images : ['https://via.placeholder.com/200'];
+        let thumbs = '';
+        if (imgs.length > 1) {
+            thumbs = `<div class="thumb-box">` + 
+                imgs.map(img => `<img src="${img}" class="t-img" onclick="changeImage(${i}, '${img}')">`).join('') + 
+                `</div>`;
+        }
 
-        return `
-            <div class="w-[260px] sm:w-[280px] flex-shrink-0 snap-center bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl hover:border-slate-700 transition">
-                
-                <!-- Product Image -->
-                <div class="relative aspect-[4/5] bg-slate-950 overflow-hidden">
-                    <span class="absolute top-3 left-3 bg-indigo-600/90 backdrop-blur text-white text-[10px] font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider z-10">
-                        ${p.category || "General"}
-                    </span>
-                    <img src="${mainPhoto}" loading="lazy" alt="${p.title}" class="w-full h-full object-cover" />
-                </div>
-
-                <!-- Product Info -->
-                <div class="p-4 space-y-2">
-                    <h3 class="font-bold text-white text-sm line-clamp-1">${p.title}</h3>
-                    
-                    <div class="flex items-baseline justify-between">
-                        <span class="text-emerald-400 font-extrabold text-base">Rs. ${p.price}</span>
-                        <span class="text-[10px] text-slate-500 line-through">Rs. ${Math.round(p.price * 1.25)}</span>
-                    </div>
-
-                    <!-- Preview Button -->
-                    <button onclick="previewAndBuy('${encodedData}')" class="w-full bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1.5 mt-1">
-                        👁️ Preview & Order
-                    </button>
-                </div>
-
+        cards += `
+            <div class="card">
+                <span class="badge">${p.category || 'General'}</span>
+                <img id="img-${i}" src="${imgs[0]}" class="p-img" loading="lazy" alt="Product">
+                ${thumbs}
+                <h3>${p.title}</h3>
+                <div class="price">Rs. ${p.price}</div>
+                <button class="wa-btn" onclick="goToCheckout(${i})">Order Now</button>
             </div>
         `;
-    }).join('');
-}
-
-// Filter Tab Buttons Handler
-function setupCategoryFilters() {
-    const buttons = document.querySelectorAll('.category-btn');
-    buttons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            buttons.forEach(b => {
-                b.className = "category-btn bg-slate-900 text-slate-300 border border-slate-800 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition";
-            });
-            e.target.className = "category-btn active bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-xl whitespace-nowrap transition shadow-md";
-            
-            const category = e.target.getAttribute('data-category') || "All";
-            renderProducts(category);
-        });
     });
+    container.innerHTML = cards;
 }
 
-// Preview Page Redirection
-function previewAndBuy(productEncoded) {
-    try {
-        const product = JSON.parse(decodeURIComponent(productEncoded));
-        localStorage.setItem('previewProduct', JSON.stringify(product));
-        window.location.href = "product.html";
-    } catch (err) {
-        console.error("Preview error:", err);
+// Filter Categories
+function filterCategory(cat, btn) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    if (cat === 'All') displayProducts(products);
+    else displayProducts(products.filter(p => p.category === cat));
+}
+
+// Navigate to Checkout Page
+function goToCheckout(index) {
+    const item = currentFilterProducts[index];
+    if (item) {
+        localStorage.setItem('checkoutItem', JSON.stringify({
+            title: item.title,
+            price: item.price
+        }));
+        window.location.href = 'checkout.html';
     }
 }
 
-// App Initialization
-document.addEventListener("DOMContentLoaded", () => {
-    renderProducts("All");
-    setupCategoryFilters();
-});
+// Silent Email Order Submission Handler
+async function submitOrder() {
+    const name = document.getElementById('c-name').value.trim();
+    const phone = document.getElementById('c-phone').value.trim();
+    const address = document.getElementById('c-address').value.trim();
+    const item = JSON.parse(localStorage.getItem('checkoutItem'));
+
+    if (!name || !phone || !address || !item) {
+        alert('Baraye meharbani apni tamam details (Name, Phone, Address) bharein!');
+        return;
+    }
+
+    const submitBtn = document.querySelector('.btn-whatsapp');
+    if (submitBtn) {
+        submitBtn.innerText = "Processing Order...";
+        submitBtn.disabled = true;
+    }
+
+    const YOUR_ACCESS_KEY = "09271853-97ee-4438-8b51-9fad973e26dd"; 
+
+    const formData = {
+        access_key: YOUR_ACCESS_KEY,
+        subject: `🛍️ New Order: ${item.title} - Rs. ${item.price}`,
+        from_name: "Markaz Store Engine",
+        "Product Title": item.title,
+        "Product Price": `PKR ${item.price}`,
+        "Customer Name": name,
+        "Customer Phone": phone,
+        "Delivery Address": address
+    };
+
+    try {
+        const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            document.getElementById('checkout-form-box').style.display = 'none';
+            document.getElementById('success-box').style.display = 'block';
+        } else {
+            alert("Order process karne mein masla hua. Wapas try karein.");
+            if (submitBtn) {
+                submitBtn.innerText = "✅ Confirm Order";
+                submitBtn.disabled = false;
+            }
+        }
+    } catch (error) {
+        alert("Network error. Internet connection check karein.");
+        if (submitBtn) {
+            submitBtn.innerText = "✅ Confirm Order";
+            submitBtn.disabled = false;
+        }
+    }
+}
+
+// 3. ImgBB API Direct Cloud Upload Function
+async function uploadToImgBB(file) {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+        method: "POST",
+        body: formData
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        return result.data.url;
+    } else {
+        throw new Error(result.error ? result.error.message : "ImgBB Upload Failed");
+    }
+}
+
+// 4. Admin Panel Logic & Functions
+function renderAdminPanels() {
+    const select = document.getElementById('p-category');
+    if (select) {
+        select.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    const catList = document.getElementById('categories-manage-list');
+    if (catList) {
+        catList.innerHTML = categories.map((c, i) => `
+            <div class="manage-item">
+                <span>${c}</span>
+                <button class="btn-delete" onclick="deleteCategory(${i})">Delete</button>
+            </div>
+        `).join('');
+    }
+
+    const prodList = document.getElementById('admin-products-list');
+    if (prodList) {
+        prodList.innerHTML = products.map((p, i) => `
+            <div class="manage-item">
+                <span><b>[${p.category}]</b> ${p.title}</span>
+                <button class="btn-delete" onclick="deleteProduct(${i})">Delete</button>
+            </div>
+        `).join('');
+    }
+}
+
+function addCategory() {
+    const name = document.getElementById('new-cat-name').value.trim();
+    if (name && !categories.includes(name)) {
+        categories.push(name);
+        localStorage.setItem('myCategories', JSON.stringify(categories));
+        document.getElementById('new-cat-name').value = '';
+        renderCategoriesBar();
+        renderAdminPanels();
+    }
+}
+
+function deleteCategory(index) {
+    if (confirm('Is category ko delete karein?')) {
+        categories.splice(index, 1);
+        localStorage.setItem('myCategories', JSON.stringify(categories));
+        renderCategoriesBar();
+        renderAdminPanels();
+    }
+}
+
+// Add Product Function (Integrated with ImgBB Server)
+async function addProduct() {
+    const title = document.getElementById('p-title').value.trim();
+    const price = document.getElementById('p-price').value.trim();
+    const category = document.getElementById('p-category').value;
+    const fileInput = document.getElementById('p-img-file');
+    const urlInput = document.getElementById('p-img1');
+
+    if (!title || !price) {
+        alert('Product Title aur Price zaroori hain!');
+        return;
+    }
+
+    const submitBtn = document.querySelector('.modal-content .btn-primary');
+    const originalBtnText = submitBtn ? submitBtn.innerText : "Add Product";
+
+    let imageSrc = '';
+
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        try {
+            if (submitBtn) {
+                submitBtn.innerText = "⏳ Uploading to ImgBB...";
+                submitBtn.disabled = true;
+            }
+
+            // Upload directly to ImgBB Cloud
+            imageSrc = await uploadToImgBB(fileInput.files[0]);
+
+        } catch (e) {
+            alert('Photo ImgBB par upload nahi ho saki: ' + e.message);
+            if (submitBtn) {
+                submitBtn.innerText = originalBtnText;
+                submitBtn.disabled = false;
+            }
+            return;
+        }
+    } else if (urlInput && urlInput.value.trim()) {
+        imageSrc = urlInput.value.trim();
+    }
+
+    if (!imageSrc) {
+        alert('Photo upload karein ya direct URL enter karein!');
+        if (submitBtn) {
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
+        }
+        return;
+    }
+
+    // Push Product with Hosted ImgBB URL
+    products.push({ title, price, category, images: [imageSrc] });
+
+    try {
+        localStorage.setItem('myProducts', JSON.stringify(products));
+    } catch (e) {
+        alert('Storage error: Cache full ho chuka hai.');
+        products.pop();
+    }
+
+    // Reset Inputs
+    document.getElementById('p-title').value = '';
+    document.getElementById('p-price').value = '';
+    if (fileInput) fileInput.value = '';
+    if (urlInput) urlInput.value = '';
+
+    if (submitBtn) {
+        submitBtn.innerText = originalBtnText;
+        submitBtn.disabled = false;
+    }
+
+    displayProducts(products);
+    renderAdminPanels();
+    alert('🎉 Product ImgBB hosted photo ke sath successfully add ho gaya hai!');
+}
+
+function deleteProduct(index) {
+    if (confirm('Product delete karein?')) {
+        products.splice(index, 1);
+        localStorage.setItem('myProducts', JSON.stringify(products));
+        displayProducts(products);
+        renderAdminPanels();
+    }
+}
+
+function resetStorage() {
+    if (confirm('Kya aap tamam storage clear karna chahte hain?')) {
+        localStorage.clear();
+        alert('Storage Cleared!');
+        location.reload();
+    }
+}

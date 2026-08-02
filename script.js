@@ -1,7 +1,6 @@
-// ================= MARKAZ STORE COMPLETE & FIXED SCRIPT ================= //
+// ================= MARKAZ STORE COMPLETE SYNCED SCRIPT ================= //
 
-// 1. Initial Default Datasets
-const defaultCategories = ["Watches", "Clothing", "Electronics"];
+const defaultCategories = ["Watches", "Clothing", "Electronics", "Beauty"];
 
 const defaultProducts = [
     {
@@ -12,105 +11,97 @@ const defaultProducts = [
     }
 ];
 
-// Memory Data State via LocalStorage
 let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCategories;
 let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 let currentFilterProducts = [...products];
 
-// API Keys Configuration
 const IMGBB_API_KEY = "311cba478ef03480a9e99f45226dc6ac";
-const WEB3FORMS_KEY = "09271853-97ee-4438-8b51-9fad973e26dd";
 
-// Modal Admin Handler
+// Modal Admin Toggle
 function toggleAdminModal() {
     const modal = document.getElementById('adminModal');
     if (!modal) return;
-    const isVisible = modal.style.display === 'flex';
-    modal.style.display = isVisible ? 'none' : 'flex';
-    if (!isVisible) renderAdminPanels();
+    
+    if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        renderAdminPanels();
+    } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
 }
 
-// Global Image Change (Thumbnails)
-function changeImage(idx, src) {
-    const el = document.getElementById(`img-${idx}`);
-    if (el) el.src = src;
-}
-
-// 2. Initialize Page Content & Listeners
 window.addEventListener('DOMContentLoaded', () => {
     renderCategoriesBar();
     displayProducts(products);
-
-    // Sync Checkout Page Details
-    const titleEl = document.getElementById('checkout-product-title');
-    if (titleEl) {
-        const item = JSON.parse(localStorage.getItem('checkoutItem'));
-        if (item) {
-            titleEl.innerText = item.title;
-            const priceEl = document.getElementById('checkout-product-price');
-            if (priceEl) priceEl.innerText = `Rs. ${item.price}`;
-        }
-    }
 });
 
-// Render Category Filter Buttons
+// Render Category Bar Buttons
 function renderCategoriesBar() {
     const catBar = document.getElementById('category-bar');
     if (!catBar) return;
 
-    let html = `<button class="cat-btn active" onclick="filterCategory('All', this)">All</button>`;
+    let html = `<button onclick="filterCategory('All', this)" class="cat-btn active bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-xl whitespace-nowrap transition">All</button>`;
+    
     categories.forEach(cat => {
-        html += `<button class="cat-btn" onclick="filterCategory('${cat}', this)">${cat}</button>`;
+        html += `<button onclick="filterCategory('${cat}', this)" class="cat-btn bg-slate-900 text-slate-300 border border-slate-800 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition hover:border-slate-700">${cat}</button>`;
     });
     catBar.innerHTML = html;
 }
 
-// Display Products in Main Grid
+// Display Products Card in Horizontal Deck
 function displayProducts(list) {
-    const container = document.getElementById('products-container');
+    const container = document.getElementById('product-container');
     if (!container) return;
 
     currentFilterProducts = list;
 
     if (!list.length) {
-        container.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#9ca3af;">No products found.</p>`;
+        container.innerHTML = `<p class="text-slate-500 text-xs py-8 w-full text-center">No products found in this category.</p>`;
         return;
     }
 
     let cards = '';
     list.forEach((p, i) => {
-        const imgs = p.images && p.images.length ? p.images : ['https://via.placeholder.com/200'];
-        let thumbs = '';
-        if (imgs.length > 1) {
-            thumbs = `<div class="thumb-box">` + 
-                imgs.map(img => `<img src="${img}" class="t-img" onclick="changeImage(${i}, '${img}')">`).join('') + 
-                `</div>`;
-        }
+        const img = (p.images && p.images.length) ? p.images[0] : 'https://via.placeholder.com/200';
 
         cards += `
-            <div class="card">
-                <span class="badge">${p.category || 'General'}</span>
-                <img id="img-${i}" src="${imgs[0]}" class="p-img" loading="lazy" alt="Product">
-                ${thumbs}
-                <h3>${p.title}</h3>
-                <div class="price">Rs. ${p.price}</div>
-                <button class="wa-btn" onclick="goToCheckout(${i})">Order Now</button>
+            <div class="snap-start w-[200px] min-w-[200px] bg-slate-900 border border-slate-800 p-3 rounded-2xl flex-shrink-0 flex flex-col justify-between shadow-lg">
+                <div>
+                    <div class="relative mb-2">
+                        <span class="absolute top-2 left-2 bg-indigo-950/80 border border-indigo-700/50 text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur">
+                            ${p.category || 'General'}
+                        </span>
+                        <img src="${img}" class="w-full h-44 object-cover rounded-xl bg-slate-950" loading="lazy" alt="${p.title}">
+                    </div>
+                    <h3 class="text-xs font-semibold text-slate-200 line-clamp-2 min-h-[32px]">${p.title}</h3>
+                    <div class="text-sm font-bold text-indigo-400 mt-1">Rs. ${p.price}</div>
+                </div>
+                <button onclick="goToCheckout(${i})" class="w-full mt-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2 rounded-xl transition shadow-md">
+                    Order Now
+                </button>
             </div>
         `;
     });
     container.innerHTML = cards;
 }
 
-// Filter Categories
+// Filter Products
 function filterCategory(cat, btn) {
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+    document.querySelectorAll('#category-bar button').forEach(b => {
+        b.className = "cat-btn bg-slate-900 text-slate-300 border border-slate-800 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition hover:border-slate-700";
+    });
+
+    if (btn) {
+        btn.className = "cat-btn active bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-xl whitespace-nowrap transition";
+    }
 
     if (cat === 'All') displayProducts(products);
     else displayProducts(products.filter(p => p.category === cat));
 }
 
-// Navigate to Checkout Page
+// Go To Checkout
 function goToCheckout(index) {
     const item = currentFilterProducts[index];
     if (item) {
@@ -122,158 +113,117 @@ function goToCheckout(index) {
     }
 }
 
-// Order Submission Handler
-async function submitOrder() {
-    const nameEl = document.getElementById('c-name');
-    const phoneEl = document.getElementById('c-phone');
-    const addressEl = document.getElementById('c-address');
-    
-    if (!nameEl || !phoneEl || !addressEl) return;
-
-    const name = nameEl.value.trim();
-    const phone = phoneEl.value.trim();
-    const address = addressEl.value.trim();
-    const item = JSON.parse(localStorage.getItem('checkoutItem'));
-
-    if (!name || !phone || !address || !item) {
-        alert('Baraye meharbani apni tamam details (Name, Phone, Address) bharein!');
-        return;
-    }
-
-    const submitBtn = document.querySelector('.btn-whatsapp');
-    if (submitBtn) {
-        submitBtn.innerText = "Processing Order...";
-        submitBtn.disabled = true;
-    }
-
-    const formData = {
-        access_key: WEB3FORMS_KEY,
-        subject: `🛍️ New Order: ${item.title} - Rs. ${item.price}`,
-        from_name: "Markaz Store Engine",
-        "Product Title": item.title,
-        "Product Price": `PKR ${item.price}`,
-        "Customer Name": name,
-        "Customer Phone": phone,
-        "Delivery Address": address
-    };
-
-    try {
-        const response = await fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json"
-            },
-            body: JSON.stringify(formData)
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            const formBox = document.getElementById('checkout-form-box');
-            const successBox = document.getElementById('success-box');
-            if (formBox) formBox.style.display = 'none';
-            if (successBox) successBox.style.display = 'block';
-        } else {
-            alert("Order process karne mein masla hua. Dubara try karein.");
-            if (submitBtn) {
-                submitBtn.innerText = "✅ Confirm Order";
-                submitBtn.disabled = false;
-            }
-        }
-    } catch (error) {
-        alert("Network error. Internet connection check karein.");
-        if (submitBtn) {
-            submitBtn.innerText = "✅ Confirm Order";
-            submitBtn.disabled = false;
-        }
-    }
-}
-
-// 3. Image Compression & ImgBB Cloud Helpers
-
-// Canvas Blob Compressor for ImgBB
-function compressImageToBlob(file, maxWidth = 800, quality = 0.7) {
-    return new Promise((resolve, reject) => {
+// Ultra-Fast Canvas Compressor
+function compressPhoto(file) {
+    return new Promise((resolve) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = (event) => {
+        reader.onload = (e) => {
             const img = new Image();
-            img.src = event.target.result;
+            img.src = e.target.result;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                const scale = maxWidth / img.width;
-                canvas.width = (img.width > maxWidth) ? maxWidth : img.width;
-                canvas.height = (img.width > maxWidth) ? (img.height * scale) : img.height;
+                const MAX_WIDTH = 500;
+                const scale = MAX_WIDTH / img.width;
+                
+                canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
+                canvas.height = (img.width > MAX_WIDTH) ? (img.height * scale) : img.height;
 
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                canvas.toBlob((blob) => {
-                    if (blob) resolve(blob);
-                    else reject(new Error("Canvas compression failed"));
-                }, 'image/jpeg', quality);
+                resolve(canvas.toDataURL('image/jpeg', 0.65));
             };
-            img.onerror = (err) => reject(err);
+            img.onerror = () => resolve(e.target.result);
         };
-        reader.onerror = (err) => reject(err);
+        reader.onerror = () => resolve('');
     });
 }
 
-// Canvas Base64 Compressor for Backup
-function compressImageToBase64(file, maxWidth = 500, quality = 0.6) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const scale = maxWidth / img.width;
-                canvas.width = (img.width > maxWidth) ? maxWidth : img.width;
-                canvas.height = (img.width > maxWidth) ? (img.height * scale) : img.height;
+// High Speed Safe Upload
+async function processProductPhoto(file) {
+    const compressedLocal = await compressPhoto(file);
 
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                resolve(canvas.toDataURL('image/jpeg', quality));
-            };
-            img.onerror = (err) => reject(err);
-        };
-        reader.onerror = (err) => reject(err);
-    });
-}
-
-// High Speed ImgBB Upload Function
-async function uploadToImgBB(file) {
     try {
-        // Pehle mobile image ko compress karke lightweight JPEG Blob banayein (100KB-200KB)
-        const compressedBlob = await compressImageToBlob(file, 800, 0.7);
-
+        const base64Clean = compressedLocal.split(',')[1];
         const formData = new FormData();
-        formData.append("image", compressedBlob, "product.jpg");
+        formData.append("image", base64Clean);
 
-        // ImgBB Direct Endpoint
         const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
             method: "POST",
             body: formData
         });
 
-        const result = await response.json();
-
-        if (result && result.success && result.data && result.data.url) {
-            return result.data.url; // Hosted Image URL
-        } else {
-            throw new Error(result.error ? result.error.message : "ImgBB response invalid");
+        const resData = await response.json();
+        if (resData && resData.success && resData.data && resData.data.url) {
+            return resData.data.url;
         }
     } catch (err) {
-        console.warn("ImgBB upload failed, falling back to local compressed image:", err);
-        // Fallback: Agar ImgBB block ho, to compressed image direct save ho jaye
-        return await compressImageToBase64(file, 500, 0.6);
+        console.warn("ImgBB API fallback active.", err);
     }
+
+    return compressedLocal;
 }
 
-// 4. Admin Panel Logic & Add Product
+// Add Product Function
+async function addProduct() {
+    const titleInput = document.getElementById('p-title');
+    const priceInput = document.getElementById('p-price');
+    const catInput = document.getElementById('p-category');
+    const fileInput = document.getElementById('p-img-file');
+    const urlInput = document.getElementById('p-img1');
+    const statusBox = document.getElementById('upload-status');
+
+    if (!titleInput || !priceInput) return;
+
+    const title = titleInput.value.trim();
+    const price = priceInput.value.trim();
+    const category = catInput ? catInput.value : 'General';
+
+    if (!title || !price) {
+        alert('Product Title aur Price bharna zaroori hai!');
+        return;
+    }
+
+    let finalImageUrl = '';
+
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        if (statusBox) {
+            statusBox.style.color = "#818cf8";
+            statusBox.innerText = "⏳ Saving Photo...";
+        }
+
+        finalImageUrl = await processProductPhoto(fileInput.files[0]);
+
+    } else if (urlInput && urlInput.value.trim()) {
+        finalImageUrl = urlInput.value.trim();
+    }
+
+    if (!finalImageUrl) {
+        alert('Photo select karein!');
+        return;
+    }
+
+    products.push({ title, price, category, images: [finalImageUrl] });
+
+    try {
+        localStorage.setItem('myProducts', JSON.stringify(products));
+    } catch (e) {
+        console.warn("Storage warning", e);
+    }
+
+    titleInput.value = '';
+    priceInput.value = '';
+    if (fileInput) fileInput.value = '';
+    if (urlInput) urlInput.value = '';
+    if (statusBox) statusBox.innerText = '';
+
+    displayProducts(products);
+    renderAdminPanels();
+    toggleAdminModal();
+    alert('🎉 Product Store par successfully add ho gaya hai!');
+}
+
+// Render Admin Data Lists
 function renderAdminPanels() {
     const select = document.getElementById('p-category');
     if (select) {
@@ -283,9 +233,9 @@ function renderAdminPanels() {
     const catList = document.getElementById('categories-manage-list');
     if (catList) {
         catList.innerHTML = categories.map((c, i) => `
-            <div class="manage-item">
-                <span>${c}</span>
-                <button class="btn-delete" onclick="deleteCategory(${i})">Delete</button>
+            <div class="flex items-center justify-between bg-slate-950 p-2 rounded-lg border border-slate-800">
+                <span class="text-slate-300 font-medium">${c}</span>
+                <button class="bg-rose-900/50 text-rose-300 px-2 py-1 rounded text-[10px]" onclick="deleteCategory(${i})">Delete</button>
             </div>
         `).join('');
     }
@@ -293,9 +243,9 @@ function renderAdminPanels() {
     const prodList = document.getElementById('admin-products-list');
     if (prodList) {
         prodList.innerHTML = products.map((p, i) => `
-            <div class="manage-item">
-                <span><b>[${p.category}]</b> ${p.title}</span>
-                <button class="btn-delete" onclick="deleteProduct(${i})">Delete</button>
+            <div class="flex items-center justify-between bg-slate-950 p-2 rounded-lg border border-slate-800">
+                <span class="text-slate-300 truncate max-w-[200px]"><b>[${p.category}]</b> ${p.title}</span>
+                <button class="bg-rose-900/50 text-rose-300 px-2 py-1 rounded text-[10px]" onclick="deleteProduct(${i})">Delete</button>
             </div>
         `).join('');
     }
@@ -315,95 +265,12 @@ function addCategory() {
 }
 
 function deleteCategory(index) {
-    if (confirm('Is category ko delete karein?')) {
+    if (confirm('Category delete karein?')) {
         categories.splice(index, 1);
         localStorage.setItem('myCategories', JSON.stringify(categories));
         renderCategoriesBar();
         renderAdminPanels();
     }
-}
-
-// Robust Add Product Function
-async function addProduct() {
-    const titleEl = document.getElementById('p-title');
-    const priceEl = document.getElementById('p-price');
-    const catEl = document.getElementById('p-category');
-    const fileInput = document.getElementById('p-img-file');
-    const urlInput = document.getElementById('p-img1');
-
-    if (!titleEl || !priceEl) {
-        alert("Form inputs nahi mile. Page reload karein.");
-        return;
-    }
-
-    const title = titleEl.value.trim();
-    const price = priceEl.value.trim();
-    const category = catEl ? catEl.value : 'General';
-
-    if (!title || !price) {
-        alert('Product Title aur Price zaroori hain!');
-        return;
-    }
-
-    const submitBtn = document.querySelector('.modal-content .btn-primary') || document.querySelector('button[onclick="addProduct()"]');
-    const originalBtnText = submitBtn ? submitBtn.innerText : "Add Product";
-
-    let imageSrc = '';
-
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-        try {
-            if (submitBtn) {
-                submitBtn.innerText = "⏳ Uploading Image...";
-                submitBtn.disabled = true;
-            }
-
-            // Direct ImgBB Cloud Upload with Fallback
-            imageSrc = await uploadToImgBB(fileInput.files[0]);
-
-        } catch (e) {
-            alert('Photo upload karne mein masla hua: ' + e);
-            if (submitBtn) {
-                submitBtn.innerText = originalBtnText;
-                submitBtn.disabled = false;
-            }
-            return;
-        }
-    } else if (urlInput && urlInput.value.trim()) {
-        imageSrc = urlInput.value.trim();
-    }
-
-    if (!imageSrc) {
-        alert('Photo select karein ya direct URL enter karein!');
-        if (submitBtn) {
-            submitBtn.innerText = originalBtnText;
-            submitBtn.disabled = false;
-        }
-        return;
-    }
-
-    // Save product
-    products.push({ title, price, category, images: [imageSrc] });
-
-    try {
-        localStorage.setItem('myProducts', JSON.stringify(products));
-    } catch (e) {
-        alert('Storage error: Pehle se kaafi data save ho chuka hai.');
-    }
-
-    // Form Reset
-    titleEl.value = '';
-    priceEl.value = '';
-    if (fileInput) fileInput.value = '';
-    if (urlInput) urlInput.value = '';
-
-    if (submitBtn) {
-        submitBtn.innerText = originalBtnText;
-        submitBtn.disabled = false;
-    }
-
-    displayProducts(products);
-    renderAdminPanels();
-    alert('🎉 Product Store par successfully add ho gaya hai!');
 }
 
 function deleteProduct(index) {
@@ -416,7 +283,7 @@ function deleteProduct(index) {
 }
 
 function resetStorage() {
-    if (confirm('Kya aap tamam storage clear karna chahte hain?')) {
+    if (confirm('Kya aap tamam store data clear karna chahte hain?')) {
         localStorage.clear();
         alert('Storage Cleared!');
         location.reload();

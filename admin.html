@@ -4,128 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markaz Admin Control Panel</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 font-sans pb-12">
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 font-sans">
 
     <div class="max-w-xl mx-auto space-y-6">
 
         <!-- Top Header -->
         <header class="flex items-center justify-between border-b border-slate-800 pb-4">
             <div>
-                <h1 class="text-xl font-bold text-white flex items-center gap-2">
-                    🛍️ Markaz Admin Panel
+                <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                    🛍️ Markaz Admin
                 </h1>
-                <p class="text-[10px] text-slate-400">PRODUCT MANAGEMENT</p>
+                <p class="text-xs text-slate-400">CONTROL PANEL</p>
             </div>
             <a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-indigo-400 px-3 py-2 rounded-lg font-semibold border border-slate-700">
                 View Store ↗
             </a>
         </header>
 
-        <!-- ADD MANUAL PRODUCT FORM -->
-        <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
-            <h2 class="text-base font-bold text-indigo-400 flex items-center gap-2">
-                🛒 Add Product (Multiple Photos, Colors & Sizes)
+        <!-- ADD MANUAL PRODUCT WITH GALLERY UPLOAD -->
+        <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60 shadow-lg space-y-4">
+            <h2 class="text-lg font-bold text-indigo-400 flex items-center gap-2">
+                🛒 Add Product To Store
             </h2>
 
-            <form id="productForm" onsubmit="saveProduct(event)" class="space-y-4">
+            <form id="manualProductForm" onsubmit="handleProductSubmit(event)" class="space-y-4">
 
-                <!-- Product Name (With Auto-Category Detection) -->
+                <!-- Product Name -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">
-                        Product Name * (Auto Category Detect Hoga)
+                        Product Name *
                     </label>
                     <input 
                         type="text" 
                         id="pName" 
-                        placeholder="e.g. 3 Pcs Lawn Stitched Suit" 
-                        oninput="detectCategory(this.value)"
+                        placeholder="e.g. Smart Watch Series 8" 
                         required 
-                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm"
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
                     />
                 </div>
 
-                <!-- Price & Category -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Price (PKR) *</label>
-                        <input 
-                            type="number" 
-                            id="pPrice" 
-                            placeholder="2500" 
-                            required 
-                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm"
-                        />
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Category (Auto-Selected) *</label>
-                        <select 
-                            id="pCategory" 
-                            required 
-                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white text-sm focus:outline-none focus:border-indigo-500"
-                        >
-                            <option value="Clothing">Clothing</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Beauty">Beauty</option>
-                            <option value="Watches">Watches</option>
-                            <option value="Accessories">Accessories</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Product Sizes Options -->
+                <!-- Product Price (PKR) -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">
-                        Available Sizes (Comma se alag karein)
+                        Price (PKR) *
                     </label>
                     <input 
-                        type="text" 
-                        id="pSizes" 
-                        placeholder="e.g. Small, Medium, Large, Unstitched" 
-                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500"
+                        type="number" 
+                        id="pPrice" 
+                        placeholder="e.g. 2500" 
+                        required 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
                     />
                 </div>
 
-                <!-- Product Colors Options -->
+                <!-- Category -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">
-                        Available Colors (Comma se alag karein)
+                        Category *
                     </label>
-                    <input 
-                        type="text" 
-                        id="pColors" 
-                        placeholder="e.g. Green, Blue, Red, Black" 
-                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500"
-                    />
+                    <select 
+                        id="pCategory" 
+                        required 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500"
+                    >
+                        <option value="Electronics">Electronics</option>
+                        <option value="Beauty">Beauty</option>
+                        <option value="Watches">Watches</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Home & Garden">Home & Garden</option>
+                    </select>
                 </div>
 
-                <!-- 📸 MULTIPLE PHOTO UPLOAD SECTION -->
-                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/80 space-y-3">
+                <!-- 📸 GALLERY PHOTO UPLOAD SECTION (STORAGE SAFE) -->
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700 space-y-3">
                     <label class="block text-xs font-bold text-indigo-300">
-                        📸 Add Photos (Multiple Photos Upload Karein)
+                        📸 Product Photo (Mobile Gallery Se Select Karein)
                     </label>
                     
+                    <!-- File Input -->
                     <input 
                         type="file" 
-                        id="fileInput" 
+                        id="productFileInput" 
                         accept="image/*" 
-                        onchange="uploadPhotoToImgBB(event)"
-                        class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer"
+                        onchange="autoUploadToImgBB(event)"
+                        class="w-full text-xs text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer"
                     />
 
-                    <p id="uploadStatus" class="text-xs font-medium text-slate-400"></p>
+                    <!-- Status Text -->
+                    <p id="uploadStatusText" class="text-xs font-medium text-slate-400"></p>
 
-                    <!-- Uploaded Photos Grid Preview -->
-                    <div id="photosPreviewGrid" class="flex items-center gap-2 overflow-x-auto py-2">
-                        <!-- Uploaded Thumbnails will appear here -->
+                    <!-- Preview Tag -->
+                    <div id="previewContainer" class="hidden">
+                        <p class="text-[10px] text-slate-400 mb-1">Uploaded Photo Preview:</p>
+                        <img id="imagePreviewTag" src="" alt="Preview" class="w-24 h-24 object-cover rounded-xl border-2 border-emerald-500 shadow-md" />
                     </div>
+
+                    <!-- Hidden Input for ImgBB URL -->
+                    <input type="hidden" id="finalImageUrl" value="" />
                 </div>
 
+                <!-- Submit Button -->
                 <button 
                     type="submit" 
-                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm"
+                    id="saveProductBtn"
+                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition duration-200 shadow-lg text-center"
                 >
                     ➕ Save Product To Store
                 </button>
@@ -133,158 +119,77 @@
             </form>
         </div>
 
-        <!-- SAVED PRODUCTS HISTORY -->
-        <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-3">
-            <div class="flex items-center justify-between">
-                <h3 class="text-sm font-bold text-indigo-400">📋 Saved Store History</h3>
-                <button onclick="clearHistory()" class="text-[10px] bg-rose-900/50 text-rose-300 px-2.5 py-1 rounded-md border border-rose-700">Clear All</button>
-            </div>
-            <div id="historyList" class="space-y-2"></div>
-        </div>
-
     </div>
 
+    <!-- SCRIPT LOGIC -->
     <script>
-        let uploadedImages = [];
-
-        // 1. AUTO CATEGORY SELECTION BY TITLE KEYWORDS
-        function detectCategory(title) {
-            const text = title.toLowerCase();
-            const catSelect = document.getElementById('pCategory');
-
-            if (text.includes('suit') || text.includes('loan') || text.includes('lawn') || text.includes('shirt') || text.includes('dress') || text.includes('kurti') || text.includes('frock') || text.includes('cloth') || text.includes('trouser')) {
-                catSelect.value = "Clothing";
-            } else if (text.includes('watch') || text.includes('clock') || text.includes('smartwatch')) {
-                catSelect.value = "Watches";
-            } else if (text.includes('cream') || text.includes('lipstick') || text.includes('serum') || text.includes('makeup') || text.includes('beauty') || text.includes('facial')) {
-                catSelect.value = "Beauty";
-            } else if (text.includes('phone') || text.includes('earbud') || text.includes('airpod') || text.includes('cable') || text.includes('charger') || text.includes('speaker')) {
-                catSelect.value = "Electronics";
-            }
-        }
-
-        // 2. MULTIPLE PHOTO UPLOAD FUNCTION
-        async function uploadPhotoToImgBB(event) {
+        // 1. AUTO UPLOAD TO IMGBB (Zero Server Storage Use)
+        async function autoUploadToImgBB(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            const status = document.getElementById('uploadStatus');
-            status.innerText = "⏳ Photo upload ho rahi hai...";
-            status.className = "text-xs font-medium text-amber-400";
+            const statusText = document.getElementById('uploadStatusText');
+            const previewContainer = document.getElementById('previewContainer');
+            const previewImg = document.getElementById('imagePreviewTag');
+            const finalUrlInput = document.getElementById('finalImageUrl');
 
-            const IMGBB_KEY = "3b0a7dd514f1640a35db4057884ff358";
+            statusText.innerText = "⏳ Photo upload ho rahi hai...";
+            statusText.className = "text-xs font-medium text-amber-400";
+
+            const IMGBB_API_KEY = "3b0a7dd514f1640a35db4057884ff358";
             const formData = new FormData();
             formData.append("image", file);
 
             try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                     method: "POST",
                     body: formData
                 });
-                const data = await res.json();
 
-                if (data.success) {
-                    const url = data.data.display_url;
-                    uploadedImages.push(url);
-                    
-                    status.innerText = `✅ Total Photos Attached: ${uploadedImages.length}`;
-                    status.className = "text-xs font-medium text-emerald-400";
+                const result = await res.json();
 
-                    renderPhotoPreviews();
+                if (result.success) {
+                    const imageUrl = result.data.display_url;
+                    finalUrlInput.value = imageUrl;
+                    previewImg.src = imageUrl;
+                    previewContainer.classList.remove('hidden');
+
+                    statusText.innerText = "✅ Photo kamyabi se upload ho gayi!";
+                    statusText.className = "text-xs font-medium text-emerald-400";
                 } else {
-                    status.innerText = "❌ Upload fail hua!";
+                    statusText.innerText = "❌ Photo upload nahi ho saki!";
+                    statusText.className = "text-xs font-medium text-rose-500";
                 }
             } catch (err) {
-                status.innerText = "❌ Connection error!";
+                console.error(err);
+                statusText.innerText = "❌ Network Error! Dobara koshish karein.";
+                statusText.className = "text-xs font-medium text-rose-500";
             }
         }
 
-        // 3. RENDER UPLOADED PHOTO THUMBNAILS
-        function renderPhotoPreviews() {
-            const grid = document.getElementById('photosPreviewGrid');
-            grid.innerHTML = uploadedImages.map((img, i) => `
-                <div class="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-indigo-500">
-                    <img src="${img}" class="w-full h-full object-cover" />
-                    <button type="button" onclick="removePhoto(${i})" class="absolute top-0 right-0 bg-rose-600 text-white text-[9px] w-4 h-4 rounded-bl flex items-center justify-center">✕</button>
-                </div>
-            `).join('');
-        }
+        // 2. SAVE MANUAL PRODUCT FORM SUBMIT
+        function handleProductSubmit(event) {
+            event.preventDefault();
 
-        function removePhoto(index) {
-            uploadedImages.splice(index, 1);
-            renderPhotoPreviews();
-        }
+            const imgUrl = document.getElementById('finalImageUrl').value || "https://via.placeholder.com/300";
 
-        // 4. SAVE PRODUCT TO LOCAL STORAGE
-        function saveProduct(e) {
-            e.preventDefault();
-
-            const sizesInput = document.getElementById('pSizes').value.trim();
-            const colorsInput = document.getElementById('pColors').value.trim();
-
-            const newProduct = {
-                id: Date.now().toString(),
+            const productData = {
                 title: document.getElementById('pName').value,
-                price: Number(document.getElementById('pPrice').value),
+                price: document.getElementById('pPrice').value,
                 category: document.getElementById('pCategory').value,
-                sizes: sizesInput ? sizesInput.split(',').map(s => s.trim()) : ["Standard"],
-                colors: colorsInput ? colorsInput.split(',').map(c => c.trim()) : ["Default Color"],
-                images: uploadedImages.length > 0 ? uploadedImages : ["https://via.placeholder.com/400x500"]
+                images: [imgUrl]
             };
 
-            let products = JSON.parse(localStorage.getItem('markazProducts')) || [];
-            products.unshift(newProduct);
-            localStorage.setItem('markazProducts', JSON.stringify(products));
+            // LocalStorage key synced with main script.js ('myProducts')
+            let storeProducts = JSON.parse(localStorage.getItem('myProducts')) || [];
+            storeProducts.push(productData);
+            localStorage.setItem('myProducts', JSON.stringify(storeProducts));
 
-            alert("🎉 Product Store Mein Successfully Save Ho Gaya!");
-            
-            // Reset Form
-            document.getElementById('productForm').reset();
-            uploadedImages = [];
-            renderPhotoPreviews();
-            document.getElementById('uploadStatus').innerText = "";
-            renderHistory();
+            alert("🎉 Product Store Mein Successfully Add Ho Gaya!");
+            document.getElementById('manualProductForm').reset();
+            document.getElementById('previewContainer').classList.add('hidden');
+            document.getElementById('uploadStatusText').innerText = "";
         }
-
-        // 5. RENDER HISTORY
-        function renderHistory() {
-            const box = document.getElementById('historyList');
-            const products = JSON.parse(localStorage.getItem('markazProducts')) || [];
-
-            if (products.length === 0) {
-                box.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">Koi product save nahi hua.</p>`;
-                return;
-            }
-
-            box.innerHTML = products.map((p, i) => `
-                <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-xl border border-slate-700/80 text-xs">
-                    <div class="flex items-center gap-2.5">
-                        <img src="${p.images[0]}" class="w-10 h-10 object-cover rounded-lg" />
-                        <div>
-                            <p class="font-bold text-white">${p.title}</p>
-                            <p class="text-emerald-400">Rs. ${p.price} | <span class="text-slate-400">${p.category}</span></p>
-                        </div>
-                    </div>
-                    <button onclick="deleteProduct(${i})" class="text-rose-400 p-1">🗑️</button>
-                </div>
-            `).join('');
-        }
-
-        function deleteProduct(i) {
-            let products = JSON.parse(localStorage.getItem('markazProducts')) || [];
-            products.splice(i, 1);
-            localStorage.setItem('markazProducts', JSON.stringify(products));
-            renderHistory();
-        }
-
-        function clearHistory() {
-            if (confirm("Tamam history delete karein?")) {
-                localStorage.removeItem('markazProducts');
-                renderHistory();
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", renderHistory);
     </script>
 </body>
 </html>

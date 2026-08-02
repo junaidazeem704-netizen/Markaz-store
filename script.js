@@ -183,17 +183,12 @@ async function submitOrder() {
     }
 }
 
-// 3. Image Upload Helpers (Base64 + Fallback Compressor)
-function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-    });
-}
+// ================= FIXED IMGBB AUTO-COMPRESS UPLOAD ================= //
 
-function processAndCompressImage(file) {
+const IMGBB_API_KEY = "311cba478ef03480a9e99f45226dc6ac";
+
+// 1. Mobile Photo Auto-Compressor (Converts heavy mobile photo to lightweight Blob)
+function compressImageToBlob(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -202,14 +197,18 @@ function processAndCompressImage(file) {
             img.src = event.target.result;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 500;
+                const MAX_WIDTH = 800; // Resizes photo to fast web resolution
                 const scale = MAX_WIDTH / img.width;
                 canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
                 canvas.height = (img.width > MAX_WIDTH) ? (img.height * scale) : img.height;
 
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                resolve(canvas.toDataURL('image/jpeg', 0.6));
+                
+                canvas.toBlob((blob) => {
+                    if (blob) resolve(blob);
+                    else reject(new Error("Canvas compression failed"));
+                }, 'image/jpeg', 0.7); // 70% quality compression
             };
             img.onerror = (err) => reject(err);
         };
@@ -217,14 +216,14 @@ function processAndCompressImage(file) {
     });
 }
 
-// ImgBB Upload Function
+// 2. High-Speed ImgBB Upload Function
 async function uploadToImgBB(file) {
     try {
-        const base64Full = await fileToBase64(file);
-        const base64Data = base64Full.split(',')[1];
+        // Heavy photo ko pehle compress karein
+        const compressedBlob = await compressImageToBlob(file);
 
         const formData = new FormData();
-        formData.append("image", base64Data);
+        formData.append("image", compressedBlob, "upload.jpg");
 
         const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
             method: "POST",
@@ -233,16 +232,54 @@ async function uploadToImgBB(file) {
 
         const result = await response.json();
 
-        if (result.success && result.data && result.data.url) {
-            return result.data.url;
+        if (result && result.success && result.data && result.data.url) {
+            return result.data.url; // Direct Hosted ImgBB URL
         } else {
-            throw new Error(result.error ? result.error.message : "ImgBB Upload Failed");
+            throw new Error(result.error ? result.error.message : "ImgBB Server Error");
         }
     } catch (err) {
-        console.warn("ImgBB upload failed, falling back to local compressed image:", err);
-        return await processAndCompressImage(file);
+        console.warn("ImgBB upload failed, fallback to local Compressed Base64:", err);
+        // Fallback: Agar ImgBB upload na ho sake to compressed image local storage mein add ho jaye
+        return await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => resolve(e.target.result);
+        });
     }
 }
+
+// 3. Updated Input Listener / Handler
+async function handleImageUpload(fileInput) {
+    const statusBox = document.getElementById('upload-status'); // Agar UI mein koi status box ho
+    
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) return [];
+
+    const uploadedUrls = [];
+    
+    for (let i = 0; i < fileInput.files.length; i++) {
+        const file = fileInput.files[i];
+        try {
+            if (statusBox) statusBox.innerText = `⏳ Uploading image ${i+1}...`;
+            const url = await uploadToImgBB(file);
+            uploadedUrls.push(url);
+        } catch (e) {
+            console.error("Single image upload failed", e);
+        }
+    }
+
+    if (statusBox) {
+        if (uploadedUrls.length > 0) {
+            statusBox.style.color = "#22c55e";
+            statusBox.innerText = "✅ Upload successful!";
+        } else {
+            statusBox.style.color = "#ef4444";
+            statusBox.innerText = "❌ Upload fail hua!";
+        }
+    }
+
+    return uploadedUrls;
+}
+
 
 // 4. Admin Panel Logic & Add Product
 function renderAdminPanels() {

@@ -1,4 +1,4 @@
-// ================= MARKAZ STORE COMPLETE SCRIPT ================= //
+// ================= MARKAZ STORE COMPLETE & FIXED SCRIPT ================= //
 
 // 1. Initial Default Datasets
 const defaultCategories = ["Watches", "Clothing", "Electronics"];
@@ -17,8 +17,9 @@ let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCate
 let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 let currentFilterProducts = [...products];
 
-// ImgBB API Key
+// API Keys Configuration
 const IMGBB_API_KEY = "311cba478ef03480a9e99f45226dc6ac";
+const WEB3FORMS_KEY = "09271853-97ee-4438-8b51-9fad973e26dd";
 
 // Modal Admin Handler
 function toggleAdminModal() {
@@ -121,11 +122,17 @@ function goToCheckout(index) {
     }
 }
 
-// Silent Email Order Submission
+// Order Submission Handler
 async function submitOrder() {
-    const name = document.getElementById('c-name').value.trim();
-    const phone = document.getElementById('c-phone').value.trim();
-    const address = document.getElementById('c-address').value.trim();
+    const nameEl = document.getElementById('c-name');
+    const phoneEl = document.getElementById('c-phone');
+    const addressEl = document.getElementById('c-address');
+    
+    if (!nameEl || !phoneEl || !addressEl) return;
+
+    const name = nameEl.value.trim();
+    const phone = phoneEl.value.trim();
+    const address = addressEl.value.trim();
     const item = JSON.parse(localStorage.getItem('checkoutItem'));
 
     if (!name || !phone || !address || !item) {
@@ -139,10 +146,8 @@ async function submitOrder() {
         submitBtn.disabled = true;
     }
 
-    const YOUR_ACCESS_KEY = "09271853-97ee-4438-8b51-9fad973e26dd"; 
-
     const formData = {
-        access_key: YOUR_ACCESS_KEY,
+        access_key: WEB3FORMS_KEY,
         subject: `🛍️ New Order: ${item.title} - Rs. ${item.price}`,
         from_name: "Markaz Store Engine",
         "Product Title": item.title,
@@ -165,10 +170,12 @@ async function submitOrder() {
         const result = await response.json();
 
         if (result.success) {
-            document.getElementById('checkout-form-box').style.display = 'none';
-            document.getElementById('success-box').style.display = 'block';
+            const formBox = document.getElementById('checkout-form-box');
+            const successBox = document.getElementById('success-box');
+            if (formBox) formBox.style.display = 'none';
+            if (successBox) successBox.style.display = 'block';
         } else {
-            alert("Order process karne mein masla hua. Wapas try karein.");
+            alert("Order process karne mein masla hua. Dubara try karein.");
             if (submitBtn) {
                 submitBtn.innerText = "✅ Confirm Order";
                 submitBtn.disabled = false;
@@ -183,12 +190,10 @@ async function submitOrder() {
     }
 }
 
-// ================= FIXED IMGBB AUTO-COMPRESS UPLOAD ================= //
+// 3. Image Compression & ImgBB Cloud Helpers
 
-const IMGBB_API_KEY = "311cba478ef03480a9e99f45226dc6ac";
-
-// 1. Mobile Photo Auto-Compressor (Converts heavy mobile photo to lightweight Blob)
-function compressImageToBlob(file) {
+// Canvas Blob Compressor for ImgBB
+function compressImageToBlob(file, maxWidth = 800, quality = 0.7) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -197,18 +202,17 @@ function compressImageToBlob(file) {
             img.src = event.target.result;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 800; // Resizes photo to fast web resolution
-                const scale = MAX_WIDTH / img.width;
-                canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
-                canvas.height = (img.width > MAX_WIDTH) ? (img.height * scale) : img.height;
+                const scale = maxWidth / img.width;
+                canvas.width = (img.width > maxWidth) ? maxWidth : img.width;
+                canvas.height = (img.width > maxWidth) ? (img.height * scale) : img.height;
 
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                
+
                 canvas.toBlob((blob) => {
                     if (blob) resolve(blob);
                     else reject(new Error("Canvas compression failed"));
-                }, 'image/jpeg', 0.7); // 70% quality compression
+                }, 'image/jpeg', quality);
             };
             img.onerror = (err) => reject(err);
         };
@@ -216,15 +220,40 @@ function compressImageToBlob(file) {
     });
 }
 
-// 2. High-Speed ImgBB Upload Function
+// Canvas Base64 Compressor for Backup
+function compressImageToBase64(file, maxWidth = 500, quality = 0.6) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const scale = maxWidth / img.width;
+                canvas.width = (img.width > maxWidth) ? maxWidth : img.width;
+                canvas.height = (img.width > maxWidth) ? (img.height * scale) : img.height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+    });
+}
+
+// High Speed ImgBB Upload Function
 async function uploadToImgBB(file) {
     try {
-        // Heavy photo ko pehle compress karein
-        const compressedBlob = await compressImageToBlob(file);
+        // Pehle mobile image ko compress karke lightweight JPEG Blob banayein (100KB-200KB)
+        const compressedBlob = await compressImageToBlob(file, 800, 0.7);
 
         const formData = new FormData();
-        formData.append("image", compressedBlob, "upload.jpg");
+        formData.append("image", compressedBlob, "product.jpg");
 
+        // ImgBB Direct Endpoint
         const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
             method: "POST",
             body: formData
@@ -233,53 +262,16 @@ async function uploadToImgBB(file) {
         const result = await response.json();
 
         if (result && result.success && result.data && result.data.url) {
-            return result.data.url; // Direct Hosted ImgBB URL
+            return result.data.url; // Hosted Image URL
         } else {
-            throw new Error(result.error ? result.error.message : "ImgBB Server Error");
+            throw new Error(result.error ? result.error.message : "ImgBB response invalid");
         }
     } catch (err) {
-        console.warn("ImgBB upload failed, fallback to local Compressed Base64:", err);
-        // Fallback: Agar ImgBB upload na ho sake to compressed image local storage mein add ho jaye
-        return await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (e) => resolve(e.target.result);
-        });
+        console.warn("ImgBB upload failed, falling back to local compressed image:", err);
+        // Fallback: Agar ImgBB block ho, to compressed image direct save ho jaye
+        return await compressImageToBase64(file, 500, 0.6);
     }
 }
-
-// 3. Updated Input Listener / Handler
-async function handleImageUpload(fileInput) {
-    const statusBox = document.getElementById('upload-status'); // Agar UI mein koi status box ho
-    
-    if (!fileInput || !fileInput.files || fileInput.files.length === 0) return [];
-
-    const uploadedUrls = [];
-    
-    for (let i = 0; i < fileInput.files.length; i++) {
-        const file = fileInput.files[i];
-        try {
-            if (statusBox) statusBox.innerText = `⏳ Uploading image ${i+1}...`;
-            const url = await uploadToImgBB(file);
-            uploadedUrls.push(url);
-        } catch (e) {
-            console.error("Single image upload failed", e);
-        }
-    }
-
-    if (statusBox) {
-        if (uploadedUrls.length > 0) {
-            statusBox.style.color = "#22c55e";
-            statusBox.innerText = "✅ Upload successful!";
-        } else {
-            statusBox.style.color = "#ef4444";
-            statusBox.innerText = "❌ Upload fail hua!";
-        }
-    }
-
-    return uploadedUrls;
-}
-
 
 // 4. Admin Panel Logic & Add Product
 function renderAdminPanels() {
@@ -310,11 +302,13 @@ function renderAdminPanels() {
 }
 
 function addCategory() {
-    const name = document.getElementById('new-cat-name').value.trim();
+    const input = document.getElementById('new-cat-name');
+    if (!input) return;
+    const name = input.value.trim();
     if (name && !categories.includes(name)) {
         categories.push(name);
         localStorage.setItem('myCategories', JSON.stringify(categories));
-        document.getElementById('new-cat-name').value = '';
+        input.value = '';
         renderCategoriesBar();
         renderAdminPanels();
     }
@@ -329,20 +323,29 @@ function deleteCategory(index) {
     }
 }
 
-// Add Product Function
+// Robust Add Product Function
 async function addProduct() {
-    const title = document.getElementById('p-title').value.trim();
-    const price = document.getElementById('p-price').value.trim();
-    const category = document.getElementById('p-category').value;
+    const titleEl = document.getElementById('p-title');
+    const priceEl = document.getElementById('p-price');
+    const catEl = document.getElementById('p-category');
     const fileInput = document.getElementById('p-img-file');
     const urlInput = document.getElementById('p-img1');
+
+    if (!titleEl || !priceEl) {
+        alert("Form inputs nahi mile. Page reload karein.");
+        return;
+    }
+
+    const title = titleEl.value.trim();
+    const price = priceEl.value.trim();
+    const category = catEl ? catEl.value : 'General';
 
     if (!title || !price) {
         alert('Product Title aur Price zaroori hain!');
         return;
     }
 
-    const submitBtn = document.querySelector('.modal-content .btn-primary');
+    const submitBtn = document.querySelector('.modal-content .btn-primary') || document.querySelector('button[onclick="addProduct()"]');
     const originalBtnText = submitBtn ? submitBtn.innerText : "Add Product";
 
     let imageSrc = '';
@@ -350,15 +353,15 @@ async function addProduct() {
     if (fileInput && fileInput.files && fileInput.files[0]) {
         try {
             if (submitBtn) {
-                submitBtn.innerText = "⏳ Uploading Photo...";
+                submitBtn.innerText = "⏳ Uploading Image...";
                 submitBtn.disabled = true;
             }
 
-            // Upload via ImgBB with compression fallback
+            // Direct ImgBB Cloud Upload with Fallback
             imageSrc = await uploadToImgBB(fileInput.files[0]);
 
         } catch (e) {
-            alert('Photo process nahi ho saki. Dubara try karein.');
+            alert('Photo upload karne mein masla hua: ' + e);
             if (submitBtn) {
                 submitBtn.innerText = originalBtnText;
                 submitBtn.disabled = false;
@@ -370,7 +373,7 @@ async function addProduct() {
     }
 
     if (!imageSrc) {
-        alert('Photo upload karein ya direct URL enter karein!');
+        alert('Photo select karein ya direct URL enter karein!');
         if (submitBtn) {
             submitBtn.innerText = originalBtnText;
             submitBtn.disabled = false;
@@ -384,12 +387,12 @@ async function addProduct() {
     try {
         localStorage.setItem('myProducts', JSON.stringify(products));
     } catch (e) {
-        alert('Storage error: Cache full ho chuka hai.');
+        alert('Storage error: Pehle se kaafi data save ho chuka hai.');
     }
 
-    // Reset Form Inputs
-    document.getElementById('p-title').value = '';
-    document.getElementById('p-price').value = '';
+    // Form Reset
+    titleEl.value = '';
+    priceEl.value = '';
     if (fileInput) fileInput.value = '';
     if (urlInput) urlInput.value = '';
 
@@ -400,7 +403,7 @@ async function addProduct() {
 
     displayProducts(products);
     renderAdminPanels();
-    alert('🎉 Product photo ke sath successfully add ho gaya hai!');
+    alert('🎉 Product Store par successfully add ho gaya hai!');
 }
 
 function deleteProduct(index) {

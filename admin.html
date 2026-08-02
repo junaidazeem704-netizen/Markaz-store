@@ -24,7 +24,7 @@
             </a>
         </header>
 
-        <!-- ADD MANUAL PRODUCT WITH GALLERY UPLOAD -->
+        <!-- ADD PRODUCT FORM -->
         <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60 shadow-lg space-y-4">
             <h2 class="text-lg font-bold text-indigo-400 flex items-center gap-2">
                 🛒 Add Product To Store
@@ -79,13 +79,12 @@
                     </select>
                 </div>
 
-                <!-- 📸 GALLERY PHOTO UPLOAD SECTION (STORAGE SAFE) -->
+                <!-- GALLERY PHOTO UPLOAD SECTION -->
                 <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700 space-y-3">
                     <label class="block text-xs font-bold text-indigo-300">
                         📸 Product Photo (Mobile Gallery Se Select Karein)
                     </label>
                     
-                    <!-- File Input -->
                     <input 
                         type="file" 
                         id="productFileInput" 
@@ -97,13 +96,12 @@
                     <!-- Status Text -->
                     <p id="uploadStatusText" class="text-xs font-medium text-slate-400"></p>
 
-                    <!-- Preview Tag -->
+                    <!-- Preview Container -->
                     <div id="previewContainer" class="hidden">
                         <p class="text-[10px] text-slate-400 mb-1">Uploaded Photo Preview:</p>
                         <img id="imagePreviewTag" src="" alt="Preview" class="w-24 h-24 object-cover rounded-xl border-2 border-emerald-500 shadow-md" />
                     </div>
 
-                    <!-- Hidden Input for ImgBB URL -->
                     <input type="hidden" id="finalImageUrl" value="" />
                 </div>
 
@@ -121,9 +119,9 @@
 
     </div>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- ADMIN LOGIC -->
     <script>
-        // 1. AUTO UPLOAD TO IMGBB (Zero Server Storage Use)
+        // ImgBB Auto-Uploader
         async function autoUploadToImgBB(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -167,28 +165,31 @@
             }
         }
 
-        // 2. SAVE MANUAL PRODUCT FORM SUBMIT
+        // Save Product Logic
         function handleProductSubmit(event) {
             event.preventDefault();
 
             const imgUrl = document.getElementById('finalImageUrl').value || "https://via.placeholder.com/300";
 
             const productData = {
-                title: document.getElementById('pName').value,
-                price: document.getElementById('pPrice').value,
+                title: document.getElementById('pName').value.trim(),
+                price: document.getElementById('pPrice').value.trim(),
                 category: document.getElementById('pCategory').value,
                 images: [imgUrl]
             };
 
-            // LocalStorage key synced with main script.js ('myProducts')
+            // Read existing products and sync key with script.js ('myProducts')
             let storeProducts = JSON.parse(localStorage.getItem('myProducts')) || [];
             storeProducts.push(productData);
             localStorage.setItem('myProducts', JSON.stringify(storeProducts));
 
             alert("🎉 Product Store Mein Successfully Add Ho Gaya!");
+            
+            // Reset Form
             document.getElementById('manualProductForm').reset();
             document.getElementById('previewContainer').classList.add('hidden');
             document.getElementById('uploadStatusText').innerText = "";
+            document.getElementById('finalImageUrl').value = "";
         }
     </script>
 </body>

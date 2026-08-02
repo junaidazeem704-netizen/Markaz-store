@@ -17,7 +17,7 @@ let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCate
 let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 let currentFilterProducts = [...products];
 
-// ImgBB API Configuration
+// ImgBB API Key
 const IMGBB_API_KEY = "311cba478ef03480a9e99f45226dc6ac";
 
 // Modal Admin Handler
@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', () => {
     renderCategoriesBar();
     displayProducts(products);
 
-    // Sync Checkout Page Details if on checkout page
+    // Sync Checkout Page Details
     const titleEl = document.getElementById('checkout-product-title');
     if (titleEl) {
         const item = JSON.parse(localStorage.getItem('checkoutItem'));
@@ -121,7 +121,7 @@ function goToCheckout(index) {
     }
 }
 
-// Silent Email Order Submission Handler
+// Silent Email Order Submission
 async function submitOrder() {
     const name = document.getElementById('c-name').value.trim();
     const phone = document.getElementById('c-phone').value.trim();
@@ -183,26 +183,68 @@ async function submitOrder() {
     }
 }
 
-// 3. ImgBB API Direct Cloud Upload Function
-async function uploadToImgBB(file) {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-        method: "POST",
-        body: formData
+// 3. Image Upload Helpers (Base64 + Fallback Compressor)
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
     });
+}
 
-    const result = await response.json();
+function processAndCompressImage(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 500;
+                const scale = MAX_WIDTH / img.width;
+                canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
+                canvas.height = (img.width > MAX_WIDTH) ? (img.height * scale) : img.height;
 
-    if (result.success) {
-        return result.data.url;
-    } else {
-        throw new Error(result.error ? result.error.message : "ImgBB Upload Failed");
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL('image/jpeg', 0.6));
+            };
+            img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+    });
+}
+
+// ImgBB Upload Function
+async function uploadToImgBB(file) {
+    try {
+        const base64Full = await fileToBase64(file);
+        const base64Data = base64Full.split(',')[1];
+
+        const formData = new FormData();
+        formData.append("image", base64Data);
+
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.data && result.data.url) {
+            return result.data.url;
+        } else {
+            throw new Error(result.error ? result.error.message : "ImgBB Upload Failed");
+        }
+    } catch (err) {
+        console.warn("ImgBB upload failed, falling back to local compressed image:", err);
+        return await processAndCompressImage(file);
     }
 }
 
-// 4. Admin Panel Logic & Functions
+// 4. Admin Panel Logic & Add Product
 function renderAdminPanels() {
     const select = document.getElementById('p-category');
     if (select) {
@@ -250,7 +292,7 @@ function deleteCategory(index) {
     }
 }
 
-// Add Product Function (Integrated with ImgBB Server)
+// Add Product Function
 async function addProduct() {
     const title = document.getElementById('p-title').value.trim();
     const price = document.getElementById('p-price').value.trim();
@@ -271,15 +313,15 @@ async function addProduct() {
     if (fileInput && fileInput.files && fileInput.files[0]) {
         try {
             if (submitBtn) {
-                submitBtn.innerText = "⏳ Uploading to ImgBB...";
+                submitBtn.innerText = "⏳ Uploading Photo...";
                 submitBtn.disabled = true;
             }
 
-            // Upload directly to ImgBB Cloud
+            // Upload via ImgBB with compression fallback
             imageSrc = await uploadToImgBB(fileInput.files[0]);
 
         } catch (e) {
-            alert('Photo ImgBB par upload nahi ho saki: ' + e.message);
+            alert('Photo process nahi ho saki. Dubara try karein.');
             if (submitBtn) {
                 submitBtn.innerText = originalBtnText;
                 submitBtn.disabled = false;
@@ -299,17 +341,16 @@ async function addProduct() {
         return;
     }
 
-    // Push Product with Hosted ImgBB URL
+    // Save product
     products.push({ title, price, category, images: [imageSrc] });
 
     try {
         localStorage.setItem('myProducts', JSON.stringify(products));
     } catch (e) {
         alert('Storage error: Cache full ho chuka hai.');
-        products.pop();
     }
 
-    // Reset Inputs
+    // Reset Form Inputs
     document.getElementById('p-title').value = '';
     document.getElementById('p-price').value = '';
     if (fileInput) fileInput.value = '';
@@ -322,7 +363,7 @@ async function addProduct() {
 
     displayProducts(products);
     renderAdminPanels();
-    alert('🎉 Product ImgBB hosted photo ke sath successfully add ho gaya hai!');
+    alert('🎉 Product photo ke sath successfully add ho gaya hai!');
 }
 
 function deleteProduct(index) {

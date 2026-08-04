@@ -747,6 +747,284 @@ function resetStorage() {
 }
 
 // ============================================
+// ADMIN PANEL SCRIPT
+// ============================================
+
+// Image preview array
+let uploadedImages = [];
+let sizes = [];
+let colors = [];
+
+// ============================================
+// INITIALIZE ADMIN PANEL
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    renderAdminPanel();
+    updateStats();
+    setupCategorySuggestions('new-cat-name', 'category-suggestions');
+    setupCategorySuggestions('p-category-input', 'category-suggestions-product');
+    
+    // Image upload handler
+    const imageInput = document.getElementById('p-images');
+    if (imageInput) {
+        imageInput.addEventListener('change', handleImageUpload);
+    }
+});
+
+// ============================================
+// IMAGE UPLOAD HANDLER
+// ============================================
+function handleImageUpload(e) {
+    const files = e.target.files;
+    const grid = document.getElementById('image-preview-grid');
+    
+    for (let file of files) {
+        if (uploadedImages.length >= 5) {
+            showToast('Maximum 5 images allowed!', 'warning');
+            break;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            uploadedImages.push(event.target.result);
+            renderImagePreviews();
+        };
+        reader.readAsDataURL(file);
+    }
+    e.target.value = '';
+}
+
+function renderImagePreviews() {
+    const grid = document.getElementById('image-preview-grid');
+    grid.innerHTML = uploadedImages.map((img, i) => `
+        <div class="image-preview-item">
+            <img src="${img}" alt="Product image ${i+1}" />
+            <button class="remove-img" onclick="removeImage(${i})">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `).join('');
+    document.getElementById('p-images-data').value = JSON.stringify(uploadedImages);
+}
+
+function removeImage(index) {
+    uploadedImages.splice(index, 1);
+    renderImagePreviews();
+}
+
+// ============================================
+// SIZE & COLOR OPTIONS
+// ============================================
+function addOption(type) {
+    const inputId = type === 'size' ? 'size-input' : 'color-input';
+    const containerId = type === 'size' ? 'sizes-container' : 'colors-container';
+    const hiddenId = type === 'size' ? 'p-sizes' : 'p-colors';
+    const array = type === 'size' ? sizes : colors;
+    
+    const input = document.getElementById(inputId);
+    const value = input.value.trim();
+    
+    if (!value) {
+        showToast('Please enter a value', 'error');
+        return;
+    }
+    
+    if (array.includes(value)) {
+        showToast('Option already exists', 'warning');
+        return;
+    }
+    
+    array.push(value);
+    document.getElementById(hiddenId).value = JSON.stringify(array);
+    input.value = '';
+    renderOptions(type);
+}
+
+function removeOption(type, index) {
+    const array = type === 'size' ? sizes : colors;
+    const containerId = type === 'size' ? 'sizes-container' : 'colors-container';
+    const hiddenId = type === 'size' ? 'p-sizes' : 'p-colors';
+    
+    array.splice(index, 1);
+    document.getElementById(hiddenId).value = JSON.stringify(array);
+    renderOptions(type);
+}
+
+function renderOptions(type) {
+    const containerId = type === 'size' ? 'sizes-container' : 'colors-container';
+    const array = type === 'size' ? sizes : colors;
+    const container = document.getElementById(containerId);
+    
+    if (!container) return;
+    
+    container.innerHTML = array.map((item, i) => `
+        <span class="option-tag">
+            ${item}
+            <button class="remove" onclick="removeOption('${type}', ${i})">×</button>
+        </span>
+    `).join('');
+}
+
+// ============================================
+// OVERRIDE ADD PRODUCT (Admin)
+// ============================================
+const originalAddProduct = window.addProduct;
+window.addProduct = async function() {
+    const title = document.getElementById('p-title').value.trim();
+    const price = document.getElementById('p-price').value.trim();
+    let category = document.getElementById('p-category-input').value.trim() || 'General';
+    
+    // Get images from preview
+    const images = uploadedImages;
+    
+    // Get sizes and colors
+    const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
+    const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
+    
+    if (!title || !price) {
+        showToast('Product Title and Price are required!', 'error');
+        return;
+    }
+    
+    if (images.length === 0) {
+        showToast('Please upload at least one image!', 'error');
+        return;
+    }
+    
+    category = ensureCategoryExists(category);
+    
+    // Upload images to IMGBB
+    let imageUrls = [];
+    for (let img of images) {
+        try {
+            const formData = new FormData();
+            // Convert base64 to blob
+            const response = await fetch(img);
+            const blob = await response.blob();
+            formData.append('image', blob);
+            
+            const uploadRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await uploadRes.json();
+            if (result.success) {
+                imageUrls.push(result.data.url);
+            }
+        } catch (e) {
+            showToast('Image upload failed. Try again.', 'error');
+            return;
+        }
+    }
+    
+    const product = {
+        title,
+        price,
+        category,
+        images: imageUrls,
+        sizes: sizes,
+        colors: colors,
+        createdAt: new Date().toISOString()
+    };
+    
+    products.push(product);
+    
+    try {
+        localStorage.setItem('myProducts', JSON.stringify(products));
+    } catch (e) {
+        showToast('Storage full! Delete some products.', 'error');
+        products.pop();
+        return;
+    }
+    
+    // Clear form
+    document.getElementById('p-title').value = '';
+    document.getElementById('p-price').value = '';
+    document.getElementById('p-category-input').value = '';
+    document.getElementById('p-images').value = '';
+    uploadedImages = [];
+    sizes = [];
+    colors = [];
+    document.getElementById('p-sizes').value = '[]';
+    document.getElementById('p-colors').value = '[]';
+    renderImagePreviews();
+    renderOptions('size');
+    renderOptions('color');
+    
+    renderAdminPanel();
+    if (typeof displayProducts === 'function') {
+        displayProducts(products);
+    }
+    updateStats();
+    showToast(`✅ Product added in "${category}" category!`, 'success');
+};
+
+// ============================================
+// OVERRIDE DELETE PRODUCT
+// ============================================
+const originalDeleteProduct = window.deleteProduct;
+window.deleteProduct = function(index) {
+    if (confirm('Delete this product?')) {
+        products.splice(index, 1);
+        localStorage.setItem('myProducts', JSON.stringify(products));
+        renderAdminPanel();
+        if (typeof displayProducts === 'function') {
+            displayProducts(products);
+        }
+        updateStats();
+        showToast('Product deleted.', 'success');
+    }
+};
+
+// ============================================
+// OVERRIDE DELETE CATEGORY
+// ============================================
+const originalDeleteCategory = window.deleteCategory;
+window.deleteCategory = function(index) {
+    if (confirm('Delete this category?')) {
+        categories.splice(index, 1);
+        localStorage.setItem('myCategories', JSON.stringify(categories));
+        renderAdminPanel();
+        if (typeof renderCategoriesBar === 'function') {
+            renderCategoriesBar();
+        }
+        updateStats();
+        showToast('Category deleted.', 'success');
+    }
+};
+
+// ============================================
+// OVERRIDE ADD CATEGORY
+// ============================================
+const originalAddCategory = window.addCategory;
+window.addCategory = function() {
+    const name = document.getElementById('new-cat-name').value.trim();
+    if (name && !categories.includes(name)) {
+        categories.push(name);
+        localStorage.setItem('myCategories', JSON.stringify(categories));
+        document.getElementById('new-cat-name').value = '';
+        renderAdminPanel();
+        if (typeof renderCategoriesBar === 'function') {
+            renderCategoriesBar();
+        }
+        updateStats();
+        showToast('Category added!', 'success');
+    } else if (!name) {
+        showToast('Please enter a category name.', 'error');
+    } else {
+        showToast('Category already exists.', 'error');
+    }
+};
+
+// ============================================
+// EXPOSE FUNCTIONS
+// ============================================
+window.addOption = addOption;
+window.removeOption = removeOption;
+window.removeImage = removeImage;
+
+// ============================================
 // EXPOSE GLOBAL FUNCTIONS
 // ============================================
 window.ensureCategoryExists = ensureCategoryExists;

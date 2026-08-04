@@ -11,13 +11,9 @@
         .checkout-wrapper {
             max-width: 900px;
             margin: 0 auto;
-            padding: 40px 24px;
+            padding: 100px 24px 60px;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-
         .checkout-card {
             background: var(--bg-card);
             border: var(--border);
@@ -26,89 +22,63 @@
             width: 100%;
             box-shadow: var(--shadow-lg);
         }
-
         .checkout-header {
             text-align: center;
             margin-bottom: 32px;
         }
-
         .checkout-header .logo-icon {
             font-size: 2.4rem;
             color: var(--accent);
             margin-bottom: 8px;
         }
-
         .checkout-header h1 {
             font-size: 1.8rem;
             font-weight: 800;
         }
-
         .checkout-header p {
             color: var(--text-secondary);
         }
-
         .checkout-summary {
             background: var(--bg-primary);
             border-radius: var(--radius-md);
             padding: 20px 24px;
             margin-bottom: 28px;
             border: var(--border);
+        }
+        .checkout-summary .summary-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-
-        .checkout-summary .product-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .checkout-summary .product-info .title {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .checkout-summary .product-info .category {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .checkout-summary .price {
-            font-size: 1.6rem;
+        .checkout-summary .summary-item:last-child {
+            border-bottom: none;
             font-weight: 700;
+            font-size: 1.1rem;
             color: var(--accent);
         }
-
-        .checkout-form {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
+        .checkout-summary .summary-item .label {
+            color: var(--text-secondary);
         }
-
         .checkout-form .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
-
         .checkout-form .form-group {
             display: flex;
             flex-direction: column;
             gap: 6px;
+            margin-bottom: 16px;
         }
-
         .checkout-form .form-group label {
             font-size: 0.85rem;
             font-weight: 500;
             color: var(--text-secondary);
         }
-
         .checkout-form .form-group label .required {
             color: var(--danger);
         }
-
         .checkout-form .form-group input,
         .checkout-form .form-group textarea {
             padding: 14px 18px;
@@ -121,27 +91,22 @@
             transition: var(--transition);
             outline: none;
         }
-
         .checkout-form .form-group input:focus,
         .checkout-form .form-group textarea:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
-
         .checkout-form .form-group input::placeholder,
         .checkout-form .form-group textarea::placeholder {
             color: var(--text-muted);
         }
-
         .checkout-form .form-group textarea {
             resize: vertical;
             min-height: 80px;
         }
-
         .checkout-form .form-group .input-icon {
             position: relative;
         }
-
         .checkout-form .form-group .input-icon i {
             position: absolute;
             left: 14px;
@@ -149,57 +114,48 @@
             transform: translateY(-50%);
             color: var(--text-muted);
         }
-
         .checkout-form .form-group .input-icon input {
             padding-left: 42px;
         }
-
         .checkout-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-top: 8px;
         }
-
         .checkout-actions .btn-primary {
             width: 100%;
             justify-content: center;
             padding: 16px;
             font-size: 1.05rem;
         }
-
         .checkout-actions .btn-secondary {
             width: 100%;
             justify-content: center;
             padding: 16px;
             font-size: 1.05rem;
         }
-
         /* Success Box */
         .success-box {
             text-align: center;
             padding: 40px 20px;
             display: none;
         }
-
         .success-box .icon {
             font-size: 4rem;
             color: var(--success);
             margin-bottom: 16px;
         }
-
         .success-box h2 {
             font-size: 1.8rem;
             font-weight: 800;
             margin-bottom: 8px;
         }
-
         .success-box p {
             color: var(--text-secondary);
             max-width: 400px;
             margin: 0 auto 24px;
         }
-
         .success-box .order-details {
             background: var(--bg-primary);
             border-radius: var(--radius-md);
@@ -208,26 +164,21 @@
             text-align: left;
             border: var(--border);
         }
-
         .success-box .order-details .detail {
             display: flex;
             justify-content: space-between;
             padding: 6px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-
         .success-box .order-details .detail:last-child {
             border-bottom: none;
         }
-
         .success-box .order-details .detail .label {
             color: var(--text-secondary);
         }
-
         .success-box .order-details .detail .value {
             font-weight: 500;
         }
-
         @media (max-width: 768px) {
             .checkout-card {
                 padding: 24px 20px;
@@ -238,18 +189,43 @@
             .checkout-actions {
                 grid-template-columns: 1fr;
             }
-            .checkout-summary {
-                flex-direction: column;
-                text-align: center;
-            }
         }
     </style>
 </head>
 <body>
 
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-store-alt"></i>
+                    <span>Markaz</span>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="nav-btn" onclick="window.location.href='admin.html'">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                </button>
+                <button class="nav-btn cart-btn" onclick="window.location.href='cart.html'">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge" id="cart-badge">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Checkout -->
     <div class="checkout-wrapper">
         <div class="checkout-card">
-            <!-- Checkout Header -->
+            <!-- Header -->
             <div class="checkout-header">
                 <div class="logo-icon">
                     <i class="fas fa-store-alt"></i>
@@ -261,12 +237,23 @@
             <!-- Checkout Form -->
             <div id="checkout-form-box">
                 <!-- Order Summary -->
-                <div class="checkout-summary">
-                    <div class="product-info">
-                        <span class="title" id="checkout-product-title">Product Title</span>
-                        <span class="category" id="checkout-product-category">Category</span>
+                <div class="checkout-summary" id="order-summary">
+                    <div class="summary-item">
+                        <span class="label">Items</span>
+                        <span id="summary-items">0</span>
                     </div>
-                    <div class="price" id="checkout-product-price">Rs. 0</div>
+                    <div class="summary-item">
+                        <span class="label">Subtotal</span>
+                        <span id="summary-subtotal">Rs. 0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Delivery</span>
+                        <span>Free</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Total</span>
+                        <span id="summary-total">Rs. 0</span>
+                    </div>
                 </div>
 
                 <!-- Form -->
@@ -314,8 +301,8 @@
                         <button class="btn-primary" onclick="submitOrder()">
                             <i class="fas fa-check-circle"></i> Place Order
                         </button>
-                        <button class="btn-secondary" onclick="window.location.href='index.html'">
-                            <i class="fas fa-arrow-left"></i> Back to Store
+                        <button class="btn-secondary" onclick="window.location.href='cart.html'">
+                            <i class="fas fa-arrow-left"></i> Back to Cart
                         </button>
                     </div>
                 </form>
@@ -334,8 +321,8 @@
                         <span class="value" id="order-id">#MK-2024-001</span>
                     </div>
                     <div class="detail">
-                        <span class="label">Product</span>
-                        <span class="value" id="order-product">-</span>
+                        <span class="label">Items</span>
+                        <span class="value" id="order-items">-</span>
                     </div>
                     <div class="detail">
                         <span class="label">Total</span>
@@ -353,6 +340,182 @@
         </div>
     </div>
 
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">Success!</span>
+            <span class="toast-message" id="toast-message">Order placed successfully</span>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.classList.remove('show')">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
     <script src="script.js"></script>
+    <script>
+        // ============================================
+        // CHECKOUT - COMPLETE
+        // ============================================
+        
+        let checkoutItems = [];
+        let orderTotal = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCheckoutItems();
+            updateCartBadge();
+            renderFooterCategories();
+        });
+
+        function loadCheckoutItems() {
+            const items = JSON.parse(localStorage.getItem('checkoutItems') || '[]');
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            
+            // Use checkoutItems if available, otherwise use cart
+            checkoutItems = items.length > 0 ? items : cart;
+            
+            if (checkoutItems.length === 0) {
+                window.location.href = 'cart.html';
+                return;
+            }
+            
+            calculateTotal();
+            updateSummary();
+        }
+
+        function calculateTotal() {
+            orderTotal = 0;
+            checkoutItems.forEach(item => {
+                orderTotal += parseInt(item.price) * item.quantity;
+            });
+        }
+
+        function updateSummary() {
+            const totalItems = checkoutItems.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('summary-items').textContent = totalItems;
+            document.getElementById('summary-subtotal').textContent = `Rs. ${orderTotal}`;
+            document.getElementById('summary-total').textContent = `Rs. ${orderTotal}`;
+        }
+
+        // ============================================
+        // SUBMIT ORDER - FIXED
+        // ============================================
+        async function submitOrder() {
+            const name = document.getElementById('c-name').value.trim();
+            const email = document.getElementById('c-email').value.trim();
+            const phone = document.getElementById('c-phone').value.trim();
+            const address = document.getElementById('c-address').value.trim();
+            const notes = document.getElementById('c-notes').value.trim();
+
+            // Validation
+            if (!name || !email || !phone || !address) {
+                showToast('Please fill all required fields!', 'error');
+                return;
+            }
+
+            if (!email.includes('@') || !email.includes('.')) {
+                showToast('Please enter a valid email address!', 'error');
+                return;
+            }
+
+            if (checkoutItems.length === 0) {
+                showToast('Your cart is empty!', 'error');
+                return;
+            }
+
+            const submitBtn = document.querySelector('.btn-primary');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.disabled = true;
+            }
+
+            // Generate Order ID
+            const orderId = 'MK-' + Date.now().toString().slice(-6);
+
+            // Build order items list
+            const itemsList = checkoutItems.map(item => 
+                `${item.title} (${item.selectedColor || 'N/A'}, ${item.selectedSize || 'N/A'}) x${item.quantity}`
+            ).join(', ');
+
+            const orderData = {
+                orderId: orderId,
+                items: itemsList,
+                total: orderTotal,
+                name: name,
+                email: email,
+                phone: phone,
+                address: address,
+                notes: notes || 'N/A',
+                storeName: 'Markaz Store',
+                storeEmail: 'info@markazstore.com'
+            };
+
+            try {
+                // Send to Admin
+                const adminResponse = await fetch('/api/send-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                // Send to Customer
+                const customerResponse = await fetch('/api/send-confirmation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                const adminResult = await adminResponse.json();
+
+                if (adminResult.success) {
+                    // Update order count
+                    let orders = parseInt(localStorage.getItem('orderCount') || 0);
+                    localStorage.setItem('orderCount', orders + 1);
+                    
+                    // Clear cart
+                    localStorage.setItem('cart', '[]');
+                    localStorage.setItem('checkoutItems', '[]');
+                    
+                    // Show success
+                    document.getElementById('checkout-form-box').style.display = 'none';
+                    document.getElementById('success-box').style.display = 'block';
+                    
+                    // Fill order details
+                    document.getElementById('order-id').textContent = orderId;
+                    document.getElementById('order-items').textContent = itemsList;
+                    document.getElementById('order-total').textContent = `Rs. ${orderTotal}`;
+                    document.getElementById('order-email').textContent = email;
+                    
+                    updateCartBadge();
+                    showToast('🎉 Order placed successfully! Check your email.', 'success');
+                } else {
+                    showToast('Order failed. Please try again.', 'error');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
+                        submitBtn.disabled = false;
+                    }
+                }
+            } catch (error) {
+                showToast('Network error. Check your connection.', 'error');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
+                    submitBtn.disabled = false;
+                }
+            }
+        }
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                badge.textContent = cart.length;
+            }
+        }
+
+        // Make functions global
+        window.submitOrder = submitOrder;
+    </script>
 </body>
 </html>

@@ -1,90 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markaz Store</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markaz Store - Premium Collection</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="logo">🛍️ Markaz Store</div>
-        <button class="admin-toggle-btn" onclick="toggleAdminModal()">⚙️ Admin Panel</button>
-    </header>
+    <!-- ========================================== -->
+    <!-- MODERN NAVBAR -->
+    <!-- ========================================== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-store-alt"></i>
+                    <span>Markaz</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" class="active">Home</a>
+                    <a href="#products">Products</a>
+                    <a href="#about">About</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="nav-btn" onclick="toggleAdminModal()">
+                    <i class="fas fa-cog"></i>
+                    <span>Manage</span>
+                </button>
+                <button class="nav-btn cart-btn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Categories Filter Bar -->
-    <div class="category-wrapper">
-        <div class="category-bar" id="category-bar"></div>
-    </div>
+    <!-- ========================================== -->
+    <!-- HERO SECTION -->
+    <!-- ========================================== -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge">✨ Premium Collection</span>
+                <h1>Discover <span class="gradient-text">Quality</span> Products</h1>
+                <p>Curated selection of premium watches, clothing, and electronics at the best prices in Pakistan.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+                        <i class="fas fa-shopping-bag"></i> Shop Now
+                    </button>
+                    <button class="btn-secondary">
+                        <i class="fas fa-play-circle"></i> Watch Story
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="number">50+</span>
+                        <span class="label">Products</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">10+</span>
+                        <span class="label">Categories</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">100%</span>
+                        <span class="label">Satisfaction</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <i class="fas fa-watch"></i>
+                    <span>Smart Watches</span>
+                </div>
+                <div class="floating-card card-2">
+                    <i class="fas fa-tshirt"></i>
+                    <span>Clothing</span>
+                </div>
+                <div class="floating-card card-3">
+                    <i class="fas fa-laptop"></i>
+                    <span>Electronics</span>
+                </div>
+                <div class="hero-circle"></div>
+            </div>
+        </div>
+    </section>
 
-    <!-- Products Grid -->
-    <main class="container" id="products-container"></main>
+    <!-- ========================================== -->
+    <!-- CATEGORY FILTER BAR -->
+    <!-- ========================================== -->
+    <section class="category-section" id="products">
+        <div class="container">
+            <div class="section-header">
+                <h2>Browse <span class="gradient-text">Categories</span></h2>
+                <p>Find exactly what you're looking for</p>
+            </div>
+            <div class="category-bar" id="category-bar"></div>
+        </div>
+    </section>
 
-    <!-- ============================================ -->
-    <!-- MODAL OVERLAY FOR EMBEDDED ADMIN PANEL        -->
-    <!-- YAHAN PURANA CODE REPLACE KAREIN              -->
-    <!-- ============================================ -->
+    <!-- ========================================== -->
+    <!-- PRODUCTS GRID -->
+    <!-- ========================================== -->
+    <section class="products-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured <span class="gradient-text">Products</span></h2>
+                <p>Handpicked items just for you</p>
+            </div>
+            <div class="products-grid" id="products-container"></div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- FOOTER -->
+    <!-- ========================================== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-store-alt"></i>
+                        <span>Markaz</span>
+                    </div>
+                    <p>Your trusted destination for premium products in Pakistan.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Categories</h4>
+                    <a href="#">Watches</a>
+                    <a href="#">Clothing</a>
+                    <a href="#">Electronics</a>
+                    <a href="#">Accessories</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+                    <p><i class="fas fa-envelope"></i> info@markaz.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Markaz Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- ADMIN MODAL (MODERN) -->
+    <!-- ========================================== -->
     <div class="modal-overlay" id="adminModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>⚙️ Store Management</h2>
-                <button class="close-btn" onclick="toggleAdminModal()">&times;</button>
+                <div class="modal-header-left">
+                    <i class="fas fa-cog"></i>
+                    <h2>Store Management</h2>
+                </div>
+                <button class="close-btn" onclick="toggleAdminModal()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
 
-            <!-- Manage Categories Section -->
-            <section class="admin-section">
-                <h3>🏷️ Manage Categories</h3>
-                <div class="input-inline">
-                    <div style="flex:1; position: relative;">
-                        <div class="suggestions-container">
-                            <input type="text" id="new-cat-name" placeholder="New Category Name">
-                            <div class="suggestions-dropdown" id="category-suggestions"></div>
+            <div class="modal-body">
+                <!-- Tabs -->
+                <div class="admin-tabs">
+                    <button class="tab-btn active" data-tab="add-product">
+                        <i class="fas fa-plus-circle"></i> Add Product
+                    </button>
+                    <button class="tab-btn" data-tab="manage-categories">
+                        <i class="fas fa-tags"></i> Categories
+                    </button>
+                    <button class="tab-btn" data-tab="manage-products">
+                        <i class="fas fa-list"></i> All Products
+                    </button>
+                </div>
+
+                <!-- Tab Content: Add Product -->
+                <div class="tab-content active" id="tab-add-product">
+                    <div class="admin-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-tag"></i> Product Title</label>
+                                <input type="text" id="p-title" placeholder="e.g. Premium Smart Watch" />
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-rupee-sign"></i> Price (PKR)</label>
+                                <input type="number" id="p-price" placeholder="e.g. 2500" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-folder"></i> Category</label>
+                                <div class="suggestions-container">
+                                    <input type="text" id="p-category-input" placeholder="Type or auto-detect" />
+                                    <div class="suggestions-dropdown" id="category-suggestions-product"></div>
+                                </div>
+                                <input type="hidden" id="p-category" />
+                                <small><i class="fas fa-magic"></i> Auto-detects from product title</small>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-image"></i> Product Image</label>
+                                <div class="image-upload-wrapper">
+                                    <input type="file" id="p-img-file" accept="image/*" />
+                                    <span class="upload-placeholder">
+                                        <i class="fas fa-cloud-upload-alt"></i> Upload or paste URL
+                                    </span>
+                                </div>
+                                <input type="text" id="p-img1" placeholder="https://example.com/image.jpg" />
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-primary" onclick="addProduct()">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                            <button class="btn-secondary" onclick="addProductSmart()">
+                                <i class="fas fa-magic"></i> Auto-Detect
+                            </button>
                         </div>
                     </div>
-                    <button class="btn-primary" onclick="addCategory()">Add Category</button>
                 </div>
-                <div class="manage-list" id="categories-manage-list"></div>
-            </section>
 
-            <hr class="divider">
-
-            <!-- Add Product Section -->
-            <section class="admin-section">
-                <h3>📦 Add New Product</h3>
-                <input type="text" id="p-title" placeholder="Product Title (auto-detects category)">
-                <input type="number" id="p-price" placeholder="Price (PKR)">
-                
-                <div class="suggestions-container">
-                    <input type="text" id="p-category-input" placeholder="Category (auto-detected from title)">
-                    <div class="suggestions-dropdown" id="category-suggestions-product"></div>
+                <!-- Tab Content: Categories -->
+                <div class="tab-content" id="tab-manage-categories">
+                    <div class="category-manager">
+                        <div class="category-input-row">
+                            <div class="suggestions-container" style="flex:1;">
+                                <input type="text" id="new-cat-name" placeholder="New category name..." />
+                                <div class="suggestions-dropdown" id="category-suggestions"></div>
+                            </div>
+                            <button class="btn-primary" onclick="addCategory()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div class="category-tags" id="categories-list"></div>
+                    </div>
                 </div>
-                <input type="hidden" id="p-category" />
-                
-                <label style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 4px;">Upload Image from Device:</label>
-                <input type="file" id="p-img-file" accept="image/*" style="margin-bottom: 8px;">
-                
-                <p style="font-size: 11px; color: var(--text-muted); text-align: center; margin: 4px 0;">-- OR --</p>
-                
-                <input type="text" id="p-img1" placeholder="Direct Image URL (Optional)">
-                
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="btn-primary" onclick="addProduct()">Add Product</button>
-                    <button class="btn-success" onclick="addProductSmart()">🧠 Auto-Detect</button>
+
+                <!-- Tab Content: All Products -->
+                <div class="tab-content" id="tab-manage-products">
+                    <div class="product-manager">
+                        <div class="product-list-header">
+                            <span><i class="fas fa-box"></i> All Products</span>
+                            <span class="product-count" id="product-count">0</span>
+                        </div>
+                        <div class="product-list" id="admin-products-list"></div>
+                        <p id="empty-products" class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            No products added yet
+                        </p>
+                    </div>
                 </div>
-            </section>
+            </div>
 
-            <hr class="divider">
-
-            <!-- Delete Product Section -->
-            <section class="admin-section">
-                <h3>🗑️ Manage Products</h3>
-                <div class="manage-list" id="admin-products-list"></div>
-            </section>
-
-            <button class="btn-danger-outline" onclick="resetStorage()">🧹 Reset All Data Cache</button>
+            <div class="modal-footer">
+                <button class="btn-danger" onclick="resetStorage()">
+                    <i class="fas fa-trash-alt"></i> Reset All Data
+                </button>
+                <button class="btn-secondary" onclick="toggleAdminModal()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
         </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOAST NOTIFICATION -->
+    <!-- ========================================== -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">Success!</span>
+            <span class="toast-message" id="toast-message">Product added successfully</span>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.classList.remove('show')">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
 
     <script src="script.js"></script>

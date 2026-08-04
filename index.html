@@ -11,7 +11,7 @@
 <body>
 
     <!-- ========================================== -->
-    <!-- MODERN NAVBAR -->
+    <!-- NAVBAR -->
     <!-- ========================================== -->
     <nav class="navbar">
         <div class="nav-container">
@@ -21,15 +21,16 @@
                     <span>Markaz</span>
                 </div>
                 <div class="nav-links">
-                    <a href="#" class="active">Home</a>
+                    <a href="#home" class="active">Home</a>
                     <a href="#products">Products</a>
                     <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
                 </div>
             </div>
             <div class="nav-right">
-                <button class="nav-btn" onclick="toggleAdminModal()">
+                <button class="nav-btn" onclick="window.location.href='admin.html'">
                     <i class="fas fa-cog"></i>
-                    <span>Manage</span>
+                    <span>Admin</span>
                 </button>
                 <button class="nav-btn cart-btn">
                     <i class="fas fa-shopping-bag"></i>
@@ -42,7 +43,7 @@
     <!-- ========================================== -->
     <!-- HERO SECTION -->
     <!-- ========================================== -->
-    <section class="hero">
+    <section class="hero" id="home">
         <div class="hero-container">
             <div class="hero-content">
                 <span class="hero-badge">✨ Premium Collection</span>
@@ -58,11 +59,11 @@
                 </div>
                 <div class="hero-stats">
                     <div class="stat">
-                        <span class="number">50+</span>
+                        <span class="number" id="total-products-display">0</span>
                         <span class="label">Products</span>
                     </div>
                     <div class="stat">
-                        <span class="number">10+</span>
+                        <span class="number" id="total-categories-display">0</span>
                         <span class="label">Categories</span>
                     </div>
                     <div class="stat">
@@ -116,6 +117,96 @@
     </section>
 
     <!-- ========================================== -->
+    <!-- ABOUT SECTION -->
+    <!-- ========================================== -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <span class="hero-badge">About Us</span>
+                    <h2>Premium Quality <span class="gradient-text">Since 2024</span></h2>
+                    <p>Markaz Store is your trusted destination for premium products in Pakistan. We curate the best quality items from around the world and bring them to your doorstep.</p>
+                    <div class="about-features">
+                        <div class="feature">
+                            <i class="fas fa-truck"></i>
+                            <div>
+                                <h4>Fast Delivery</h4>
+                                <p>Free delivery on orders above Rs. 5000</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <h4>Secure Shopping</h4>
+                                <p>100% secure payments and transactions</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-headset"></i>
+                            <div>
+                                <h4>24/7 Support</h4>
+                                <p>Dedicated customer support team</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="about-card">
+                        <i class="fas fa-store"></i>
+                        <h3>Markaz Store</h3>
+                        <p>Lahore, Pakistan</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- CONTACT SECTION -->
+    <!-- ========================================== -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get In <span class="gradient-text">Touch</span></h2>
+                <p>We'd love to hear from you</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+92 300 1234567</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>info@markazstore.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Address</h4>
+                            <p>Lahore, Pakistan</p>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contact-form">
+                    <input type="text" placeholder="Your Name" required />
+                    <input type="email" placeholder="Your Email" required />
+                    <textarea placeholder="Your Message" rows="4" required></textarea>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
     <!-- FOOTER -->
     <!-- ========================================== -->
     <footer class="footer">
@@ -136,22 +227,19 @@
                 </div>
                 <div class="footer-links">
                     <h4>Quick Links</h4>
-                    <a href="#">About Us</a>
-                    <a href="#">Contact</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms & Conditions</a>
+                    <a href="#home">Home</a>
+                    <a href="#products">Products</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
                 </div>
                 <div class="footer-links">
                     <h4>Categories</h4>
-                    <a href="#">Watches</a>
-                    <a href="#">Clothing</a>
-                    <a href="#">Electronics</a>
-                    <a href="#">Accessories</a>
+                    <div id="footer-categories"></div>
                 </div>
                 <div class="footer-contact">
                     <h4>Contact Us</h4>
                     <p><i class="fas fa-phone"></i> +92 300 1234567</p>
-                    <p><i class="fas fa-envelope"></i> info@markaz.com</p>
+                    <p><i class="fas fa-envelope"></i> info@markazstore.com</p>
                     <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
                 </div>
             </div>
@@ -160,123 +248,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- ========================================== -->
-    <!-- ADMIN MODAL (MODERN) -->
-    <!-- ========================================== -->
-    <div class="modal-overlay" id="adminModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-header-left">
-                    <i class="fas fa-cog"></i>
-                    <h2>Store Management</h2>
-                </div>
-                <button class="close-btn" onclick="toggleAdminModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div class="modal-body">
-                <!-- Tabs -->
-                <div class="admin-tabs">
-                    <button class="tab-btn active" data-tab="add-product">
-                        <i class="fas fa-plus-circle"></i> Add Product
-                    </button>
-                    <button class="tab-btn" data-tab="manage-categories">
-                        <i class="fas fa-tags"></i> Categories
-                    </button>
-                    <button class="tab-btn" data-tab="manage-products">
-                        <i class="fas fa-list"></i> All Products
-                    </button>
-                </div>
-
-                <!-- Tab Content: Add Product -->
-                <div class="tab-content active" id="tab-add-product">
-                    <div class="admin-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="fas fa-tag"></i> Product Title</label>
-                                <input type="text" id="p-title" placeholder="e.g. Premium Smart Watch" />
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-rupee-sign"></i> Price (PKR)</label>
-                                <input type="number" id="p-price" placeholder="e.g. 2500" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="fas fa-folder"></i> Category</label>
-                                <div class="suggestions-container">
-                                    <input type="text" id="p-category-input" placeholder="Type or auto-detect" />
-                                    <div class="suggestions-dropdown" id="category-suggestions-product"></div>
-                                </div>
-                                <input type="hidden" id="p-category" />
-                                <small><i class="fas fa-magic"></i> Auto-detects from product title</small>
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-image"></i> Product Image</label>
-                                <div class="image-upload-wrapper">
-                                    <input type="file" id="p-img-file" accept="image/*" />
-                                    <span class="upload-placeholder">
-                                        <i class="fas fa-cloud-upload-alt"></i> Upload or paste URL
-                                    </span>
-                                </div>
-                                <input type="text" id="p-img1" placeholder="https://example.com/image.jpg" />
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <button class="btn-primary" onclick="addProduct()">
-                                <i class="fas fa-plus"></i> Add Product
-                            </button>
-                            <button class="btn-secondary" onclick="addProductSmart()">
-                                <i class="fas fa-magic"></i> Auto-Detect
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab Content: Categories -->
-                <div class="tab-content" id="tab-manage-categories">
-                    <div class="category-manager">
-                        <div class="category-input-row">
-                            <div class="suggestions-container" style="flex:1;">
-                                <input type="text" id="new-cat-name" placeholder="New category name..." />
-                                <div class="suggestions-dropdown" id="category-suggestions"></div>
-                            </div>
-                            <button class="btn-primary" onclick="addCategory()">
-                                <i class="fas fa-plus"></i> Add
-                            </button>
-                        </div>
-                        <div class="category-tags" id="categories-list"></div>
-                    </div>
-                </div>
-
-                <!-- Tab Content: All Products -->
-                <div class="tab-content" id="tab-manage-products">
-                    <div class="product-manager">
-                        <div class="product-list-header">
-                            <span><i class="fas fa-box"></i> All Products</span>
-                            <span class="product-count" id="product-count">0</span>
-                        </div>
-                        <div class="product-list" id="admin-products-list"></div>
-                        <p id="empty-products" class="empty-state">
-                            <i class="fas fa-box-open"></i>
-                            No products added yet
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-danger" onclick="resetStorage()">
-                    <i class="fas fa-trash-alt"></i> Reset All Data
-                </button>
-                <button class="btn-secondary" onclick="toggleAdminModal()">
-                    <i class="fas fa-times"></i> Close
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- ========================================== -->
     <!-- TOAST NOTIFICATION -->
@@ -296,4 +267,4 @@
 
     <script src="script.js"></script>
 </body>
-</html> 
+</html>

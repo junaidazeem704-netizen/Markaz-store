@@ -1,741 +1,83 @@
-/* Google Fonts - Plus Jakarta Sans & Outfit for modern luxury e-commerce */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+/* Add to existing style.css */
 
-:root {
-    /* Shopify Luxury Dark Palette */
-    --bg-dark: #090d16;          /* Deep Obsidian Navy */
-    --bg-surface: #121929;       /* Card Surface */
-    --bg-card-hover: #1a243a;    /* Card Hover State */
-    
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    
-    /* Brand Accents */
-    --accent-emerald: #10b981;   /* Primary Buy Action */
-    --accent-emerald-glow: rgba(16, 185, 129, 0.25);
-    --accent-indigo: #6366f1;    /* Category / Badges */
-    --accent-amber: #f59e0b;     /* Rating Stars & Sale Tags */
-    
-    --border-light: rgba(255, 255, 255, 0.08);
-    --border-active: rgba(99, 102, 241, 0.4);
-    
-    --glass-bg: rgba(18, 25, 41, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.06);
-    
-    --radius-sm: 8px;
-    --radius-md: 14px;
-    --radius-lg: 20px;
-    --radius-full: 9999px;
-    
-    --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-    --shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 20px rgba(99, 102, 241, 0.15);
+/* Glassmorphism Cards */
+.card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    /* ... keep existing styles */
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-body {
-    background-color: var(--bg-dark);
-    color: var(--text-primary);
-    line-height: 1.5;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-}
-
-/* ================= 1. SHOPIFY ANNOUNCEMENT BAR ================= */
-.announcement-bar {
-    background: linear-gradient(90deg, #4f46e5, #7c3aed, #06b6d4);
-    background-size: 200% 200%;
-    animation: gradientShift 6s ease infinite;
-    color: #ffffff;
-    text-align: center;
-    padding: 8px 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* ================= 2. GLASS HEADER ================= */
-.header {
-    background: var(--glass-bg);
+/* Modern Navbar */
+.navbar {
+    background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 16px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid var(--glass-border);
-    padding: 14px 20px;
 }
 
-.header-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    text-decoration: none;
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.5px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.logo span.badge-store {
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    padding: 2px 8px;
-    border-radius: var(--radius-full);
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-/* ================= 3. CATEGORY PILLS ================= */
-.category-container {
-    max-width: 1200px;
-    margin: 20px auto 0;
-    padding: 0 20px;
-}
-
-.category-bar {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    scrollbar-width: none;
-}
-
-.category-bar::-webkit-scrollbar {
-    display: none;
-}
-
-.cat-btn {
-    background: var(--bg-surface);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-light);
-    padding: 9px 20px;
-    border-radius: var(--radius-full);
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.cat-btn:hover {
-    color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.2);
-    background: var(--bg-card-hover);
-    transform: translateY(-2px);
-}
-
-.cat-btn.active {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    color: #ffffff;
-    border-color: transparent;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
-}
-
-/* ================= 4. PRODUCT GRID & CARDS ================= */
-.main-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 22px;
-    margin-top: 10px;
-}
-
-.card {
-    background: var(--bg-surface);
-    border-radius: var(--radius-lg);
-    padding: 14px;
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-card);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: fadeInUp 0.5s ease-out backwards;
-}
-
-.card:hover {
-    transform: translateY(-6px);
-    border-color: var(--border-active);
-    box-shadow: var(--shadow-hover);
-    background: var(--bg-card-hover);
-}
-
-/* Image Container & Hover Zoom */
-.image-wrapper {
-    position: relative;
-    width: 100%;
-    height: 260px;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    background: #0f1523;
-    margin-bottom: 14px;
-}
-
-.p-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card:hover .p-img {
-    transform: scale(1.06);
-}
-
-/* Badges */
-.badge-tag {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(9, 13, 22, 0.8);
-    backdrop-filter: blur(8px);
-    color: var(--text-primary);
-    padding: 4px 10px;
-    border-radius: var(--radius-full);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    border: 1px solid var(--border-light);
-    z-index: 2;
-}
-
-.sale-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: var(--accent-amber);
-    color: #000;
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    font-size: 0.7rem;
-    font-weight: 800;
-    z-index: 2;
-}
-
-/* Product Info */
-.card-content {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
-.rating-stars {
-    color: var(--accent-amber);
-    font-size: 0.75rem;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.rating-stars span.review-count {
-    color: var(--text-muted);
-    font-size: 0.7rem;
-}
-
-.card h3 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.price-row {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-top: auto;
-    margin-bottom: 14px;
-}
-
-.price {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #38bdf8;
-}
-
-.old-price {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    text-decoration: line-through;
-}
-
-/* ================= 5. SHOPIFY CTA BUTTONS ================= */
-.wa-btn {
-    width: 100%;
-    background: linear-gradient(135deg, var(--accent-emerald), #059669);
-    color: #ffffff;
-    border: none;
-    padding: 12px 18px;
-    border-radius: var(--radius-md);
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 12px var(--accent-emerald-glow);
-}
-
-.wa-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-    background: linear-gradient(135deg, #10b981, #047857);
-}
-
-.wa-btn:active {
-    transform: translateY(0);
-}
-
-/* ================= 6. ANIMATIONS ================= */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Footer */
-.footer {
-    text-align: center;
-    padding: 35px 20px;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    border-top: 1px solid var(--border-light);
-    margin-top: 50px;
-    background: rgba(9, 13, 22, 0.5);
-}
-/* ================= SHOPIFY PREMIUM CHECKOUT ================= */
-.checkout-wrapper {
-    max-width: 560px;
-    margin: 30px auto 50px;
-    padding: 0 15px;
-}
-
-.back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    transition: all 0.25s ease;
-}
-
-.back-link:hover {
-    color: #38bdf8;
-    transform: translateX(-4px);
-}
-
-.checkout-card {
-    background: var(--bg-surface);
-    border-radius: var(--radius-lg);
-    padding: 30px 25px;
-    box-shadow: var(--shadow-hover);
-    border: 1px solid var(--border-light);
-    position: relative;
-    overflow: hidden;
-    animation: fadeInUp 0.5s ease-out;
-}
-
-.checkout-card h2 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Order Summary Box */
-.order-summary-box {
-    background: #0d1322;
-    border-radius: var(--radius-md);
-    padding: 18px 20px;
-    margin-bottom: 24px;
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.order-summary-box .summary-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #818cf8;
-    font-weight: 700;
-}
-
-.order-summary-box h3 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.2rem;
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.order-summary-box .price-tag {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #38bdf8;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.cod-badge {
-    background: rgba(16, 185, 129, 0.15);
-    color: var(--accent-emerald);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    font-size: 0.7rem;
-    padding: 3px 8px;
-    border-radius: var(--radius-full);
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-/* Form Controls */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-}
-
-.form-group input, 
-.form-group textarea {
-    width: 100%;
-    background: #0f1523;
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-md);
-    padding: 14px 16px;
-    color: var(--text-primary);
-    font-size: 0.95rem;
-    outline: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.form-group input:focus, 
-.form-group textarea:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    background: #141c2e;
-}
-
-/* Trust Badges */
-.trust-badges {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 20px;
-    padding-top: 18px;
-    border-top: 1px solid var(--border-light);
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.trust-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Success Screen */
-.success-card {
-    text-align: center;
-    padding: 40px 20px;
-    display: none;
-    animation: fadeInUp 0.5s ease-out;
-}
-
-.success-icon-box {
-    width: 80px;
-    height: 80px;
-    background: rgba(16, 185, 129, 0.15);
-    border: 2px solid var(--accent-emerald);
-    border-radius: var(--radius-full);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    margin: 0 auto 20px;
-    box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
-}
-
-.success-card h3 {
-    font-family: 'Outfit', sans-serif;
+.navbar .logo {
     font-size: 1.6rem;
-    color: var(--accent-emerald);
-    margin-bottom: 8px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.success-card p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    margin-bottom: 25px;
-    line-height: 1.6;
-}
-/* ================= HORIZONTAL SLIDER STYLES ================= */
-.slider-wrapper {
-    position: relative;
-    width: 100%;
-    margin-top: 20px;
-    padding: 0 10px;
-}
-
-.products-slider {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
-    padding: 15px 5px 25px;
-    scrollbar-width: none; /* Firefox Scrollbar Hide */
-    -webkit-overflow-scrolling: touch;
-}
-
-.products-slider::-webkit-scrollbar {
-    display: none; /* Chrome/Safari Scrollbar Hide */
-}
-
-/* Card inside Horizontal Slider */
-.products-slider .card {
-    flex: 0 0 280px; /* Card Width in Slider */
-    scroll-snap-align: start;
-}
-
-/* Left & Right Slider Arrows */
-.slider-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-60%);
-    width: 44px;
-    height: 44px;
-    background: rgba(18, 25, 41, 0.9);
-    border: 1px solid var(--border-light);
-    color: var(--text-primary);
-    border-radius: var(--radius-full);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.admin-toggle-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-muted);
+    padding: 8px 18px;
+    border-radius: 30px;
     cursor: pointer;
-    z-index: 20;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-}
-
-.slider-arrow:hover {
-    background: #6366f1;
-    color: #ffffff;
-    border-color: transparent;
-    transform: translateY(-60%) scale(1.1);
-}
-
-.slider-arrow.left {
-    left: -12px;
-}
-
-.slider-arrow.right {
-    right: -12px;
-}
-
-/* Mobile Friendly Adjustment */
-@media (max-width: 640px) {
-    .products-slider .card {
-        flex: 0 0 82vw; /* Mobile screening slider size */
-    }
-    .slider-arrow {
-        display: none; /* Mobile par touch swipe better hota hai */
-    }
-}
-
-/* ================= PRODUCT DETAIL PAGE (MOBILE RESPONSIVE FIX) ================= */
-
-.product-detail-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 0 15px;
-}
-
-.main-img-box {
-    width: 100%;
-    max-height: 350px;
-    background: #0b1120;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border: 1px solid #1e293b;
-    padding: 10px;
-}
-
-.main-img-box img {
-    max-width: 100%;
-    max-height: 330px;
-    object-fit: contain;
-    border-radius: 8px;
-}
-
-/* Multi-Image Gallery Thumbnails */
-.detail-gallery {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 12px 0;
-    scrollbar-width: thin;
-}
-
-.gallery-thumb {
-    width: 65px;
-    height: 65px;
-    object-fit: cover;
-    border-radius: 10px;
-    border: 2px solid #1e293b;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-}
-
-.gallery-thumb.active {
-    border-color: #6366f1;
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
-}
-
-/* Variant Pills Mobile Wrap */
-.variant-box {
-    margin: 15px 0;
-}
-
-.variant-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.variant-pill {
-    padding: 8px 14px;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    color: #e2e8f0;
     font-size: 0.85rem;
-    cursor: pointer;
-    transition: 0.2s;
+    transition: 0.3s;
+    font-weight: 500;
 }
 
-.variant-pill.active {
-    background: #6366f1;
-    border-color: #818cf8;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-/* ================= PURANI Sleek ADMIN THEME ================= */
-
-.admin-card {
-    background: #111827;
-    border: 1px solid #1f2937;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-}
-
-.admin-card h2 {
-    font-size: 1.15rem;
-    color: #f3f4f6;
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.85rem;
-    color: #9ca3af;
-    margin-bottom: 6px;
-}
-
-.form-group input, 
-.form-group select {
-    width: 100%;
-    padding: 12px 14px;
-    background: #1f2937;
-    border: 1px solid #374151;
-    border-radius: 10px;
-    color: #f3f4f6;
-    font-size: 0.95rem;
-    box-sizing: border-box;
-}
-
-.wa-btn {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+.admin-toggle-btn:hover {
+    background: rgba(255,255,255,0.15);
     color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 0.95rem;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+    border-color: var(--accent);
 }
 
-.wa-btn:hover {
-    opacity: 0.9;
+/* Smooth Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--admin-border);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* Loading Skeleton (Optional) */
+.skeleton {
+    background: linear-gradient(90deg, var(--admin-card) 25%, var(--admin-border) 50%, var(--admin-card) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 12px;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
 }

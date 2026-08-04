@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Detail - Markaz Store</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .product-detail-page {
+            padding: 100px 24px 60px;
+            min-height: 100vh;
+        }
+        .product-detail-page .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        
+        .product-detail-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            background: var(--bg-card);
+            border: var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+        }
+        
+        /* Images Section */
+        .product-images {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .product-main-image {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--bg-primary);
+            border: var(--border);
+        }
+        
+        .product-main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-main-image img:hover {
+            transform: scale(1.02);
+        }
+        
+        .product-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
+        }
+        
+        .product-thumbnails .thumb {
+            aspect-ratio: 1;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-primary);
+        }
+        
+        .product-thumbnails .thumb:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+        
+        .product-thumbnails .thumb.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+        
+        .product-thumbnails .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Info Section */
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .product-info .badge {
+            display: inline-block;
+            padding: 4px 16px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            width: fit-content;
+        }
+        
+        .product-info h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        
+        .product-info .price-large {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .product-info .description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        
+        /* Color Picker */
+        .color-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 4px 0;
+        }
+        
+        .color-picker .color-option {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--admin-border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .color-picker .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-picker .color-option.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .color-picker .color-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        /* Size Picker */
+        .size-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .size-picker .size-option {
+            padding: 8px 20px;
+            background: var(--bg-primary);
+            border: 1px solid var(--admin-border);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .size-picker .size-option:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+        
+        .size-picker .size-option.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+        
+        /* Quantity */
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 4px 0;
+        }
+        
+        .quantity-selector button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-selector button:hover {
+            border-color: var(--accent);
+        }
+        
+        .quantity-selector span {
+            font-size: 1.2rem;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        /* Action Buttons */
+        .product-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        
+        .product-actions .btn-primary {
+            justify-content: center;
+            padding: 16px;
+            font-size: 1.05rem;
+        }
+        
+        .product-actions .btn-secondary {
+            justify-content: center;
+            padding: 16px;
+            font-size: 1.05rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .product-detail-wrapper {
+                grid-template-columns: 1fr;
+                padding: 24px;
+            }
+            .product-main-image {
+                max-height: 500px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .product-detail-page {
+                padding: 80px 16px 40px;
+            }
+            .product-detail-wrapper {
+                padding: 16px;
+            }
+            .product-info h1 {
+                font-size: 1.5rem;
+            }
+            .product-info .price-large {
+                font-size: 1.8rem;
+            }
+            .product-actions {
+                grid-template-columns: 1fr;
+            }
+            .product-thumbnails {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .product-detail-wrapper {
+                padding: 12px;
+            }
+            .color-picker .color-option {
+                width: 36px;
+                height: 36px;
+            }
+        }
+        
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        .loading-state i {
+            font-size: 3rem;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- NAVBAR -->
+    <!-- ========================================== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-store-alt"></i>
+                    <span>Markaz</span>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="products.html" class="active">Products</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="nav-btn" onclick="window.location.href='admin.html'">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                </button>
+                <button class="nav-btn cart-btn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- PRODUCT DETAIL -->
+    <!-- ========================================== -->
+    <section class="product-detail-page">
+        <div class="container">
+            <div class="product-detail-wrapper" id="product-detail-wrapper">
+                <!-- Loading State -->
+                <div class="loading-state" id="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading product details...</p>
+                </div>
+                
+                <!-- Product Content (Hidden initially) -->
+                <div id="product-content" style="display:none; width:100%;">
+                    <!-- Images -->
+                    <div class="product-images">
+                        <div class="product-main-image">
+                            <img id="main-image" src="" alt="Product Image" />
+                        </div>
+                        <div class="product-thumbnails" id="thumbnails"></div>
+                    </div>
+                    
+                    <!-- Info -->
+                    <div class="product-info">
+                        <span class="badge" id="product-category">Category</span>
+                        <h1 id="product-title">Product Title</h1>
+                        <div class="price-large" id="product-price">Rs. 0</div>
+                        <p class="description" id="product-description">Product description goes here.</p>
+                        
+                        <!-- Colors -->
+                        <div>
+                            <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:8px;">
+                                <i class="fas fa-palette"></i> Color
+                            </label>
+                            <div class="color-picker" id="color-picker"></div>
+                        </div>
+                        
+                        <!-- Sizes -->
+                        <div>
+                            <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:8px;">
+                                <i class="fas fa-ruler"></i> Size
+                            </label>
+                            <div class="size-picker" id="size-picker"></div>
+                        </div>
+                        
+                        <!-- Quantity -->
+                        <div>
+                            <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:8px;">
+                                <i class="fas fa-cube"></i> Quantity
+                            </label>
+                            <div class="quantity-selector">
+                                <button onclick="changeQuantity(-1)">−</button>
+                                <span id="quantity-display">1</span>
+                                <button onclick="changeQuantity(1)">+</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="product-actions">
+                            <button class="btn-primary" onclick="addToCart()">
+                                <i class="fas fa-shopping-bag"></i> Add to Cart
+                            </button>
+                            <button class="btn-secondary" onclick="buyNow()">
+                                <i class="fas fa-bolt"></i> Buy Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- FOOTER -->
+    <!-- ========================================== -->
+    <footer class="footer" style="margin-top:0;">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-store-alt"></i>
+                        <span>Markaz</span>
+                    </div>
+                    <p>Your trusted destination for premium products in Pakistan.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Categories</h4>
+                    <div id="footer-categories"></div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+                    <p><i class="fas fa-envelope"></i> info@markazstore.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Markaz Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- TOAST -->
+    <!-- ========================================== -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">Success!</span>
+            <span class="toast-message" id="toast-message">Product added to cart</span>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.classList.remove('show')">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // ============================================
+        // PRODUCT DETAIL PAGE
+        // ============================================
+        
+        let currentProduct = null;
+        let currentColor = null;
+        let currentSize = null;
+        let quantity = 1;
+        let selectedImageIndex = 0;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load product from localStorage
+            const productData = localStorage.getItem('viewProduct');
+            if (!productData) {
+                window.location.href = 'products.html';
+                return;
+            }
+            
+            try {
+                currentProduct = JSON.parse(productData);
+                renderProductDetail(currentProduct);
+                renderFooterCategories();
+            } catch (e) {
+                window.location.href = 'products.html';
+            }
+        });
+        
+        function renderProductDetail(product) {
+            // Hide loading, show content
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('product-content').style.display = 'grid';
+            
+            // Basic info
+            document.getElementById('product-title').textContent = product.title;
+            document.getElementById('product-price').textContent = `Rs. ${product.price}`;
+            document.getElementById('product-category').textContent = product.category || 'General';
+            document.getElementById('product-description').textContent = 
+                product.description || `Premium ${product.title} available at Markaz Store. High quality product with best price in Pakistan.`;
+            
+            // Images
+            const images = product.images && product.images.length > 0 ? product.images : ['https://via.placeholder.com/600'];
+            const mainImage = document.getElementById('main-image');
+            mainImage.src = images[0];
+            mainImage.alt = product.title;
+            
+            // Thumbnails
+            const thumbnailsContainer = document.getElementById('thumbnails');
+            thumbnailsContainer.innerHTML = images.map((img, i) => `
+                <div class="thumb ${i === 0 ? 'active' : ''}" onclick="changeMainImage(${i})">
+                    <img src="${img}" alt="Thumbnail ${i+1}" />
+                </div>
+            `).join('');
+            
+            // Colors
+            const colorPicker = document.getElementById('color-picker');
+            const colors = product.colors && product.colors.length > 0 ? product.colors : [];
+            
+            if (colors.length > 0) {
+                colorPicker.innerHTML = colors.map((c, i) => `
+                    <div class="color-option ${i === 0 ? 'active' : ''}" 
+                         style="background:${c.toLowerCase()};" 
+                         onclick="selectColor('${c}', ${i})"
+                         title="${c}">
+                    </div>
+                `).join('');
+                currentColor = colors[0];
+            } else {
+                colorPicker.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">No color options available</p>';
+            }
+            
+            // Sizes
+            const sizePicker = document.getElementById('size-picker');
+            const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : [];
+            
+            if (sizes.length > 0) {
+                sizePicker.innerHTML = sizes.map((s, i) => `
+                    <div class="size-option ${i === 0 ? 'active' : ''}" onclick="selectSize('${s}', ${i})">
+                        ${s}
+                    </div>
+                `).join('');
+                currentSize = sizes[0];
+            } else {
+                sizePicker.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">Standard size (One size fits all)</p>';
+            }
+            
+            // Reset quantity
+            quantity = 1;
+            document.getElementById('quantity-display').textContent = quantity;
+        }
+        
+        function changeMainImage(index) {
+            selectedImageIndex = index;
+            const images = currentProduct.images || ['https://via.placeholder.com/600'];
+            document.getElementById('main-image').src = images[index];
+            
+            // Update active thumbnail
+            document.querySelectorAll('.thumb').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+        }
+        
+        function selectColor(color, index) {
+            currentColor = color;
+            document.querySelectorAll('.color-option').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+            
+            // Check if color has specific image
+            // This is a simple implementation - you can extend to have color-specific images
+            showToast(`Selected color: ${color}`, 'info');
+        }
+        
+        function selectSize(size, index) {
+            currentSize = size;
+            document.querySelectorAll('.size-option').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+        }
+        
+        function changeQuantity(delta) {
+            quantity = Math.max(1, quantity + delta);
+            document.getElementById('quantity-display').textContent = quantity;
+        }
+        
+        function addToCart() {
+            if (!currentProduct) return;
+            
+            const cartItem = {
+                ...currentProduct,
+                selectedColor: currentColor,
+                selectedSize: currentSize,
+                quantity: quantity
+            };
+            
+            // Save to cart
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            cart.push(cartItem);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            updateCartBadge();
+            showToast(`✅ ${currentProduct.title} added to cart!`, 'success');
+        }
+        
+        function buyNow() {
+            addToCart();
+            // Redirect to checkout
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 500);
+        }
+        
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                badge.textContent = cart.length;
+            }
+        }
+        
+        // Make functions global
+        window.changeMainImage = changeMainImage;
+        window.selectColor = selectColor;
+        window.selectSize = selectSize;
+        window.changeQuantity = changeQuantity;
+        window.addToCart = addToCart;
+        window.buyNow = buyNow;
+        window.updateCartBadge = updateCartBadge;
+    </script>
+</body>
+</html>

@@ -27,7 +27,6 @@
             padding: 40px;
         }
         
-        /* Images Section */
         .product-images {
             display: flex;
             flex-direction: column;
@@ -86,7 +85,6 @@
             object-fit: cover;
         }
         
-        /* Info Section */
         .product-info {
             display: flex;
             flex-direction: column;
@@ -122,7 +120,6 @@
             line-height: 1.8;
         }
         
-        /* Color Picker */
         .color-picker {
             display: flex;
             flex-wrap: wrap;
@@ -161,7 +158,6 @@
             text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
         
-        /* Size Picker */
         .size-picker {
             display: flex;
             flex-wrap: wrap;
@@ -191,7 +187,6 @@
             color: white;
         }
         
-        /* Quantity */
         .quantity-selector {
             display: flex;
             align-items: center;
@@ -222,7 +217,6 @@
             text-align: center;
         }
         
-        /* Action Buttons */
         .product-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -242,7 +236,18 @@
             font-size: 1.05rem;
         }
         
-        /* Responsive */
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        .loading-state i {
+            font-size: 3rem;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 16px;
+        }
+        
         @media (max-width: 1024px) {
             .product-detail-wrapper {
                 grid-template-columns: 1fr;
@@ -283,19 +288,6 @@
                 height: 36px;
             }
         }
-        
-        /* Loading State */
-        .loading-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-        }
-        .loading-state i {
-            font-size: 3rem;
-            color: var(--accent);
-            display: block;
-            margin-bottom: 16px;
-        }
     </style>
 </head>
 <body>
@@ -322,9 +314,9 @@
                     <i class="fas fa-cog"></i>
                     <span>Admin</span>
                 </button>
-                <button class="nav-btn cart-btn">
+                <button class="nav-btn cart-btn" onclick="window.location.href='cart.html'">
                     <i class="fas fa-shopping-bag"></i>
-                    <span class="cart-badge">0</span>
+                    <span class="cart-badge" id="cart-badge">0</span>
                 </button>
             </div>
         </div>
@@ -362,17 +354,19 @@
                         <!-- Colors -->
                         <div>
                             <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:8px;">
-                                <i class="fas fa-palette"></i> Color
+                                <i class="fas fa-palette"></i> Color <span style="color:var(--danger);">*</span>
                             </label>
                             <div class="color-picker" id="color-picker"></div>
+                            <p id="color-selected" style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Selected: None</p>
                         </div>
                         
                         <!-- Sizes -->
                         <div>
                             <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:8px;">
-                                <i class="fas fa-ruler"></i> Size
+                                <i class="fas fa-ruler"></i> Size <span style="color:var(--danger);">*</span>
                             </label>
                             <div class="size-picker" id="size-picker"></div>
+                            <p id="size-selected" style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Selected: None</p>
                         </div>
                         
                         <!-- Quantity -->
@@ -464,16 +458,19 @@
     <script src="script.js"></script>
     <script>
         // ============================================
-        // PRODUCT DETAIL PAGE
+        // PRODUCT DETAIL PAGE - FIXED
         // ============================================
         
         let currentProduct = null;
-        let currentColor = null;
-        let currentSize = null;
+        let selectedColor = null;
+        let selectedSize = null;
         let quantity = 1;
         let selectedImageIndex = 0;
         
         document.addEventListener('DOMContentLoaded', function() {
+            // Update cart badge
+            updateCartBadge();
+            
             // Load product from localStorage
             const productData = localStorage.getItem('viewProduct');
             if (!productData) {
@@ -518,35 +515,29 @@
             
             // Colors
             const colorPicker = document.getElementById('color-picker');
-            const colors = product.colors && product.colors.length > 0 ? product.colors : [];
+            const colors = product.colors && product.colors.length > 0 ? product.colors : ['Default'];
             
-            if (colors.length > 0) {
-                colorPicker.innerHTML = colors.map((c, i) => `
-                    <div class="color-option ${i === 0 ? 'active' : ''}" 
-                         style="background:${c.toLowerCase()};" 
-                         onclick="selectColor('${c}', ${i})"
-                         title="${c}">
-                    </div>
-                `).join('');
-                currentColor = colors[0];
-            } else {
-                colorPicker.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">No color options available</p>';
-            }
+            colorPicker.innerHTML = colors.map((c, i) => `
+                <div class="color-option ${i === 0 ? 'active' : ''}" 
+                     style="background:${c.toLowerCase()};" 
+                     onclick="selectColor('${c}', ${i})"
+                     title="${c}">
+                </div>
+            `).join('');
+            selectedColor = colors[0];
+            document.getElementById('color-selected').textContent = `Selected: ${selectedColor}`;
             
             // Sizes
             const sizePicker = document.getElementById('size-picker');
-            const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : [];
+            const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : ['Standard'];
             
-            if (sizes.length > 0) {
-                sizePicker.innerHTML = sizes.map((s, i) => `
-                    <div class="size-option ${i === 0 ? 'active' : ''}" onclick="selectSize('${s}', ${i})">
-                        ${s}
-                    </div>
-                `).join('');
-                currentSize = sizes[0];
-            } else {
-                sizePicker.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">Standard size (One size fits all)</p>';
-            }
+            sizePicker.innerHTML = sizes.map((s, i) => `
+                <div class="size-option ${i === 0 ? 'active' : ''}" onclick="selectSize('${s}', ${i})">
+                    ${s}
+                </div>
+            `).join('');
+            selectedSize = sizes[0];
+            document.getElementById('size-selected').textContent = `Selected: ${selectedSize}`;
             
             // Reset quantity
             quantity = 1;
@@ -558,28 +549,25 @@
             const images = currentProduct.images || ['https://via.placeholder.com/600'];
             document.getElementById('main-image').src = images[index];
             
-            // Update active thumbnail
             document.querySelectorAll('.thumb').forEach((el, i) => {
                 el.classList.toggle('active', i === index);
             });
         }
         
         function selectColor(color, index) {
-            currentColor = color;
+            selectedColor = color;
             document.querySelectorAll('.color-option').forEach((el, i) => {
                 el.classList.toggle('active', i === index);
             });
-            
-            // Check if color has specific image
-            // This is a simple implementation - you can extend to have color-specific images
-            showToast(`Selected color: ${color}`, 'info');
+            document.getElementById('color-selected').textContent = `Selected: ${color}`;
         }
         
         function selectSize(size, index) {
-            currentSize = size;
+            selectedSize = size;
             document.querySelectorAll('.size-option').forEach((el, i) => {
                 el.classList.toggle('active', i === index);
             });
+            document.getElementById('size-selected').textContent = `Selected: ${size}`;
         }
         
         function changeQuantity(delta) {
@@ -587,36 +575,71 @@
             document.getElementById('quantity-display').textContent = quantity;
         }
         
+        // ============================================
+        // ADD TO CART - FIXED
+        // ============================================
         function addToCart() {
-            if (!currentProduct) return;
+            if (!currentProduct) {
+                showToast('Product not found!', 'error');
+                return;
+            }
+            
+            // Validate color and size selection
+            if (!selectedColor || selectedColor === 'None') {
+                showToast('Please select a color!', 'warning');
+                return;
+            }
+            
+            if (!selectedSize || selectedSize === 'None') {
+                showToast('Please select a size!', 'warning');
+                return;
+            }
             
             const cartItem = {
-                ...currentProduct,
-                selectedColor: currentColor,
-                selectedSize: currentSize,
-                quantity: quantity
+                id: Date.now(),
+                title: currentProduct.title,
+                price: currentProduct.price,
+                category: currentProduct.category || 'General',
+                image: currentProduct.images && currentProduct.images[0] ? currentProduct.images[0] : 'https://via.placeholder.com/100',
+                selectedColor: selectedColor,
+                selectedSize: selectedSize,
+                quantity: quantity,
+                addedAt: new Date().toISOString()
             };
             
-            // Save to cart
             let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            cart.push(cartItem);
-            localStorage.setItem('cart', JSON.stringify(cart));
             
+            // Check if same product with same color and size exists
+            const existingIndex = cart.findIndex(item => 
+                item.title === cartItem.title && 
+                item.selectedColor === cartItem.selectedColor && 
+                item.selectedSize === cartItem.selectedSize
+            );
+            
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += quantity;
+                showToast(`✅ Updated ${currentProduct.title} quantity in cart!`, 'success');
+            } else {
+                cart.push(cartItem);
+                showToast(`✅ ${currentProduct.title} added to cart!`, 'success');
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
             updateCartBadge();
-            showToast(`✅ ${currentProduct.title} added to cart!`, 'success');
+            
+            console.log('Cart updated:', cart);
         }
         
         function buyNow() {
             addToCart();
-            // Redirect to checkout
             setTimeout(() => {
                 window.location.href = 'checkout.html';
-            }, 500);
+            }, 600);
         }
         
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const badge = document.querySelector('.cart-badge');
+            const badge = document.getElementById('cart-badge');
             if (badge) {
                 badge.textContent = cart.length;
             }

@@ -1,182 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Checkout - Markaz Store</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <!-- Header Section -->
-    <header class="header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <span class="logo-icon">🛍️</span>
-                <span class="logo-text">Markaz Store</span>
-            </a>
-        </div>
-    </header>
-
-    <!-- Checkout Main Content -->
-    <div class="checkout-wrapper">
-        
-        <a href="index.html" class="back-link">
-            <span>←</span> Back to Store
-        </a>
-
-        <div class="checkout-card">
-            
-            <!-- Form Section -->
-            <div id="checkout-form-box">
-                <h2>Complete Your Order</h2>
-
-                <!-- Product Summary Box -->
-                <div class="order-summary-box">
-                    <span>Selected Item</span>
-                    <h3 id="checkout-product-title">Loading product...</h3>
-                    <div class="price-tag" id="checkout-product-price">Rs. 0</div>
-                </div>
-
-                <!-- Customer Details Form -->
-                <form id="orderForm" onsubmit="submitOrder(event)">
-                    
-                    <!-- SECTION 1: CONTACT DETAILS -->
-                    <h4 style="margin-top: 15px; margin-bottom: 10px; color: #38bdf8;">📞 Contact Details</h4>
-                    
-                    <div class="form-group">
-                        <label for="c-name">Full Name *</label>
-                        <input type="text" id="c-name" placeholder="Customer Name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="c-phone">Phone Number *</label>
-                        <input type="tel" id="c-phone" placeholder="03XXXXXXXXX" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="c-whatsapp">Customer WhatsApp Number (Optional)</label>
-                        <input type="tel" id="c-whatsapp" placeholder="03XXXXXXXXX">
-                    </div>
-
-                    <!-- SECTION 2: ADDRESS DETAILS -->
-                    <h4 style="margin-top: 20px; margin-bottom: 10px; color: #38bdf8;">📍 Address Details</h4>
-
-                    <div class="form-group">
-                        <label for="c-city">City *</label>
-                        <select id="c-city" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
-                            <option value="" disabled selected>Select City</option>
-                            <option value="Karachi">Karachi</option>
-                            <option value="Lahore">Lahore</option>
-                            <option value="Islamabad">Islamabad</option>
-                            <option value="Rawalpindi">Rawalpindi</option>
-                            <option value="Faisalabad">Faisalabad</option>
-                            <option value="Multan">Multan</option>
-                            <option value="Peshawar">Peshawar</option>
-                            <option value="Quetta">Quetta</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="c-area">Sector / Block / Area Name *</label>
-                        <input type="text" id="c-area" placeholder="e.g. Block 4, Gulshan-e-Iqbal" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="c-address">Complete Delivery Address *</label>
-                        <textarea id="c-address" rows="3" placeholder="House no, street no, building name..." required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="c-landmark">Mashoor Jagah (Optional Landmark)</label>
-                        <input type="text" id="c-landmark" placeholder="Near Masjid, Main Market, etc.">
-                    </div>
-
-                    <button type="submit" id="submit-btn" class="wa-btn btn-whatsapp" style="width: 100%; cursor: pointer;">
-                        ✅ Confirm Order
-                    </button>
-                </form>
-            </div>
-
-            <!-- Success Section -->
-            <div id="success-box" class="success-card" style="display: none;">
-                <span class="success-icon">🎉</span>
-                <h3>Order Placed Successfully!</h3>
-                <p>Aapka order receive ho gaya hai. Hum bohut jald aap se rabta karenge.</p>
-                <a href="index.html" class="wa-btn" style="text-decoration: none; display: inline-block;">
-                    Continue Shopping
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Main Script -->
-    <script>
-        // Selected Product Details (LocalStorage ya Default)
-        let selectedProduct = JSON.parse(localStorage.getItem('selectedProduct')) || {
-            title: "CJ Product Item",
-            price: 1500,
-            cjSku: "CJAM130816",
-            isCjProduct: true
-        };
-
-        // Page load par title & price update karein
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('checkout-product-title').innerText = selectedProduct.title || "Product";
-            document.getElementById('checkout-product-price').innerText = "Rs. " + (selectedProduct.price || 0);
-        });
-
-        // Submit Order Function
-        async function submitOrder(event) {
-            event.preventDefault();
-
-            const btn = document.getElementById('submit-btn');
-            btn.disabled = true;
-            btn.innerText = "Processing Order...";
-
-            const payload = {
-                title: selectedProduct.title,
-                price: selectedProduct.price,
-                cjSku: selectedProduct.cjSku || "",
-                isCjProduct: selectedProduct.isCjProduct || false,
-                selectedColor: selectedProduct.color || "",
-                selectedSize: selectedProduct.size || "",
-                name: document.getElementById('c-name').value,
-                phone: document.getElementById('c-phone').value,
-                whatsapp: document.getElementById('c-whatsapp').value,
-                city: document.getElementById('c-city').value,
-                area: document.getElementById('c-area').value,
-                address: document.getElementById('c-address').value,
-                landmark: document.getElementById('c-landmark').value
-            };
-
-            try {
-                const res = await fetch('/api/order', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    document.getElementById('checkout-form-box').style.display = 'none';
-                    document.getElementById('success-box').style.display = 'block';
-                    localStorage.removeItem('selectedProduct'); // Clear cart after success
-                } else {
-                    alert("Order Error: " + data.message);
-                }
-            } catch (err) {
-                console.error("Order Submission Failed:", err);
-                alert("Server Connection Error! Dobara koshish karein.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "✅ Confirm Order";
-            }
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .checkout-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-    </script>
 
-    <script src="script.js"></script>
-</body>
-</html>
+        .checkout-card {
+            background: var(--bg-card);
+            border: var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px 48px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .checkout-header .logo-icon {
+            font-size: 2.4rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .checkout-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .checkout-header p {
+            color: var(--text-secondary);
+        }
+
+        .checkout-summary {
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            border: var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .checkout-summary .product-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .checkout-summary .product-info .title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .checkout-summary .product-info .category {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .checkout-summary .price {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .checkout-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .checkout-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .checkout-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .checkout-form .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .checkout-form .form-group label .required {
+            color: var(--danger);
+        }
+
+        .checkout-form .form-group input,
+        .checkout-form .form-group textarea {
+            padding: 14px 18px;
+            background: var(--bg-primary);
+            border: var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .checkout-form .form-group input:focus,
+        .checkout-form .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .checkout-form .form-group input::placeholder,
+        .checkout-form .form-group textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .checkout-form .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkout-form .form-group .input-icon {
+            position: relative;
+        }
+
+        .checkout-form .form-group .input-icon i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .checkout-form .form-group .input-icon input {
+            padding-left: 42px;
+        }
+
+        .checkout-

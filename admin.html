@@ -8,28 +8,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* Admin Panel Specific Styles */
-        .admin-wrapper {
-            max-width: 1400px;
-            margin: 0 auto;
+        /* =============================================
+           ADMIN PANEL SPECIFIC STYLES
+           ============================================= */
+        :root {
+            --admin-bg: #0a0a0f;
+            --admin-card: #14141f;
+            --admin-border: rgba(255,255,255,0.06);
+            --admin-accent: #6366f1;
+            --admin-success: #10b981;
+            --admin-danger: #ef4444;
+            --admin-warning: #f59e0b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6a6a82;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--admin-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
             padding: 20px;
         }
 
+        .admin-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* =============================================
+           ADMIN HEADER
+           ============================================= */
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 30px;
-            background: var(--bg-card);
-            border: var(--border);
-            border-radius: var(--radius-lg);
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 16px;
             margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
         .admin-header h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -37,7 +68,7 @@
         }
 
         .admin-header h1 i {
-            color: var(--accent);
+            color: var(--admin-accent);
         }
 
         .admin-header-actions {
@@ -46,6 +77,49 @@
             flex-wrap: wrap;
         }
 
+        .admin-header-actions a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--admin-border);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .admin-header-actions a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+
+        .btn-danger {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+            color: var(--admin-danger);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        /* =============================================
+           STATS CARDS
+           ============================================= */
         .admin-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -54,32 +128,35 @@
         }
 
         .admin-stat-card {
-            background: var(--bg-card);
-            border: var(--border);
-            border-radius: var(--radius-md);
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 14px;
             padding: 20px 24px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .admin-stat-card:hover {
-            border-color: var(--accent);
+            border-color: var(--admin-accent);
             transform: translateY(-2px);
         }
 
         .admin-stat-card .label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .admin-stat-card .value {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             margin-top: 4px;
-            color: var(--accent);
+            color: var(--admin-accent);
         }
 
+        /* =============================================
+           ADMIN GRID
+           ============================================= */
         .admin-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -87,11 +164,10 @@
         }
 
         .admin-card {
-            background: var(--bg-card);
-            border: var(--border);
-            border-radius: var(--radius-lg);
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 16px;
             padding: 24px 28px;
-            margin-bottom: 24px;
         }
 
         .admin-card.full {
@@ -99,20 +175,20 @@
         }
 
         .admin-card h2 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .admin-card h2 i {
-            color: var(--accent);
+            color: var(--admin-accent);
         }
 
         .admin-card .badge {
-            background: var(--accent);
+            background: var(--admin-accent);
             color: white;
             font-size: 0.7rem;
             padding: 2px 12px;
@@ -120,7 +196,9 @@
             margin-left: 8px;
         }
 
-        /* Form Styles */
+        /* =============================================
+           FORM ELEMENTS
+           ============================================= */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -145,27 +223,28 @@
         }
 
         .form-group label .required {
-            color: var(--danger);
+            color: var(--admin-danger);
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             padding: 12px 16px;
-            background: var(--bg-primary);
-            border: var(--border);
-            border-radius: var(--radius-sm);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--admin-border);
+            border-radius: 10px;
             color: var(--text-primary);
             font-size: 0.95rem;
             font-family: inherit;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             outline: none;
+            width: 100%;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
-            border-color: var(--accent);
+            border-color: var(--admin-accent);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
@@ -179,6 +258,15 @@
             min-height: 60px;
         }
 
+        .form-group small {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .form-group small i {
+            color: var(--admin-accent);
+        }
+
         .form-actions {
             display: flex;
             gap: 12px;
@@ -186,19 +274,71 @@
             flex-wrap: wrap;
         }
 
-        /* Multiple Images Upload */
+        /* =============================================
+           BUTTONS
+           ============================================= */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--admin-border);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        /* =============================================
+           IMAGE UPLOAD
+           ============================================= */
         .image-upload-area {
             border: 2px dashed rgba(255,255,255,0.1);
-            border-radius: var(--radius-sm);
+            border-radius: 10px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             position: relative;
         }
 
         .image-upload-area:hover {
-            border-color: var(--accent);
+            border-color: var(--admin-accent);
         }
 
         .image-upload-area input[type="file"] {
@@ -212,8 +352,8 @@
         }
 
         .image-upload-area i {
-            font-size: 2.4rem;
-            color: var(--accent);
+            font-size: 2rem;
+            color: var(--admin-accent);
             display: block;
             margin-bottom: 8px;
         }
@@ -237,11 +377,11 @@
 
         .image-preview-item {
             position: relative;
-            border-radius: var(--radius-sm);
+            border-radius: 8px;
             overflow: hidden;
             aspect-ratio: 1;
-            background: var(--bg-primary);
-            border: var(--border);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--admin-border);
         }
 
         .image-preview-item img {
@@ -265,38 +405,46 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .image-preview-item .remove-img:hover {
-            background: var(--danger);
+            background: var(--admin-danger);
         }
 
-        /* Options (Size & Color) */
+        /* =============================================
+           OPTIONS (Sizes & Colors)
+           ============================================= */
         .options-group {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-top: 4px;
+            min-height: 36px;
         }
 
         .option-tag {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 14px 6px 18px;
-            background: var(--bg-primary);
-            border: var(--border);
+            padding: 4px 12px 4px 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--admin-border);
             border-radius: 100px;
             font-size: 0.85rem;
         }
 
         .option-tag .remove {
             cursor: pointer;
-            color: var(--danger);
+            color: var(--admin-danger);
             background: none;
             border: none;
             font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .option-tag .remove:hover {
+            transform: scale(1.2);
         }
 
         .option-input-row {
@@ -308,18 +456,66 @@
         .option-input-row input {
             flex: 1;
             padding: 8px 14px;
-            background: var(--bg-primary);
-            border: var(--border);
-            border-radius: var(--radius-sm);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--admin-border);
+            border-radius: 8px;
             color: var(--text-primary);
             font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
         }
 
-        .option-input-row button {
-            padding: 8px 16px;
+        .option-input-row input:focus {
+            border-color: var(--admin-accent);
         }
 
-        /* Product List */
+        /* =============================================
+           CATEGORY TAGS
+           ============================================= */
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .category-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px 6px 18px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--admin-border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+        }
+
+        .category-tag .remove {
+            cursor: pointer;
+            color: var(--admin-danger);
+            background: none;
+            border: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .category-tag .remove:hover {
+            transform: scale(1.2);
+        }
+
+        .category-input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .category-input-row .suggestions-container {
+            flex: 1;
+        }
+
+        /* =============================================
+           PRODUCT LIST
+           ============================================= */
         .product-list {
             display: flex;
             flex-direction: column;
@@ -328,68 +524,75 @@
             overflow-y: auto;
         }
 
-        .product-list-item {
+        .product-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .product-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .product-list::-webkit-scrollbar-thumb {
+            background: var(--admin-accent);
+            border-radius: 10px;
+        }
+
+        .product-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
-            background: var(--bg-primary);
-            border-radius: var(--radius-sm);
-            border: var(--border);
-            transition: var(--transition);
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            border: 1px solid var(--admin-border);
+            transition: all 0.3s ease;
             flex-wrap: wrap;
             gap: 10px;
         }
 
-        .product-list-item:hover {
-            border-color: var(--border-hover);
+        .product-item:hover {
+            border-color: rgba(255,255,255,0.1);
         }
 
-        .product-list-item .info {
+        .product-item .info {
             display: flex;
             align-items: center;
             gap: 14px;
         }
 
-        .product-list-item .info img {
+        .product-item .info img {
             width: 48px;
             height: 48px;
             object-fit: cover;
-            border-radius: var(--radius-sm);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
         }
 
-        .product-list-item .info .details .title {
+        .product-item .info .title {
             font-weight: 500;
+            font-size: 0.95rem;
         }
 
-        .product-list-item .info .details .meta {
+        .product-item .info .category {
             font-size: 0.75rem;
             color: var(--text-secondary);
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
         }
 
-        .product-list-item .info .details .meta span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .product-list-item .actions {
+        .product-item .actions {
             display: flex;
             gap: 8px;
         }
 
-        .btn-sm {
+        .product-item .actions .btn-danger {
             padding: 6px 14px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
 
         .empty-state {
             text-align: center;
             padding: 40px 20px;
             color: var(--text-muted);
+            display: none;
         }
 
         .empty-state i {
@@ -398,38 +601,164 @@
             margin-bottom: 12px;
         }
 
-        /* Category Tags */
-        .category-tags {
+        .product-list-header {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 4px 12px;
+            border-bottom: 1px solid var(--admin-border);
+            margin-bottom: 8px;
         }
 
-        .category-tag {
+        .product-list-header span {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .product-count {
+            background: var(--admin-accent);
+            color: white;
+            padding: 2px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* =============================================
+           SUGGESTIONS
+           ============================================= */
+        .suggestions-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 10px;
+            max-height: 180px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar-thumb {
+            background: var(--admin-accent);
+            border-radius: 10px;
+        }
+
+        .suggestion-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .suggestion-item.new-category {
+            color: var(--admin-accent);
+            font-weight: 500;
+        }
+
+        /* =============================================
+           TOAST
+           ============================================= */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 14px 6px 18px;
-            background: var(--bg-primary);
-            border: var(--border);
-            border-radius: 100px;
-            font-size: 0.85rem;
+            gap: 14px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            z-index: 9999;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 420px;
         }
 
-        .category-tag .remove {
-            cursor: pointer;
-            color: var(--danger);
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toast-icon i {
+            color: var(--admin-success);
+            font-size: 1.2rem;
+        }
+
+        .toast.error .toast-icon {
+            background: rgba(239, 68, 68, 0.12);
+        }
+        .toast.error .toast-icon i {
+            color: var(--admin-danger);
+        }
+
+        .toast-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .toast-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .toast-message {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .toast-close {
             background: none;
             border: none;
-            font-size: 1rem;
-            transition: var(--transition);
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            transition: all 0.3s ease;
         }
 
-        .category-tag .remove:hover {
-            transform: scale(1.2);
+        .toast-close:hover {
+            color: var(--text-primary);
         }
 
-        /* Responsive */
+        /* =============================================
+           RESPONSIVE
+           ============================================= */
         @media (max-width: 1024px) {
             .admin-grid {
                 grid-template-columns: 1fr;
@@ -437,25 +766,50 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            .admin-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 16px 20px;
+            }
+            .admin-header-actions {
+                justify-content: center;
+            }
             .form-row {
                 grid-template-columns: 1fr;
             }
             .form-row.three {
                 grid-template-columns: 1fr;
             }
-            .admin-header {
-                flex-direction: column;
-                text-align: center;
+            .admin-card {
+                padding: 16px 18px;
             }
-            .admin-header-actions {
-                justify-content: center;
+            .admin-stats {
+                grid-template-columns: 1fr 1fr;
             }
-            .product-list-item {
+            .product-item {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .product-list-item .actions {
+            .product-item .actions {
                 justify-content: flex-end;
+            }
+            .toast {
+                bottom: 16px;
+                right: 16px;
+                left: 16px;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+            .admin-header h1 {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -463,23 +817,27 @@
 <body>
 
     <div class="admin-wrapper">
-        <!-- Admin Header -->
+        <!-- ========================================== -->
+        <!-- ADMIN HEADER -->
+        <!-- ========================================== -->
         <header class="admin-header">
             <h1>
                 <i class="fas fa-crown"></i>
                 Store Management
             </h1>
             <div class="admin-header-actions">
-                <a href="index.html" class="btn-secondary btn-sm">
+                <a href="index.html">
                     <i class="fas fa-store"></i> View Store
                 </a>
-                <button class="btn-danger btn-sm" onclick="resetStorage()">
+                <button class="btn-danger" onclick="resetStorage()">
                     <i class="fas fa-trash-alt"></i> Reset Data
                 </button>
             </div>
         </header>
 
-        <!-- Stats -->
+        <!-- ========================================== -->
+        <!-- STATS -->
+        <!-- ========================================== -->
         <div class="admin-stats">
             <div class="admin-stat-card">
                 <div class="label">📦 Total Products</div>
@@ -499,12 +857,17 @@
             </div>
         </div>
 
-        <!-- Admin Grid -->
+        <!-- ========================================== -->
+        <!-- ADMIN GRID -->
+        <!-- ========================================== -->
         <div class="admin-grid">
-            <!-- Add Product -->
+            <!-- ========================================== -->
+            <!-- ADD PRODUCT - FULL WIDTH -->
+            <!-- ========================================== -->
             <div class="admin-card full">
                 <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
                 
+                <!-- Title & Price -->
                 <div class="form-row">
                     <div class="form-group">
                         <label>Product Title <span class="required">*</span></label>
@@ -516,6 +879,7 @@
                     </div>
                 </div>
 
+                <!-- Category & Images -->
                 <div class="form-row">
                     <div class="form-group">
                         <label>Category <span class="required">*</span></label>
@@ -524,8 +888,8 @@
                             <div class="suggestions-dropdown" id="category-suggestions-product"></div>
                         </div>
                         <input type="hidden" id="p-category" />
-                        <small style="color:var(--text-muted);font-size:0.75rem;">
-                            <i class="fas fa-magic" style="color:var(--accent);"></i> Auto-detects from product title
+                        <small>
+                            <i class="fas fa-magic"></i> Auto-detects from product title
                         </small>
                     </div>
                     <div class="form-group">
@@ -541,7 +905,7 @@
                     </div>
                 </div>
 
-                <!-- Size Options -->
+                <!-- Sizes & Colors -->
                 <div class="form-row">
                     <div class="form-group">
                         <label><i class="fas fa-ruler"></i> Sizes (Clothing)</label>
@@ -567,6 +931,7 @@
                     </div>
                 </div>
 
+                <!-- Actions -->
                 <div class="form-actions">
                     <button class="btn-primary" onclick="addProduct()">
                         <i class="fas fa-plus"></i> Add Product
@@ -577,15 +942,15 @@
                 </div>
             </div>
 
-            <!-- Manage Categories -->
+            <!-- ========================================== -->
+            <!-- MANAGE CATEGORIES -->
+            <!-- ========================================== -->
             <div class="admin-card">
                 <h2><i class="fas fa-tags"></i> Categories</h2>
-                <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-                    <div style="flex:1;min-width:150px;">
-                        <div class="suggestions-container">
-                            <input type="text" id="new-cat-name" placeholder="New category..." />
-                            <div class="suggestions-dropdown" id="category-suggestions"></div>
-                        </div>
+                <div class="category-input-row">
+                    <div class="suggestions-container">
+                        <input type="text" id="new-cat-name" placeholder="New category..." />
+                        <div class="suggestions-dropdown" id="category-suggestions"></div>
                     </div>
                     <button class="btn-primary btn-sm" onclick="addCategory()">
                         <i class="fas fa-plus"></i> Add
@@ -594,12 +959,18 @@
                 <div class="category-tags" id="categories-list"></div>
             </div>
 
-            <!-- Manage Products -->
+            <!-- ========================================== -->
+            <!-- MANAGE PRODUCTS -->
+            <!-- ========================================== -->
             <div class="admin-card">
                 <h2>
                     <i class="fas fa-box"></i> All Products
                     <span class="badge" id="product-count">0</span>
                 </h2>
+                <div class="product-list-header">
+                    <span><i class="fas fa-list"></i> Product List</span>
+                    <span class="product-count" id="product-count-badge">0</span>
+                </div>
                 <div class="product-list" id="admin-products-list"></div>
                 <div class="empty-state" id="empty-products">
                     <i class="fas fa-box-open"></i>
@@ -609,7 +980,9 @@
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- ========================================== -->
+    <!-- TOAST -->
+    <!-- ========================================== -->
     <div class="toast" id="toast">
         <div class="toast-icon">
             <i class="fas fa-check-circle"></i>
@@ -623,7 +996,210 @@
         </button>
     </div>
 
+    <!-- ========================================== -->
+    <!-- SCRIPTS -->
+    <!-- ========================================== -->
     <script src="script.js"></script>
-    <script src="admin-script.js"></script>
+    <script>
+        // ============================================
+        // ADMIN PANEL SPECIFIC INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Render admin panel
+            renderAdminPanel();
+            updateStats();
+            
+            // Setup image upload
+            setupImageUpload();
+            
+            // Load saved options
+            loadSavedOptions();
+            
+            // Setup category suggestions
+            setupCategorySuggestions('new-cat-name', 'category-suggestions');
+            setupCategorySuggestions('p-category-input', 'category-suggestions-product');
+            
+            // Re-render after a moment to ensure everything is loaded
+            setTimeout(() => {
+                renderAdminPanel();
+                updateStats();
+            }, 300);
+        });
+
+        // ============================================
+        // OVERRIDE ADD PRODUCT FOR ADMIN PANEL
+        // ============================================
+        const originalAddProduct = window.addProduct;
+        window.addProduct = async function() {
+            const title = document.getElementById('p-title').value.trim();
+            const price = document.getElementById('p-price').value.trim();
+            let category = document.getElementById('p-category-input').value.trim() || 'General';
+            
+            if (!title || !price) {
+                showToast('Product Title and Price are required!', 'error');
+                return;
+            }
+
+            // Ensure category exists
+            category = ensureCategoryExists(category);
+
+            // Get images from preview
+            const imagesData = document.getElementById('p-images-data');
+            const uploadedImages = JSON.parse(imagesData.value || '[]');
+            
+            if (uploadedImages.length === 0) {
+                showToast('Please upload at least one image!', 'error');
+                return;
+            }
+
+            // Upload images to IMGBB
+            let imageUrls = [];
+            showToast('Uploading images...', 'info');
+            
+            for (let img of uploadedImages) {
+                try {
+                    const response = await fetch(img);
+                    const blob = await response.blob();
+                    const formData = new FormData();
+                    formData.append('image', blob);
+                    
+                    const uploadRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await uploadRes.json();
+                    if (result.success) {
+                        imageUrls.push(result.data.url);
+                    } else {
+                        showToast('Image upload failed: ' + (result.error?.message || 'Unknown error'), 'error');
+                        return;
+                    }
+                } catch (e) {
+                    showToast('Image upload error. Check your connection.', 'error');
+                    return;
+                }
+            }
+
+            // Get sizes and colors
+            const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
+            const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
+
+            const product = {
+                title,
+                price,
+                category,
+                images: imageUrls,
+                sizes: sizes,
+                colors: colors,
+                createdAt: new Date().toISOString()
+            };
+
+            products.push(product);
+
+            try {
+                localStorage.setItem('myProducts', JSON.stringify(products));
+            } catch (e) {
+                showToast('Storage full! Delete some products.', 'error');
+                products.pop();
+                return;
+            }
+
+            // Clear form
+            document.getElementById('p-title').value = '';
+            document.getElementById('p-price').value = '';
+            document.getElementById('p-category-input').value = '';
+            document.getElementById('p-images-data').value = '[]';
+            document.getElementById('p-sizes').value = '[]';
+            document.getElementById('p-colors').value = '[]';
+            
+            // Clear UI
+            uploadedImages.length = 0;
+            window.sizes = [];
+            window.colors = [];
+            renderImagePreviews();
+            renderOptions('size');
+            renderOptions('color');
+            
+            // Clear file input
+            document.getElementById('p-images').value = '';
+
+            // Update UI
+            displayProducts(products);
+            renderAdminPanel();
+            updateStats();
+            updateHeroStats();
+            renderFooterCategories();
+
+            showToast(`✅ Product added in "${category}" category!`, 'success');
+        };
+
+        // ============================================
+        // OVERRIDE DELETE PRODUCT
+        // ============================================
+        const originalDeleteProduct = window.deleteProduct;
+        window.deleteProduct = function(index) {
+            if (confirm('Delete this product?')) {
+                products.splice(index, 1);
+                localStorage.setItem('myProducts', JSON.stringify(products));
+                displayProducts(products);
+                renderAdminPanel();
+                updateStats();
+                updateHeroStats();
+                renderFooterCategories();
+                showToast('Product deleted.', 'success');
+            }
+        };
+
+        // ============================================
+        // OVERRIDE DELETE CATEGORY
+        // ============================================
+        const originalDeleteCategory = window.deleteCategory;
+        window.deleteCategory = function(index) {
+            if (confirm('Delete this category?')) {
+                categories.splice(index, 1);
+                localStorage.setItem('myCategories', JSON.stringify(categories));
+                renderCategoriesBar();
+                renderAdminPanel();
+                updateStats();
+                updateHeroStats();
+                renderFooterCategories();
+                showToast('Category deleted.', 'success');
+            }
+        };
+
+        // ============================================
+        // OVERRIDE ADD CATEGORY
+        // ============================================
+        const originalAddCategory = window.addCategory;
+        window.addCategory = function() {
+            const name = document.getElementById('new-cat-name').value.trim();
+            if (name && !categories.includes(name)) {
+                categories.push(name);
+                localStorage.setItem('myCategories', JSON.stringify(categories));
+                document.getElementById('new-cat-name').value = '';
+                renderCategoriesBar();
+                renderAdminPanel();
+                updateStats();
+                updateHeroStats();
+                renderFooterCategories();
+                showToast('Category added!', 'success');
+            } else if (!name) {
+                showToast('Please enter a category name.', 'error');
+            } else {
+                showToast('Category already exists.', 'error');
+            }
+        };
+
+        // ============================================
+        // EXPOSE FUNCTIONS
+        // ============================================
+        window.addOption = addOption;
+        window.removeOption = removeOption;
+        window.removeImage = removeImage;
+        window.renderImagePreviews = renderImagePreviews;
+        window.setupImageUpload = setupImageUpload;
+        window.loadSavedOptions = loadSavedOptions;
+    </script>
 </body>
-</html> 
+</html>

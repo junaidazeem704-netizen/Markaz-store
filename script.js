@@ -87,6 +87,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================
 // UPDATE CART BADGE
 // ============================================
+// ============================================
+// UPDATE CART BADGE
+// ============================================
 function updateCartBadge() {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const badges = document.querySelectorAll('.cart-badge');

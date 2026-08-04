@@ -1,138 +1,251 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details - Markaz Store</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products - Markaz Store</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        .slide-anim { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0.5; } to { opacity: 1; } }
+        .products-page {
+            padding: 100px 24px 60px;
+            min-height: 100vh;
+        }
+        .products-page .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .products-page .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .products-page .section-header h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+        }
+        .products-page .section-header p {
+            color: var(--text-secondary);
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+        }
+        .category-filter {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+        @media (max-width: 768px) {
+            .products-page {
+                padding: 80px 16px 40px;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans pb-10">
+<body>
 
-    <header class="border-b border-slate-800 bg-slate-900 sticky top-0 z-50 px-4 py-3">
-        <div class="max-w-md mx-auto flex items-center justify-between">
-            <a href="index.html" class="text-indigo-400 font-bold text-xs">← Back to Store</a>
-            <span class="text-xs font-bold text-slate-300">Markaz Store</span>
+    <!-- ========================================== -->
+    <!-- NAVBAR -->
+    <!-- ========================================== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-store-alt"></i>
+                    <span>Markaz</span>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="products.html" class="active">Products</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="nav-btn" onclick="window.location.href='admin.html'">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                </button>
+                <button class="nav-btn cart-btn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge">0</span>
+                </button>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <main class="max-w-md mx-auto p-4 space-y-5">
-
-        <!-- 📸 PHOTO CAROUSEL -->
-        <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl relative">
-            <div class="relative w-full aspect-[4/5] bg-slate-950 flex items-center justify-center">
-                <img id="sliderImg" src="" class="w-full h-full object-cover slide-anim" />
-
-                <button onclick="prevImg()" class="absolute left-2 bg-slate-950/80 text-white w-8 h-8 rounded-full flex items-center justify-center border border-slate-700">❮</button>
-                <button onclick="nextImg()" class="absolute right-2 bg-slate-950/80 text-white w-8 h-8 rounded-full flex items-center justify-center border border-slate-700">❯</button>
+    <!-- ========================================== -->
+    <!-- PRODUCTS PAGE -->
+    <!-- ========================================== -->
+    <section class="products-page">
+        <div class="container">
+            <div class="section-header">
+                <h1>Our <span class="gradient-text">Collection</span></h1>
+                <p>Browse our premium selection of products</p>
             </div>
-            <div id="dots" class="flex justify-center gap-1.5 py-2.5 bg-slate-900 border-t border-slate-800"></div>
+            
+            <!-- Category Filter -->
+            <div class="category-filter" id="category-filter"></div>
+            
+            <!-- Products Grid -->
+            <div class="products-grid" id="products-container"></div>
         </div>
+    </section>
 
-        <!-- 🏷️ DETAILS & OPTIONS -->
-        <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
-            <h1 id="pTitle" class="text-lg font-bold text-white"></h1>
-            <div class="flex items-baseline gap-3">
-                <span id="pPrice" class="text-2xl font-extrabold text-emerald-400"></span>
-                <span id="pOriginalPrice" class="text-xs text-slate-500 line-through"></span>
+    <!-- ========================================== -->
+    <!-- FOOTER -->
+    <!-- ========================================== -->
+    <footer class="footer" style="margin-top:0;">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-store-alt"></i>
+                        <span>Markaz</span>
+                    </div>
+                    <p>Your trusted destination for premium products in Pakistan.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Categories</h4>
+                    <div id="footer-categories"></div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+                    <p><i class="fas fa-envelope"></i> info@markazstore.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
+                </div>
             </div>
-
-            <!-- SIZE SELECTOR -->
-            <div class="border-t border-slate-800 pt-3">
-                <label class="block text-xs font-bold text-slate-400 mb-2">SELECT SIZE:</label>
-                <div id="sizeBox" class="flex flex-wrap gap-2"></div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Markaz Store. All rights reserved.</p>
             </div>
-
-            <!-- COLOR SELECTOR -->
-            <div class="border-t border-slate-800 pt-3">
-                <label class="block text-xs font-bold text-slate-400 mb-2">SELECT COLOR:</label>
-                <div id="colorBox" class="flex flex-wrap gap-2"></div>
-            </div>
-
-            <button onclick="goToCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition text-base shadow-lg mt-2">
-                🛍️ Buy Now (Confirm Details)
-            </button>
         </div>
+    </footer>
 
-    </main>
-
+    <script src="script.js"></script>
     <script>
-        let pData = null;
-        let images = [];
-        let imgIdx = 0;
-        let selectedSize = "";
-        let selectedColor = "";
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const raw = localStorage.getItem('previewProduct');
-            if(!raw) { window.location.href = "index.html"; return; }
-
-            pData = JSON.parse(raw);
-            document.getElementById('pTitle').innerText = pData.title;
-            document.getElementById('pPrice').innerText = "Rs. " + pData.price;
-            document.getElementById('pOriginalPrice').innerText = "Rs. " + Math.round(pData.price * 1.25);
-
-            images = pData.images || [pData.imageUrl || pData.image];
-            renderSlider();
-
-            // Render Sizes
-            const sizes = pData.sizes || ["Standard"];
-            selectedSize = sizes[0];
-            document.getElementById('sizeBox').innerHTML = sizes.map((s, i) => `
-                <button onclick="selectSize('${s}', this)" class="size-btn ${i===0?'bg-indigo-600 text-white':'bg-slate-800 text-slate-300'} text-xs font-bold px-3.5 py-2 rounded-xl border border-slate-700">
-                    ${s}
-                </button>
-            `).join('');
-
-            // Render Colors
-            const colors = pData.colors || ["Default"];
-            selectedColor = colors[0];
-            document.getElementById('colorBox').innerHTML = colors.map((c, i) => `
-                <button onclick="selectColor('${c}', this)" class="color-btn ${i===0?'bg-indigo-600 text-white':'bg-slate-800 text-slate-300'} text-xs font-bold px-3.5 py-2 rounded-xl border border-slate-700">
-                    ${c}
-                </button>
-            `).join('');
+        // Products page specific initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCategoryFilter();
+            displayProducts(products);
+            updateHeroStats();
+            renderFooterCategories();
         });
-
-        function renderSlider() {
-            document.getElementById('sliderImg').src = images[imgIdx];
-            document.getElementById('dots').innerHTML = images.map((_, i) => `
-                <span class="h-2 rounded-full ${i===imgIdx?'w-5 bg-indigo-500':'w-2 bg-slate-700'}"></span>
-            `).join('');
-        }
-
-        function nextImg() { imgIdx = (imgIdx + 1) % images.length; renderSlider(); }
-        function prevImg() { imgIdx = (imgIdx - 1 + images.length) % images.length; renderSlider(); }
-
-        function selectSize(size, btn) {
-            selectedSize = size;
-            document.querySelectorAll('.size-btn').forEach(b => {
-                b.className = "size-btn bg-slate-800 text-slate-300 text-xs font-bold px-3.5 py-2 rounded-xl border border-slate-700";
+        
+        function renderCategoryFilter() {
+            const container = document.getElementById('category-filter');
+            if (!container) return;
+            
+            let html = `<button class="cat-btn active" onclick="filterCategory('All', this)">All</button>`;
+            categories.forEach(cat => {
+                html += `<button class="cat-btn" onclick="filterCategory('${cat}', this)">${cat}</button>`;
             });
-            btn.className = "size-btn bg-indigo-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl border border-indigo-500";
+            container.innerHTML = html;
         }
-
-        function selectColor(color, btn) {
-            selectedColor = color;
-            document.querySelectorAll('.color-btn').forEach(b => {
-                b.className = "color-btn bg-slate-800 text-slate-300 text-xs font-bold px-3.5 py-2 rounded-xl border border-slate-700";
+        
+        // Override displayProducts for products page
+        const originalDisplayProducts = window.displayProducts;
+        window.displayProducts = function(list) {
+            const container = document.getElementById('products-container');
+            if (!container) return;
+            
+            // Check if we're on products page
+            if (!document.querySelector('.products-page')) {
+                // Use original if not on products page
+                if (typeof originalDisplayProducts === 'function') {
+                    originalDisplayProducts(list);
+                }
+                return;
+            }
+            
+            currentFilterProducts = list;
+            
+            if (!list.length) {
+                container.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#6a6a82;padding:60px 0;">
+                    <i class="fas fa-box-open" style="font-size:2.4rem;display:block;margin-bottom:12px;"></i>
+                    No products found.
+                </p>`;
+                return;
+            }
+            
+            let cards = '';
+            list.forEach((p, i) => {
+                const imgs = p.images && p.images.length ? p.images : ['https://via.placeholder.com/200'];
+                let thumbs = '';
+                if (imgs.length > 1) {
+                    thumbs = `<div class="thumb-box">` + 
+                        imgs.map(img => `<img src="${img}" class="t-img" onclick="changeImage(${i}, '${img}')">`).join('') + 
+                        `</div>`;
+                }
+                
+                let sizeHtml = '';
+                if (p.sizes && p.sizes.length > 0) {
+                    sizeHtml = `<div class="product-options"><span class="opt-label">Sizes:</span> ${p.sizes.map(s => `<span class="opt-tag">${s}</span>`).join('')}</div>`;
+                }
+                
+                let colorHtml = '';
+                if (p.colors && p.colors.length > 0) {
+                    colorHtml = `<div class="product-options"><span class="opt-label">Colors:</span> ${p.colors.map(c => `<span class="opt-tag" style="background:${c.toLowerCase()};color:white;padding:2px 12px;border-radius:4px;">${c}</span>`).join('')}</div>`;
+                }
+                
+                cards += `
+                    <div class="card" onclick="viewProduct(${i})" style="cursor:pointer;">
+                        <span class="badge">${p.category || 'General'}</span>
+                        <img id="img-${i}" src="${imgs[0]}" class="p-img" loading="lazy" alt="${p.title}">
+                        ${thumbs}
+                        <h3>${p.title}</h3>
+                        ${sizeHtml}
+                        ${colorHtml}
+                        <div class="price">Rs. ${p.price}</div>
+                        <button class="wa-btn" onclick="event.stopPropagation(); viewProduct(${i})">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    </div>
+                `;
             });
-            btn.className = "color-btn bg-indigo-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl border border-indigo-500";
+            container.innerHTML = cards;
+        };
+        
+        // View Product function
+        function viewProduct(index) {
+            const item = currentFilterProducts[index];
+            if (item) {
+                localStorage.setItem('viewProduct', JSON.stringify({
+                    index: index,
+                    ...item
+                }));
+                window.location.href = 'product-detail.html';
+            }
         }
-
-        function goToCheckout() {
-            localStorage.setItem('selectedProduct', JSON.stringify({
-                title: `${pData.title} (${selectedSize} / ${selectedColor})`,
-                price: pData.price,
-                size: selectedSize,
-                color: selectedColor,
-                imageUrl: images[imgIdx]
-            }));
-            window.location.href = "checkout.html";
-        }
+        
+        // Make functions global
+        window.viewProduct = viewProduct;
     </script>
 </body>
 </html>

@@ -1,98 +1,128 @@
-// ================= MARKAZ STORE FRONTEND SCRIPT ================= //
+// Add at top - IMGBB API Key (Get from https://api.imgbb.com/)
+const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac'; // Replace with your key
 
-const defaultCategories = ["Watches", "Clothing", "Electronics", "Beauty", "Accessories", "Home & Garden"];
+// Modified addProduct with IMBB upload
+async function addProduct() {
+    const title = document.getElementById('p-title').value.trim();
+    const price = document.getElementById('p-price').value.trim();
+    const category = document.getElementById('p-category').value;
+    const fileInput = document.getElementById('p-img-file');
+    const urlInput = document.getElementById('p-img1');
 
-const defaultProducts = [
-    {
-        title: "Trending Smart Watch",
-        price: "2500",
-        category: "Watches",
-        images: ["https://i.ibb.co/YT0WLQPr/1784793502879.webp"]
-    }
-];
-
-// Load stored data or fall back to defaults
-let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCategories;
-let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
-let currentFilterProducts = [...products];
-
-window.addEventListener('DOMContentLoaded', () => {
-    renderCategoriesBar();
-    displayProducts(products);
-});
-
-// Render Dynamic Category Buttons Bar
-function renderCategoriesBar() {
-    const catBar = document.getElementById('category-bar');
-    if (!catBar) return;
-
-    let html = `<button onclick="filterCategory('All', this)" class="cat-btn active bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-xl whitespace-nowrap transition">All</button>`;
-    
-    categories.forEach(cat => {
-        html += `<button onclick="filterCategory('${cat}', this)" class="cat-btn bg-slate-900 text-slate-300 border border-slate-800 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition hover:border-slate-700">${cat}</button>`;
-    });
-    catBar.innerHTML = html;
-}
-
-// Render Products in Horizontal Card Container
-function displayProducts(list) {
-    const container = document.getElementById('product-container');
-    if (!container) return;
-
-    currentFilterProducts = list;
-
-    if (!list.length) {
-        container.innerHTML = `<p class="text-slate-500 text-xs py-8 w-full text-center">No products found in this category.</p>`;
+    if (!title || !price) {
+        alert('Product Title and Price are required!');
         return;
     }
 
-    let cards = '';
-    list.forEach((p, i) => {
-        const img = (p.images && p.images.length) ? p.images[0] : 'https://via.placeholder.com/200';
+    let imageSrc = '';
 
-        cards += `
-            <div class="snap-start w-[200px] min-w-[200px] bg-slate-900 border border-slate-800 p-3 rounded-2xl flex-shrink-0 flex flex-col justify-between shadow-lg">
-                <div>
-                    <div class="relative mb-2">
-                        <span class="absolute top-2 left-2 bg-indigo-950/80 border border-indigo-700/50 text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur">
-                            ${p.category || 'General'}
-                        </span>
-                        <img src="${img}" class="w-full h-44 object-cover rounded-xl bg-slate-950" loading="lazy" alt="${p.title}">
-                    </div>
-                    <h3 class="text-xs font-semibold text-slate-200 line-clamp-2 min-h-[32px]">${p.title}</h3>
-                    <div class="text-sm font-bold text-indigo-400 mt-1">Rs. ${p.price}</div>
-                </div>
-                <button onclick="goToCheckout(${i})" class="w-full mt-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2 rounded-xl transition shadow-md">
-                    Order Now
-                </button>
-            </div>
-        `;
-    });
-    container.innerHTML = cards;
-}
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        try {
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
 
-// Filter Category Click Handler
-function filterCategory(cat, btn) {
-    document.querySelectorAll('#category-bar button').forEach(b => {
-        b.className = "cat-btn bg-slate-900 text-slate-300 border border-slate-800 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition hover:border-slate-700";
-    });
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
 
-    if (btn) {
-        btn.className = "cat-btn active bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-xl whitespace-nowrap transition";
+            const result = await response.json();
+            if (result.success) {
+                imageSrc = result.data.url;
+            } else {
+                alert('Image upload failed. Please try again or use URL.');
+                return;
+            }
+        } catch (e) {
+            alert('Image upload error. Please check your connection.');
+            return;
+        }
+    } else if (urlInput && urlInput.value.trim()) {
+        imageSrc = urlInput.value.trim();
     }
 
-    if (cat === 'All') displayProducts(products);
-    else displayProducts(products.filter(p => p.category === cat));
+    if (!imageSrc) {
+        alert('Please upload an image or enter a URL.');
+        return;
+    }
+
+    products.push({ title, price, category, images: [imageSrc] });
+    
+    try {
+        localStorage.setItem('myProducts', JSON.stringify(products));
+    } catch (e) {
+        alert('Storage full! Delete some old products.');
+        products.pop();
+        return;
+    }
+
+    // Clear form
+    document.getElementById('p-title').value = '';
+    document.getElementById('p-price').value = '';
+    if (fileInput) fileInput.value = '';
+    if (urlInput) urlInput.value = '';
+
+    displayProducts(products);
+    renderAdminPanels();
+    alert('Product added successfully! ✅');
 }
 
-// Save Selected Item and Redirect to Checkout
-function goToCheckout(index) {
-    const item = currentFilterProducts[index];
-    if (item) {
-        localStorage.setItem('checkoutItem', JSON.stringify({
-            title: item.title,
-            price: item.price
-        }));
-        window.location.href = 'checkout.html';
+// Modified submitOrder with Nodemailer API
+async function submitOrder() {
+    const name = document.getElementById('c-name').value.trim();
+    const phone = document.getElementById('c-phone').value.trim();
+    const address = document.getElementById('c-address').value.trim();
+    const item = JSON.parse(localStorage.getItem('checkoutItem'));
+
+    if (!name || !phone || !address || !item) {
+        alert('Please fill all fields (Name, Phone, Address)!');
+        return;
+    }
+
+    const submitBtn = document.querySelector('.btn-whatsapp');
+    if (submitBtn) {
+        submitBtn.innerText = "Processing Order...";
+        submitBtn.disabled = true;
+    }
+
+    try {
+        // Send to Nodemailer API endpoint
+        const response = await fetch('/api/send-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: item.title,
+                price: item.price,
+                name: name,
+                phone: phone,
+                address: address
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Increment order count
+            let orders = parseInt(localStorage.getItem('orderCount') || 0);
+            localStorage.setItem('orderCount', orders + 1);
+            
+            // Show success
+            document.getElementById('checkout-form-box').style.display = 'none';
+            document.getElementById('success-box').style.display = 'block';
+        } else {
+            alert('Order failed. Please try again.');
+            if (submitBtn) {
+                submitBtn.innerText = "✅ Confirm Order";
+                submitBtn.disabled = false;
+            }
+        }
+    } catch (error) {
+        alert('Network error. Please check your internet connection.');
+        if (submitBtn) {
+            submitBtn.innerText = "✅ Confirm Order";
+            submitBtn.disabled = false;
+        }
     }
 }

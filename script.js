@@ -28,6 +28,11 @@ let categories = JSON.parse(localStorage.getItem('myCategories')) || defaultCate
 let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 let currentFilterProducts = [...products];
 
+// Admin panel image storage
+let uploadedImages = [];
+let sizes = [];
+let colors = [];
+
 // ============================================
 // DOM READY - INITIALIZATION
 // ============================================
@@ -51,14 +56,152 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Admin panel stats update
+    // Admin panel initialization
     if (document.querySelector('.admin-wrapper')) {
         renderAdminPanel();
         updateStats();
+        setupImageUpload();
+        loadSavedOptions();
     }
+    
+    // Category suggestions for admin
+    setTimeout(() => {
+        setupCategorySuggestions('new-cat-name', 'category-suggestions');
+        setupCategorySuggestions('p-category-input', 'category-suggestions-product');
+    }, 300);
     
     setTimeout(() => syncAllCategories(), 500);
 });
+
+// ============================================
+// IMAGE UPLOAD SETUP (Admin Panel)
+// ============================================
+function setupImageUpload() {
+    const imageInput = document.getElementById('p-images');
+    if (!imageInput) return;
+    
+    imageInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+        const grid = document.getElementById('image-preview-grid');
+        if (!grid) return;
+        
+        for (let file of files) {
+            if (uploadedImages.length >= 5) {
+                showToast('Maximum 5 images allowed!', 'warning');
+                break;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                uploadedImages.push(event.target.result);
+                renderImagePreviews();
+            };
+            reader.readAsDataURL(file);
+        }
+        e.target.value = '';
+    });
+}
+
+function renderImagePreviews() {
+    const grid = document.getElementById('image-preview-grid');
+    if (!grid) return;
+    
+    if (uploadedImages.length === 0) {
+        grid.innerHTML = '';
+        return;
+    }
+    
+    grid.innerHTML = uploadedImages.map((img, i) => `
+        <div class="image-preview-item">
+            <img src="${img}" alt="Product image ${i+1}" />
+            <button class="remove-img" onclick="removeImage(${i})">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    // Update hidden input
+    document.getElementById('p-images-data').value = JSON.stringify(uploadedImages);
+}
+
+function removeImage(index) {
+    uploadedImages.splice(index, 1);
+    renderImagePreviews();
+}
+
+// ============================================
+// SIZE & COLOR OPTIONS (Admin Panel)
+// ============================================
+function loadSavedOptions() {
+    // Load from hidden inputs if they exist
+    const sizesData = document.getElementById('p-sizes');
+    const colorsData = document.getElementById('p-colors');
+    
+    if (sizesData && sizesData.value) {
+        sizes = JSON.parse(sizesData.value);
+        renderOptions('size');
+    }
+    if (colorsData && colorsData.value) {
+        colors = JSON.parse(colorsData.value);
+        renderOptions('color');
+    }
+}
+
+function addOption(type) {
+    const inputId = type === 'size' ? 'size-input' : 'color-input';
+    const containerId = type === 'size' ? 'sizes-container' : 'colors-container';
+    const hiddenId = type === 'size' ? 'p-sizes' : 'p-colors';
+    const array = type === 'size' ? sizes : colors;
+    
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    
+    const value = input.value.trim();
+    
+    if (!value) {
+        showToast('Please enter a value', 'error');
+        return;
+    }
+    
+    if (array.includes(value)) {
+        showToast('Option already exists', 'warning');
+        return;
+    }
+    
+    array.push(value);
+    document.getElementById(hiddenId).value = JSON.stringify(array);
+    input.value = '';
+    renderOptions(type);
+}
+
+function removeOption(type, index) {
+    const array = type === 'size' ? sizes : colors;
+    const hiddenId = type === 'size' ? 'p-sizes' : 'p-colors';
+    
+    array.splice(index, 1);
+    document.getElementById(hiddenId).value = JSON.stringify(array);
+    renderOptions(type);
+}
+
+function renderOptions(type) {
+    const containerId = type === 'size' ? 'sizes-container' : 'colors-container';
+    const array = type === 'size' ? sizes : colors;
+    const container = document.getElementById(containerId);
+    
+    if (!container) return;
+    
+    if (array.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    container.innerHTML = array.map((item, i) => `
+        <span class="option-tag">
+            ${item}
+            <button class="remove" onclick="removeOption('${type}', ${i})">×</button>
+        </span>
+    `).join('');
+}
 
 // ============================================
 // UPDATE HERO STATS
@@ -122,13 +265,11 @@ function displayProducts(list) {
                 `</div>`;
         }
         
-        // Show sizes if available
         let sizeHtml = '';
         if (p.sizes && p.sizes.length > 0) {
             sizeHtml = `<div class="product-options"><span class="opt-label">Sizes:</span> ${p.sizes.map(s => `<span class="opt-tag">${s}</span>`).join('')}</div>`;
         }
         
-        // Show colors if available
         let colorHtml = '';
         if (p.colors && p.colors.length > 0) {
             colorHtml = `<div class="product-options"><span class="opt-label">Colors:</span> ${p.colors.map(c => `<span class="opt-tag" style="background:${c.toLowerCase()};color:white;padding:2px 12px;border-radius:4px;">${c}</span>`).join('')}</div>`;
@@ -196,13 +337,11 @@ async function submitOrder() {
     const notes = document.getElementById('c-notes').value.trim();
     const item = JSON.parse(localStorage.getItem('checkoutItem'));
 
-    // Validation
     if (!name || !email || !phone || !address || !item) {
         showToast('Please fill all required fields!', 'error');
         return;
     }
 
-    // Email validation
     if (!email.includes('@') || !email.includes('.')) {
         showToast('Please enter a valid email address!', 'error');
         return;
@@ -214,7 +353,6 @@ async function submitOrder() {
         submitBtn.disabled = true;
     }
 
-    // Generate Order ID
     const orderId = 'MK-' + Date.now().toString().slice(-6);
 
     const orderData = {
@@ -232,14 +370,12 @@ async function submitOrder() {
     };
 
     try {
-        // Send to Admin
         const adminResponse = await fetch('/api/send-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
         });
 
-        // Send to Customer
         const customerResponse = await fetch('/api/send-confirmation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -247,18 +383,14 @@ async function submitOrder() {
         });
 
         const adminResult = await adminResponse.json();
-        const customerResult = await customerResponse.json();
 
         if (adminResult.success) {
-            // Update order count
             let orders = parseInt(localStorage.getItem('orderCount') || 0);
             localStorage.setItem('orderCount', orders + 1);
             
-            // Show success
             document.getElementById('checkout-form-box').style.display = 'none';
             document.getElementById('success-box').style.display = 'block';
             
-            // Fill order details
             document.getElementById('order-id').textContent = orderId;
             document.getElementById('order-product').textContent = item.title;
             document.getElementById('order-total').textContent = `Rs. ${item.price}`;
@@ -302,16 +434,16 @@ function ensureCategoryExists(categoryName) {
 
 function detectCategoryFromTitle(title) {
     const keywords = {
-        'Watches': ['watch', 'wristwatch', 'chrono', 'timepiece', 'smartwatch', 'analog', 'digital watch'],
-        'Clothing': ['shirt', 'pants', 'jeans', 'jacket', 'coat', 'dress', 'skirt', 't-shirt', 'hoodie', 'sweater', 'kurta', 'shalwar', 'cloth'],
-        'Electronics': ['phone', 'laptop', 'computer', 'tablet', 'tv', 'television', 'speaker', 'headphone', 'charger', 'cable', 'battery', 'electronic'],
-        'Shoes': ['shoe', 'sneaker', 'boot', 'sandal', 'loafer', 'footwear'],
-        'Accessories': ['bag', 'belt', 'cap', 'hat', 'scarf', 'glove', 'sunglass', 'jewelry', 'necklace', 'ring'],
-        'Home': ['furniture', 'lamp', 'chair', 'table', 'bed', 'sofa', 'curtain', 'cushion', 'pillow'],
-        'Books': ['book', 'novel', 'magazine', 'textbook', 'story', 'comic'],
-        'Toys': ['toy', 'game', 'puzzle', 'doll', 'car', 'lego', 'board game'],
-        'Food': ['snack', 'chocolate', 'biscuit', 'cake', 'bread', 'rice', 'oil', 'spice'],
-        'Beauty': ['cream', 'lotion', 'shampoo', 'soap', 'perfume', 'makeup', 'cosmetic']
+        'Watches': ['watch', 'wristwatch', 'chrono', 'timepiece', 'smartwatch', 'analog'],
+        'Clothing': ['shirt', 'pants', 'jeans', 'jacket', 'coat', 'dress', 'skirt', 't-shirt', 'hoodie', 'sweater', 'kurta'],
+        'Electronics': ['phone', 'laptop', 'computer', 'tablet', 'tv', 'television', 'speaker', 'headphone', 'charger'],
+        'Shoes': ['shoe', 'sneaker', 'boot', 'sandal', 'loafer'],
+        'Accessories': ['bag', 'belt', 'cap', 'hat', 'scarf', 'sunglass', 'jewelry', 'necklace'],
+        'Home': ['furniture', 'lamp', 'chair', 'table', 'bed', 'sofa', 'curtain', 'cushion'],
+        'Books': ['book', 'novel', 'magazine', 'textbook', 'story'],
+        'Toys': ['toy', 'game', 'puzzle', 'doll', 'car', 'lego'],
+        'Food': ['snack', 'chocolate', 'biscuit', 'cake', 'bread', 'rice', 'oil'],
+        'Beauty': ['cream', 'lotion', 'shampoo', 'soap', 'perfume', 'makeup']
     };
     const lowerTitle = title.toLowerCase();
     for (const [category, words] of Object.entries(keywords)) {
@@ -381,7 +513,8 @@ function selectCategory(category) {
     const input = document.getElementById('new-cat-name') || document.getElementById('p-category-input');
     if (input) {
         input.value = category;
-        document.getElementById('category-suggestions').style.display = 'none';
+        const container = document.getElementById('category-suggestions') || document.getElementById('category-suggestions-product');
+        if (container) container.style.display = 'none';
         if (!categories.includes(category)) ensureCategoryExists(category);
     }
 }
@@ -394,7 +527,8 @@ function createNewCategory(name) {
             const input = document.getElementById('new-cat-name') || document.getElementById('p-category-input');
             if (input) {
                 input.value = trimmed;
-                document.getElementById('category-suggestions').style.display = 'none';
+                const container = document.getElementById('category-suggestions') || document.getElementById('category-suggestions-product');
+                if (container) container.style.display = 'none';
             }
             if (typeof renderAdminPanel === 'function') renderAdminPanel();
             if (typeof renderAdminPanels === 'function') renderAdminPanels();
@@ -409,15 +543,23 @@ async function addProduct() {
     const title = document.getElementById('p-title').value.trim();
     const price = document.getElementById('p-price').value.trim();
     let category = document.getElementById('p-category-input')?.value.trim() || 'General';
-    const fileInput = document.getElementById('p-img-file');
-    const urlInput = document.getElementById('p-img1');
     
+    if (!title || !price) {
+        showToast('Product Title and Price are required!', 'error');
+        return;
+    }
+
+    category = ensureCategoryExists(category);
+
+    let imageUrls = [];
+    let sizes = [];
+    let colors = [];
+
     // Check if we're in admin panel with multiple images
     const imagesData = document.getElementById('p-images-data');
-    let imageUrls = [];
     
     if (imagesData) {
-        // Admin panel with multiple images
+        // ADMIN PANEL - Multiple images
         const uploadedImages = JSON.parse(imagesData.value || '[]');
         if (uploadedImages.length === 0) {
             showToast('Please upload at least one image!', 'error');
@@ -425,9 +567,10 @@ async function addProduct() {
         }
         
         // Upload each image to IMGBB
+        showToast('Uploading images...', 'info');
+        
         for (let img of uploadedImages) {
             try {
-                // Convert base64 to blob
                 const response = await fetch(img);
                 const blob = await response.blob();
                 const formData = new FormData();
@@ -441,15 +584,26 @@ async function addProduct() {
                 const result = await uploadRes.json();
                 if (result.success) {
                     imageUrls.push(result.data.url);
+                } else {
+                    showToast('Image upload failed: ' + (result.error?.message || 'Unknown error'), 'error');
+                    return;
                 }
             } catch (e) {
-                showToast('Image upload failed. Try again.', 'error');
+                showToast('Image upload error. Check your connection.', 'error');
                 return;
             }
         }
+        
+        // Get sizes and colors from admin panel
+        sizes = JSON.parse(document.getElementById('p-sizes')?.value || '[]');
+        colors = JSON.parse(document.getElementById('p-colors')?.value || '[]');
+        
     } else {
-        // Single image upload (index.html modal)
+        // INDEX.HTML MODAL - Single image
+        const fileInput = document.getElementById('p-img-file');
+        const urlInput = document.getElementById('p-img1');
         let imageSrc = '';
+        
         if (fileInput && fileInput.files && fileInput.files[0]) {
             try {
                 const formData = new FormData();
@@ -472,23 +626,13 @@ async function addProduct() {
         } else if (urlInput && urlInput.value.trim()) {
             imageSrc = urlInput.value.trim();
         }
+        
         if (!imageSrc) {
             showToast('Please upload an image or enter a URL.', 'error');
             return;
         }
         imageUrls = [imageSrc];
     }
-
-    if (!title || !price) {
-        showToast('Product Title and Price are required!', 'error');
-        return;
-    }
-
-    category = ensureCategoryExists(category);
-
-    // Get sizes and colors from admin panel if available
-    let sizes = JSON.parse(document.getElementById('p-sizes')?.value || '[]');
-    let colors = JSON.parse(document.getElementById('p-colors')?.value || '[]');
 
     const product = {
         title,
@@ -516,24 +660,27 @@ async function addProduct() {
     if (document.getElementById('p-category-input')) {
         document.getElementById('p-category-input').value = '';
     }
-    if (fileInput) fileInput.value = '';
-    if (urlInput) urlInput.value = '';
     
     // Clear admin panel specific fields
     if (document.getElementById('p-images-data')) {
         document.getElementById('p-images-data').value = '[]';
+        uploadedImages = [];
+        renderImagePreviews();
     }
     if (document.getElementById('p-sizes')) {
         document.getElementById('p-sizes').value = '[]';
         document.getElementById('p-colors').value = '[]';
-    }
-    if (typeof renderImagePreviews === 'function') {
-        renderImagePreviews();
-    }
-    if (typeof renderOptions === 'function') {
+        sizes = [];
+        colors = [];
         renderOptions('size');
         renderOptions('color');
     }
+    
+    // Clear file input
+    const fileInput = document.getElementById('p-img-file');
+    if (fileInput) fileInput.value = '';
+    const urlInput = document.getElementById('p-img1');
+    if (urlInput) urlInput.value = '';
 
     displayProducts(products);
     updateHeroStats();
@@ -551,17 +698,30 @@ async function addProduct() {
 async function addProductSmart() {
     const title = document.getElementById('p-title').value.trim();
     const price = document.getElementById('p-price').value.trim();
+    
     if (!title || !price) {
         showToast('Product Title and Price are required!', 'error');
         return;
     }
+    
     let detectedCategory = detectCategoryFromTitle(title);
+    
+    const categoryInput = document.getElementById('p-category-input');
     if (detectedCategory) {
         detectedCategory = ensureCategoryExists(detectedCategory);
-        const input = document.getElementById('p-category-input');
-        if (input) input.value = detectedCategory;
-        showToast(`🔍 Category "${detectedCategory}" detected!`, 'info');
+        if (categoryInput) {
+            categoryInput.value = detectedCategory;
+        }
+        showToast(`🔍 Category "${detectedCategory}" detected from title!`, 'info');
+    } else {
+        showToast('⚠️ No category detected. Please select manually.', 'warning');
+        if (categoryInput) {
+            categoryInput.focus();
+        }
+        return;
     }
+    
+    // Now add the product
     await addProduct();
 }
 
@@ -596,21 +756,28 @@ function renderAdminPanels() {
 }
 
 function renderAdminPanel() {
+    // Update category dropdown
     const select = document.getElementById('p-category');
     if (select) {
         select.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
+    // Category tags
     const catList = document.getElementById('categories-list');
     if (catList) {
-        catList.innerHTML = categories.map((c, i) => `
-            <span class="category-tag">
-                ${c}
-                <button class="remove" onclick="deleteCategory(${i})">×</button>
-            </span>
-        `).join('');
+        if (categories.length === 0) {
+            catList.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">No categories yet.</p>';
+        } else {
+            catList.innerHTML = categories.map((c, i) => `
+                <span class="category-tag">
+                    ${c}
+                    <button class="remove" onclick="deleteCategory(${i})">×</button>
+                </span>
+            `).join('');
+        }
     }
 
+    // Product list
     const prodList = document.getElementById('admin-products-list');
     const emptyMsg = document.getElementById('empty-products');
     if (prodList) {
@@ -625,9 +792,11 @@ function renderAdminPanel() {
                         <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/45'}" alt="${p.title}" />
                         <div>
                             <div class="title">${p.title}</div>
-                            <span class="category">${p.category || 'General'} • Rs. ${p.price}</span>
-                            ${p.sizes && p.sizes.length > 0 ? `<span class="category">Sizes: ${p.sizes.join(', ')}</span>` : ''}
-                            ${p.colors && p.colors.length > 0 ? `<span class="category">Colors: ${p.colors.join(', ')}</span>` : ''}
+                            <div class="category">
+                                ${p.category || 'General'} • Rs. ${p.price}
+                                ${p.sizes && p.sizes.length > 0 ? ` • Sizes: ${p.sizes.join(', ')}` : ''}
+                                ${p.colors && p.colors.length > 0 ? ` • Colors: ${p.colors.join(', ')}` : ''}
+                            </div>
                         </div>
                     </div>
                     <div class="actions">
@@ -773,3 +942,12 @@ window.renderCategoriesBar = renderCategoriesBar;
 window.setupCategorySuggestions = setupCategorySuggestions;
 window.updateHeroStats = updateHeroStats;
 window.renderFooterCategories = renderFooterCategories;
+window.addOption = addOption;
+window.removeOption = removeOption;
+window.removeImage = removeImage;
+window.renderImagePreviews = renderImagePreviews;
+window.setupImageUpload = setupImageUpload;
+window.loadSavedOptions = loadSavedOptions;
+window.uploadedImages = uploadedImages;
+window.sizes = sizes;
+window.colors = colors;

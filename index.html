@@ -21,8 +21,8 @@
                     <span>Markaz</span>
                 </div>
                 <div class="nav-links">
-                    <a href="#home" class="active">Home</a>
-                    <a href="#products">Products</a>
+                    <a href="index.html" class="active">Home</a>
+                    <a href="products.html">Products</a>
                     <a href="#about">About</a>
                     <a href="#contact">Contact</a>
                 </div>
@@ -50,11 +50,11 @@
                 <h1>Discover <span class="gradient-text">Quality</span> Products</h1>
                 <p>Curated selection of premium watches, clothing, and electronics at the best prices in Pakistan.</p>
                 <div class="hero-buttons">
-                    <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+                    <button class="btn-primary" onclick="window.location.href='products.html'">
                         <i class="fas fa-shopping-bag"></i> Shop Now
                     </button>
-                    <button class="btn-secondary">
-                        <i class="fas fa-play-circle"></i> Watch Story
+                    <button class="btn-secondary" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+                        <i class="fas fa-play-circle"></i> Learn More
                     </button>
                 </div>
                 <div class="hero-stats">
@@ -87,32 +87,6 @@
                 </div>
                 <div class="hero-circle"></div>
             </div>
-        </div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- CATEGORY FILTER BAR -->
-    <!-- ========================================== -->
-    <section class="category-section" id="products">
-        <div class="container">
-            <div class="section-header">
-                <h2>Browse <span class="gradient-text">Categories</span></h2>
-                <p>Find exactly what you're looking for</p>
-            </div>
-            <div class="category-bar" id="category-bar"></div>
-        </div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- PRODUCTS GRID -->
-    <!-- ========================================== -->
-    <section class="products-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Featured <span class="gradient-text">Products</span></h2>
-                <p>Handpicked items just for you</p>
-            </div>
-            <div class="products-grid" id="products-container"></div>
         </div>
     </section>
 
@@ -227,8 +201,8 @@
                 </div>
                 <div class="footer-links">
                     <h4>Quick Links</h4>
-                    <a href="#home">Home</a>
-                    <a href="#products">Products</a>
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
                     <a href="#about">About</a>
                     <a href="#contact">Contact</a>
                 </div>
@@ -250,7 +224,7 @@
     </footer>
 
     <!-- ========================================== -->
-    <!-- TOAST NOTIFICATION -->
+    <!-- TOAST -->
     <!-- ========================================== -->
     <div class="toast" id="toast">
         <div class="toast-icon">
@@ -267,4 +241,4 @@
 
     <script src="script.js"></script>
 </body>
-</html> 
+</html>

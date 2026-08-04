@@ -90,6 +90,7 @@
             font-family: inherit;
             transition: var(--transition);
             outline: none;
+            width: 100%;
         }
         .checkout-form .form-group input:focus,
         .checkout-form .form-group textarea:focus {
@@ -135,7 +136,6 @@
             padding: 16px;
             font-size: 1.05rem;
         }
-        /* Success Box */
         .success-box {
             text-align: center;
             padding: 40px 20px;
@@ -163,11 +163,13 @@
             margin-bottom: 24px;
             text-align: left;
             border: var(--border);
+            max-height: 300px;
+            overflow-y: auto;
         }
         .success-box .order-details .detail {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .success-box .order-details .detail:last-child {
@@ -178,6 +180,8 @@
         }
         .success-box .order-details .detail .value {
             font-weight: 500;
+            text-align: right;
+            max-width: 60%;
         }
         @media (max-width: 768px) {
             .checkout-card {
@@ -188,6 +192,14 @@
             }
             .checkout-actions {
                 grid-template-columns: 1fr;
+            }
+            .success-box .order-details .detail {
+                flex-direction: column;
+                text-align: center;
+            }
+            .success-box .order-details .detail .value {
+                max-width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -239,19 +251,19 @@
                 <!-- Order Summary -->
                 <div class="checkout-summary" id="order-summary">
                     <div class="summary-item">
-                        <span class="label">Items</span>
+                        <span class="label">📦 Items</span>
                         <span id="summary-items">0</span>
                     </div>
                     <div class="summary-item">
-                        <span class="label">Subtotal</span>
+                        <span class="label">💰 Subtotal</span>
                         <span id="summary-subtotal">Rs. 0</span>
                     </div>
                     <div class="summary-item">
-                        <span class="label">Delivery</span>
-                        <span>Free</span>
+                        <span class="label">🚚 Delivery</span>
+                        <span style="color:var(--success);">Free</span>
                     </div>
                     <div class="summary-item">
-                        <span class="label">Total</span>
+                        <span class="label">🛒 Total</span>
                         <span id="summary-total">Rs. 0</span>
                     </div>
                 </div>
@@ -313,24 +325,32 @@
                 <div class="icon">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <h2>Order Placed! 🎉</h2>
+                <h2>🎉 Order Placed!</h2>
                 <p>Your order has been confirmed. We'll send you a confirmation email shortly.</p>
                 <div class="order-details" id="order-details">
                     <div class="detail">
-                        <span class="label">Order ID</span>
-                        <span class="value" id="order-id">#MK-2024-001</span>
+                        <span class="label">📋 Order ID</span>
+                        <span class="value" id="order-id">-</span>
                     </div>
                     <div class="detail">
-                        <span class="label">Items</span>
+                        <span class="label">📦 Items</span>
                         <span class="value" id="order-items">-</span>
                     </div>
                     <div class="detail">
-                        <span class="label">Total</span>
+                        <span class="label">💰 Total</span>
                         <span class="value" id="order-total">-</span>
                     </div>
                     <div class="detail">
-                        <span class="label">Email</span>
+                        <span class="label">📧 Email</span>
                         <span class="value" id="order-email">-</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">📱 Phone</span>
+                        <span class="value" id="order-phone">-</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">📍 Address</span>
+                        <span class="value" id="order-address">-</span>
                     </div>
                 </div>
                 <button class="btn-primary" onclick="window.location.href='index.html'">
@@ -357,7 +377,7 @@
     <script src="script.js"></script>
     <script>
         // ============================================
-        // CHECKOUT - COMPLETE
+        // CHECKOUT - FIXED
         // ============================================
         
         let checkoutItems = [];
@@ -373,7 +393,6 @@
             const items = JSON.parse(localStorage.getItem('checkoutItems') || '[]');
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
             
-            // Use checkoutItems if available, otherwise use cart
             checkoutItems = items.length > 0 ? items : cart;
             
             if (checkoutItems.length === 0) {
@@ -409,7 +428,6 @@
             const address = document.getElementById('c-address').value.trim();
             const notes = document.getElementById('c-notes').value.trim();
 
-            // Validation
             if (!name || !email || !phone || !address) {
                 showToast('Please fill all required fields!', 'error');
                 return;
@@ -431,13 +449,20 @@
                 submitBtn.disabled = true;
             }
 
-            // Generate Order ID
             const orderId = 'MK-' + Date.now().toString().slice(-6);
 
-            // Build order items list
-            const itemsList = checkoutItems.map(item => 
-                `${item.title} (${item.selectedColor || 'N/A'}, ${item.selectedSize || 'N/A'}) x${item.quantity}`
-            ).join(', ');
+            // Build items list with proper color and size
+            const itemsList = checkoutItems.map(item => {
+                let details = [];
+                if (item.selectedColor && item.selectedColor !== 'N/A' && item.selectedColor !== 'None') {
+                    details.push(item.selectedColor);
+                }
+                if (item.selectedSize && item.selectedSize !== 'N/A' && item.selectedSize !== 'None') {
+                    details.push(item.selectedSize);
+                }
+                const detailStr = details.length > 0 ? ` (${details.join(', ')})` : '';
+                return `${item.title}${detailStr} x${item.quantity}`;
+            }).join(', ');
 
             const orderData = {
                 orderId: orderId,
@@ -453,14 +478,12 @@
             };
 
             try {
-                // Send to Admin
                 const adminResponse = await fetch('/api/send-order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(orderData)
                 });
 
-                // Send to Customer
                 const customerResponse = await fetch('/api/send-confirmation', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -470,35 +493,33 @@
                 const adminResult = await adminResponse.json();
 
                 if (adminResult.success) {
-                    // Update order count
                     let orders = parseInt(localStorage.getItem('orderCount') || 0);
                     localStorage.setItem('orderCount', orders + 1);
                     
-                    // Clear cart
                     localStorage.setItem('cart', '[]');
                     localStorage.setItem('checkoutItems', '[]');
                     
-                    // Show success
                     document.getElementById('checkout-form-box').style.display = 'none';
                     document.getElementById('success-box').style.display = 'block';
                     
-                    // Fill order details
                     document.getElementById('order-id').textContent = orderId;
                     document.getElementById('order-items').textContent = itemsList;
                     document.getElementById('order-total').textContent = `Rs. ${orderTotal}`;
                     document.getElementById('order-email').textContent = email;
+                    document.getElementById('order-phone').textContent = phone;
+                    document.getElementById('order-address').textContent = address;
                     
                     updateCartBadge();
                     showToast('🎉 Order placed successfully! Check your email.', 'success');
                 } else {
-                    showToast('Order failed. Please try again.', 'error');
+                    showToast('Order failed: ' + (adminResult.message || 'Please try again.'), 'error');
                     if (submitBtn) {
                         submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
                         submitBtn.disabled = false;
                     }
                 }
             } catch (error) {
-                showToast('Network error. Check your connection.', 'error');
+                showToast('Network error: ' + error.message, 'error');
                 if (submitBtn) {
                     submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
                     submitBtn.disabled = false;
@@ -514,7 +535,6 @@
             }
         }
 
-        // Make functions global
         window.submitOrder = submitOrder;
     </script>
 </body>

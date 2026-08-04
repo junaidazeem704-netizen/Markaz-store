@@ -1,7 +1,7 @@
 // ============================================
 // CONFIGURATION
 // ============================================
-const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac'; // Get from https://api.imgbb.com/
+const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
 const CATEGORY_AUTO_DETECT = true;
 const AUTO_CREATE_CATEGORIES = true;
 
@@ -27,35 +27,34 @@ let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts
 let currentFilterProducts = [...products];
 
 // ============================================
-// MODAL ADMIN HANDLER
+// DOM READY - INITIALIZATION
 // ============================================
-function toggleAdminModal() {
-    const modal = document.getElementById('adminModal');
-    if (!modal) return;
-    const isVisible = modal.style.display === 'flex';
-    modal.style.display = isVisible ? 'none' : 'flex';
-    if (!isVisible) renderAdminPanels();
-}
-
-// ============================================
-// IMAGE CHANGE (Thumbnail)
-// ============================================
-function changeImage(idx, src) {
-    const el = document.getElementById(`img-${idx}`);
-    if (el) el.src = src;
-}
-
-// ============================================
-// RENDER PRODUCTS & CATEGORIES
-// ============================================
-window.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     renderCategoriesBar();
     displayProducts(products);
     setupCategorySuggestions('new-cat-name', 'category-suggestions');
     setupCategorySuggestions('p-category-input', 'category-suggestions-product');
+    
+    // Setup tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            const tabId = this.dataset.tab;
+            const content = document.getElementById(`tab-${tabId}`);
+            if (content) content.classList.add('active');
+            if (tabId === 'manage-products') renderAdminPanels();
+        });
+    });
+    
+    // Sync categories after load
     setTimeout(() => syncAllCategories(), 500);
 });
 
+// ============================================
+// RENDER CATEGORIES BAR
+// ============================================
 function renderCategoriesBar() {
     const catBar = document.getElementById('category-bar');
     if (!catBar) return;
@@ -67,6 +66,9 @@ function renderCategoriesBar() {
     catBar.innerHTML = html;
 }
 
+// ============================================
+// DISPLAY PRODUCTS
+// ============================================
 function displayProducts(list) {
     const container = document.getElementById('products-container');
     if (!container) return;
@@ -74,7 +76,10 @@ function displayProducts(list) {
     currentFilterProducts = list;
 
     if (!list.length) {
-        container.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#9ca3af;">No products found.</p>`;
+        container.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#6a6a82;padding:60px 0;">
+            <i class="fas fa-box-open" style="font-size:2.4rem;display:block;margin-bottom:12px;"></i>
+            No products found.
+        </p>`;
         return;
     }
 
@@ -91,17 +96,22 @@ function displayProducts(list) {
         cards += `
             <div class="card">
                 <span class="badge">${p.category || 'General'}</span>
-                <img id="img-${i}" src="${imgs[0]}" class="p-img" loading="lazy" alt="Product">
+                <img id="img-${i}" src="${imgs[0]}" class="p-img" loading="lazy" alt="${p.title}">
                 ${thumbs}
                 <h3>${p.title}</h3>
                 <div class="price">Rs. ${p.price}</div>
-                <button class="wa-btn" onclick="goToCheckout(${i})">Order Now</button>
+                <button class="wa-btn" onclick="goToCheckout(${i})">
+                    <i class="fas fa-shopping-bag"></i> Order Now
+                </button>
             </div>
         `;
     });
     container.innerHTML = cards;
 }
 
+// ============================================
+// FILTER CATEGORY
+// ============================================
 function filterCategory(cat, btn) {
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
@@ -111,7 +121,15 @@ function filterCategory(cat, btn) {
 }
 
 // ============================================
-// CHECKOUT NAVIGATION
+// CHANGE IMAGE (Thumbnail Click)
+// ============================================
+function changeImage(idx, src) {
+    const el = document.getElementById(`img-${idx}`);
+    if (el) el.src = src;
+}
+
+// ============================================
+// GO TO CHECKOUT
 // ============================================
 function goToCheckout(index) {
     const item = currentFilterProducts[index];
@@ -127,16 +145,13 @@ function goToCheckout(index) {
 // ============================================
 // CHECKOUT PAGE SYNC
 // ============================================
-window.addEventListener('DOMContentLoaded', () => {
-    const titleEl = document.getElementById('checkout-product-title');
-    if (!titleEl) return;
-
+if (document.getElementById('checkout-product-title')) {
     const item = JSON.parse(localStorage.getItem('checkoutItem'));
     if (item) {
-        titleEl.innerText = item.title;
+        document.getElementById('checkout-product-title').innerText = item.title;
         document.getElementById('checkout-product-price').innerText = `Rs. ${item.price}`;
     }
-});
+}
 
 // ============================================
 // SUBMIT ORDER (Nodemailer)
@@ -148,22 +163,20 @@ async function submitOrder() {
     const item = JSON.parse(localStorage.getItem('checkoutItem'));
 
     if (!name || !phone || !address || !item) {
-        alert('Please fill all fields (Name, Phone, Address)!');
+        showToast('Please fill all fields (Name, Phone, Address)!', 'error');
         return;
     }
 
     const submitBtn = document.querySelector('.btn-whatsapp');
     if (submitBtn) {
-        submitBtn.innerText = "Processing Order...";
+        submitBtn.innerText = "Processing...";
         submitBtn.disabled = true;
     }
 
     try {
         const response = await fetch('/api/send-order', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 title: item.title,
                 price: item.price,
@@ -181,15 +194,16 @@ async function submitOrder() {
             
             document.getElementById('checkout-form-box').style.display = 'none';
             document.getElementById('success-box').style.display = 'block';
+            showToast('🎉 Order placed successfully!', 'success');
         } else {
-            alert('Order failed. Please try again.');
+            showToast('Order failed. Please try again.', 'error');
             if (submitBtn) {
                 submitBtn.innerText = "✅ Confirm Order";
                 submitBtn.disabled = false;
             }
         }
     } catch (error) {
-        alert('Network error. Please check your internet connection.');
+        showToast('Network error. Check your connection.', 'error');
         if (submitBtn) {
             submitBtn.innerText = "✅ Confirm Order";
             submitBtn.disabled = false;
@@ -206,9 +220,7 @@ function ensureCategoryExists(categoryName) {
     const trimmed = categoryName.trim();
     const existing = categories.find(c => c.toLowerCase() === trimmed.toLowerCase());
     
-    if (existing) {
-        return existing;
-    }
+    if (existing) return existing;
     
     categories.push(trimmed);
     localStorage.setItem('myCategories', JSON.stringify(categories));
@@ -216,19 +228,16 @@ function ensureCategoryExists(categoryName) {
     if (typeof renderAdminPanels === 'function') renderAdminPanels();
     if (typeof renderAdminPanel === 'function') renderAdminPanel();
     
-    if (typeof showToast === 'function') {
-        showToast(`🏷️ New category "${trimmed}" created!`, 'success');
-    }
-    
+    showToast(`🏷️ New category "${trimmed}" created!`, 'success');
     return trimmed;
 }
 
 function detectCategoryFromTitle(title) {
     const keywords = {
         'Watches': ['watch', 'wristwatch', 'chrono', 'timepiece', 'smartwatch', 'analog', 'digital watch'],
-        'Clothing': ['shirt', 'pants', 'jeans', 'jacket', 'coat', 'dress', 'skirt', 't-shirt', 'hoodie', 'sweater', 'kurta', 'shalwar'],
-        'Electronics': ['phone', 'laptop', 'computer', 'tablet', 'tv', 'television', 'speaker', 'headphone', 'charger', 'cable', 'battery'],
-        'Shoes': ['shoe', 'sneaker', 'boot', 'sandal', 'loafer', 'heel'],
+        'Clothing': ['shirt', 'pants', 'jeans', 'jacket', 'coat', 'dress', 'skirt', 't-shirt', 'hoodie', 'sweater', 'kurta', 'shalwar', 'cloth'],
+        'Electronics': ['phone', 'laptop', 'computer', 'tablet', 'tv', 'television', 'speaker', 'headphone', 'charger', 'cable', 'battery', 'electronic'],
+        'Shoes': ['shoe', 'sneaker', 'boot', 'sandal', 'loafer', 'heel', 'footwear'],
         'Accessories': ['bag', 'belt', 'cap', 'hat', 'scarf', 'glove', 'sunglass', 'jewelry', 'necklace', 'ring'],
         'Home': ['furniture', 'lamp', 'chair', 'table', 'bed', 'sofa', 'curtain', 'cushion', 'pillow'],
         'Books': ['book', 'novel', 'magazine', 'textbook', 'story', 'comic'],
@@ -246,7 +255,6 @@ function detectCategoryFromTitle(title) {
             }
         }
     }
-    
     return null;
 }
 
@@ -269,9 +277,9 @@ function syncAllCategories() {
         renderCategoriesBar();
         if (typeof renderAdminPanel === 'function') renderAdminPanel();
         if (typeof renderAdminPanels === 'function') renderAdminPanels();
-        alert(`✅ ${created} new categories created from existing products!`);
+        showToast(`✅ ${created} new categories created!`, 'success');
     } else {
-        alert('All categories are already synced!');
+        showToast('All categories are already synced!', 'info');
     }
 }
 
@@ -339,36 +347,31 @@ function createNewCategory(name) {
             }
             if (typeof renderAdminPanel === 'function') renderAdminPanel();
             if (typeof renderAdminPanels === 'function') renderAdminPanels();
-            if (typeof showToast === 'function') {
-                showToast(`✅ Category "${trimmed}" created!`, 'success');
-            }
         }
     }
 }
 
 // ============================================
-// ADD PRODUCT (with Auto-Category)
+// ADD PRODUCT (with IMGBB Upload)
 // ============================================
 async function addProduct() {
     const title = document.getElementById('p-title').value.trim();
     const price = document.getElementById('p-price').value.trim();
-    let category = document.getElementById('p-category')?.value || 'General';
+    let category = document.getElementById('p-category-input')?.value.trim() || 'General';
     const fileInput = document.getElementById('p-img-file');
-    const urlInput = document.getElementById('p-img1') || document.getElementById('p-img-url');
+    const urlInput = document.getElementById('p-img1');
 
     if (!title || !price) {
-        alert('Product Title and Price are required!');
+        showToast('Product Title and Price are required!', 'error');
         return;
     }
 
-    if (!category || category === 'new' || category === '') {
-        category = 'General';
-    }
-
+    // Ensure category exists
     category = ensureCategoryExists(category);
 
     let imageSrc = '';
 
+    // Try file upload via IMGBB
     if (fileInput && fileInput.files && fileInput.files[0]) {
         try {
             const formData = new FormData();
@@ -380,14 +383,15 @@ async function addProduct() {
             });
 
             const result = await response.json();
+            
             if (result.success) {
                 imageSrc = result.data.url;
             } else {
-                alert('Image upload failed. Please try again or use URL.');
+                showToast('Image upload failed: ' + (result.error?.message || 'Unknown error'), 'error');
                 return;
             }
         } catch (e) {
-            alert('Image upload error. Please check your connection.');
+            showToast('Image upload error. Check your connection.', 'error');
             return;
         }
     } else if (urlInput && urlInput.value.trim()) {
@@ -395,62 +399,61 @@ async function addProduct() {
     }
 
     if (!imageSrc) {
-        alert('Please upload an image or enter a URL.');
+        showToast('Please upload an image or enter a URL.', 'error');
         return;
     }
 
+    // Add product
     products.push({ title, price, category, images: [imageSrc] });
     
     try {
         localStorage.setItem('myProducts', JSON.stringify(products));
     } catch (e) {
-        alert('Storage full! Delete some old products.');
+        showToast('Storage full! Delete some old products.', 'error');
         products.pop();
         return;
     }
 
+    // Clear form
     document.getElementById('p-title').value = '';
     document.getElementById('p-price').value = '';
+    document.getElementById('p-category-input').value = '';
     if (fileInput) fileInput.value = '';
     if (urlInput) urlInput.value = '';
 
+    // Update UI
     displayProducts(products);
-    
     if (typeof renderAdminPanels === 'function') renderAdminPanels();
     if (typeof renderAdminPanel === 'function') renderAdminPanel();
     
-    alert(`✅ Product added successfully in "${category}" category!`);
+    showToast(`✅ Product added in "${category}" category!`, 'success');
 }
 
+// ============================================
+// ADD PRODUCT WITH AUTO-DETECT
+// ============================================
 async function addProductSmart() {
     const title = document.getElementById('p-title').value.trim();
     const price = document.getElementById('p-price').value.trim();
     
     if (!title || !price) {
-        alert('Product Title and Price are required!');
+        showToast('Product Title and Price are required!', 'error');
         return;
     }
     
+    // Detect category from title
     let detectedCategory = detectCategoryFromTitle(title);
     
     if (detectedCategory) {
-        const categorySelect = document.getElementById('p-category');
-        if (categorySelect) {
-            detectedCategory = ensureCategoryExists(detectedCategory);
-            const options = categorySelect.options;
-            for (let i = 0; i < options.length; i++) {
-                if (options[i].value === detectedCategory) {
-                    categorySelect.selectedIndex = i;
-                    break;
-                }
-            }
-            
-            if (typeof showToast === 'function') {
-                showToast(`🔍 Category "${detectedCategory}" detected from title!`, 'info');
-            }
+        detectedCategory = ensureCategoryExists(detectedCategory);
+        const input = document.getElementById('p-category-input');
+        if (input) {
+            input.value = detectedCategory;
         }
+        showToast(`🔍 Category "${detectedCategory}" detected from title!`, 'info');
     }
     
+    // Add product
     await addProduct();
 }
 
@@ -458,11 +461,13 @@ async function addProductSmart() {
 // ADMIN PANEL RENDER
 // ============================================
 function renderAdminPanels() {
+    // Update category dropdown
     const select = document.getElementById('p-category');
     if (select) {
         select.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
+    // Category list
     const catList = document.getElementById('categories-manage-list');
     if (catList) {
         catList.innerHTML = categories.map((c, i) => `
@@ -473,6 +478,7 @@ function renderAdminPanels() {
         `).join('');
     }
 
+    // Product list
     const prodList = document.getElementById('admin-products-list');
     if (prodList) {
         prodList.innerHTML = products.map((p, i) => `
@@ -485,11 +491,13 @@ function renderAdminPanels() {
 }
 
 function renderAdminPanel() {
+    // Update category dropdown
     const select = document.getElementById('p-category');
     if (select) {
         select.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
+    // Category tags
     const catList = document.getElementById('categories-list');
     if (catList) {
         catList.innerHTML = categories.map((c, i) => `
@@ -500,6 +508,7 @@ function renderAdminPanel() {
         `).join('');
     }
 
+    // Product list
     const prodList = document.getElementById('admin-products-list');
     const emptyMsg = document.getElementById('empty-products');
     if (prodList) {
@@ -518,7 +527,9 @@ function renderAdminPanel() {
                         </div>
                     </div>
                     <div class="actions">
-                        <button class="btn-danger" onclick="deleteProduct(${i})">Delete</button>
+                        <button class="btn-danger" onclick="deleteProduct(${i})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </div>
                 </div>
             `).join('');
@@ -552,13 +563,11 @@ function addCategory() {
         renderCategoriesBar();
         if (typeof renderAdminPanel === 'function') renderAdminPanel();
         if (typeof renderAdminPanels === 'function') renderAdminPanels();
-        if (typeof showToast === 'function') {
-            showToast('Category added!', 'success');
-        }
+        showToast('Category added!', 'success');
     } else if (!name) {
-        alert('Please enter a category name.');
+        showToast('Please enter a category name.', 'error');
     } else {
-        alert('Category already exists.');
+        showToast('Category already exists.', 'error');
     }
 }
 
@@ -569,9 +578,7 @@ function deleteCategory(index) {
         renderCategoriesBar();
         if (typeof renderAdminPanel === 'function') renderAdminPanel();
         if (typeof renderAdminPanels === 'function') renderAdminPanels();
-        if (typeof showToast === 'function') {
-            showToast('Category deleted.', 'success');
-        }
+        showToast('Category deleted.', 'success');
     }
 }
 
@@ -585,20 +592,26 @@ function deleteProduct(index) {
         displayProducts(products);
         if (typeof renderAdminPanel === 'function') renderAdminPanel();
         if (typeof renderAdminPanels === 'function') renderAdminPanels();
-        if (typeof showToast === 'function') {
-            showToast('Product deleted.', 'success');
-        }
+        showToast('Product deleted.', 'success');
     }
 }
 
 // ============================================
-// RESET STORAGE
+// TOGGLE ADMIN MODAL
 // ============================================
-function resetStorage() {
-    if (confirm('⚠️ This will delete ALL data. Continue?')) {
-        localStorage.clear();
-        alert('Storage Cleared!');
-        location.reload();
+function toggleAdminModal() {
+    const modal = document.getElementById('adminModal');
+    if (!modal) return;
+    
+    const isVisible = modal.style.display === 'flex';
+    modal.style.display = isVisible ? 'none' : 'flex';
+    
+    if (!isVisible) {
+        renderAdminPanels();
+        setTimeout(() => {
+            setupCategorySuggestions('new-cat-name', 'category-suggestions');
+            setupCategorySuggestions('p-category-input', 'category-suggestions-product');
+        }, 100);
     }
 }
 
@@ -611,14 +624,39 @@ function showToast(message, type = 'success') {
         alert(message);
         return;
     }
+    
     const msgEl = document.getElementById('toast-message');
+    const titleEl = toast.querySelector('.toast-title');
+    
     msgEl.textContent = message;
-    toast.className = `toast ${type}`;
+    
+    const titles = {
+        success: '✅ Success!',
+        error: '❌ Error!',
+        info: 'ℹ️ Info',
+        warning: '⚠️ Warning'
+    };
+    if (titleEl) titleEl.textContent = titles[type] || titles.success;
+    
+    toast.className = 'toast';
+    if (type) toast.classList.add(type);
     toast.classList.add('show');
+    
     clearTimeout(toast._timeout);
     toast._timeout = setTimeout(() => {
         toast.classList.remove('show');
-    }, 3000);
+    }, 4000);
+}
+
+// ============================================
+// RESET STORAGE
+// ============================================
+function resetStorage() {
+    if (confirm('⚠️ This will delete ALL data. Continue?')) {
+        localStorage.clear();
+        showToast('Storage cleared! Refreshing...', 'warning');
+        setTimeout(() => location.reload(), 1000);
+    }
 }
 
 // ============================================
@@ -644,3 +682,6 @@ window.filterCategory = filterCategory;
 window.goToCheckout = goToCheckout;
 window.submitOrder = submitOrder;
 window.changeImage = changeImage;
+window.displayProducts = displayProducts;
+window.renderCategoriesBar = renderCategoriesBar;
+window.setupCategorySuggestions = setupCategorySuggestions;

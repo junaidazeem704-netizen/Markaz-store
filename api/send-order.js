@@ -19,7 +19,7 @@ module.exports = async function handler(req, res) {
         }
     });
 
-    // Admin Email
+    // Admin Notification Email
     const mailOptions = {
         from: `"${storeName}" <${process.env.MY_GMAIL}>`,
         to: process.env.MY_GMAIL,
@@ -29,9 +29,52 @@ module.exports = async function handler(req, res) {
                 <div style="text-align: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
                     <h1 style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${storeName}</h1>
                     <p style="color: #a0a0b8; font-size: 14px;">New Order Received</p>
+                    <span style="background: #ef4444; color: white; padding: 4px 16px; border-radius: 100px; font-size: 12px; font-weight: 600;">NEW ORDER</span>
                 </div>
                 
                 <div style="padding: 20px 0;">
                     <div style="background: #1a1a2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06);">
                         <h2 style="font-size: 16px; font-weight: 600; color: #6366f1; margin-bottom: 12px;">🛍️ Order Details</h2>
-                        <p style
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Order ID:</strong> ${orderId}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Product:</strong> ${title}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Category:</strong> ${category}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Price:</strong> Rs. ${price}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Order Date:</strong> ${new Date().toLocaleString()}</p>
+                    </div>
+                    
+                    <div style="background: #1a1a2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06);">
+                        <h2 style="font-size: 16px; font-weight: 600; color: #6366f1; margin-bottom: 12px;">👤 Customer Details</h2>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Name:</strong> ${name}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Email:</strong> ${email}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Phone:</strong> ${phone}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Address:</strong> ${address}</p>
+                        ${notes && notes !== 'N/A' ? `<p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Notes:</strong> ${notes}</p>` : ''}
+                    </div>
+                    
+                    <div style="background: #1a1a2e; border-radius: 8px; padding: 16px; border: 1px solid rgba(255,255,255,0.06);">
+                        <h2 style="font-size: 16px; font-weight: 600; color: #6366f1; margin-bottom: 12px;">⚡ Quick Actions</h2>
+                        <p style="color: #a0a0b8; font-size: 14px;">
+                            <a href="mailto:${email}" style="color: #6366f1; text-decoration: none;">📧 Email Customer</a><br>
+                            <a href="tel:${phone}" style="color: #6366f1; text-decoration: none;">📞 Call Customer</a>
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                    <p style="color: #6a6a82; font-size: 12px;">
+                        This is an automated notification from ${storeName}<br>
+                        ${storeEmail}
+                    </p>
+                </div>
+            </div>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        return res.status(200).json({ success: true, message: 'Order email sent to admin!' });
+    } catch (error) {
+        console.error('Email error:', error);
+        return res.status(500).json({ success: false, message: 'Failed to send email' });
+    }
+};

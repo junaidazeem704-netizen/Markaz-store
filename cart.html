@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart - Markaz Store</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .cart-page {
+            padding: 100px 24px 60px;
+            min-height: 100vh;
+        }
+        .cart-page .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .cart-page .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .cart-page .section-header h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+        .cart-item:hover {
+            border-color: var(--accent);
+        }
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+        }
+        .cart-item .details {
+            flex: 1;
+        }
+        .cart-item .details h3 {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        .cart-item .details .meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 2px;
+        }
+        .cart-item .details .meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .cart-item .details .meta .color-dot {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .cart-item .price {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 1.1rem;
+            min-width: 80px;
+            text-align: right;
+        }
+        .cart-item .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cart-item .quantity-control button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+        .cart-item .quantity-control button:hover {
+            border-color: var(--accent);
+        }
+        .cart-item .quantity-control span {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .cart-item .remove-btn {
+            color: var(--danger);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            padding: 8px;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+        .cart-item .remove-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            transform: scale(1.1);
+        }
+        .cart-total {
+            background: var(--bg-card);
+            border: var(--border);
+            border-radius: var(--radius-md);
+            padding: 24px 28px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .cart-total .total-label {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        .cart-total .total-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .cart-total .checkout-btn {
+            padding: 14px 36px;
+            font-size: 1.05rem;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .empty-cart i {
+            font-size: 4rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 16px;
+        }
+        .empty-cart h2 {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+        .empty-cart p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-wrap: wrap;
+                padding: 14px;
+            }
+            .cart-item img {
+                width: 60px;
+                height: 60px;
+            }
+            .cart-item .price {
+                min-width: auto;
+                text-align: left;
+            }
+            .cart-total {
+                flex-direction: column;
+                text-align: center;
+            }
+            .cart-total .checkout-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        @media (max-width: 480px) {
+            .cart-item .details .meta {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-store-alt"></i>
+                    <span>Markaz</span>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="nav-btn" onclick="window.location.href='admin.html'">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                </button>
+                <button class="nav-btn cart-btn" onclick="window.location.href='cart.html'">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge" id="cart-badge">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Page -->
+    <section class="cart-page">
+        <div class="container">
+            <div class="section-header">
+                <h1>Your <span class="gradient-text">Cart</span></h1>
+                <p>Review your items before checkout</p>
+            </div>
+            <div id="cart-container"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top:0;">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-store-alt"></i>
+                        <span>Markaz</span>
+                    </div>
+                    <p>Your trusted destination for premium products in Pakistan.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Categories</h4>
+                    <div id="footer-categories"></div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+                    <p><i class="fas fa-envelope"></i> info@markazstore.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Markaz Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">Success!</span>
+            <span class="toast-message" id="toast-message">Product added to cart</span>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.classList.remove('show')">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // ============================================
+        // CART PAGE - COMPLETE
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCart();
+            updateCartBadge();
+            renderFooterCategories();
+        });
+
+        function renderCart() {
+            const container = document.getElementById('cart-container');
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h2>Your cart is empty</h2>
+                        <p>Start shopping to add items to your cart</p>
+                        <button class="btn-primary" onclick="window.location.href='products.html'">
+                            <i class="fas fa-store"></i> Browse Products
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                const itemTotal = parseInt(item.price) * item.quantity;
+                total += itemTotal;
+                
+                html += `
+                    <div class="cart-item">
+                        <img src="${item.image || 'https://via.placeholder.com/80'}" alt="${item.title}" />
+                        <div class="details">
+                            <h3>${item.title}</h3>
+                            <div class="meta">
+                                <span>
+                                    <i class="fas fa-tag"></i> ${item.category || 'General'}
+                                </span>
+                                <span>
+                                    <i class="fas fa-palette"></i> 
+                                    <span class="color-dot" style="background:${item.selectedColor?.toLowerCase() || '#888'};"></span>
+                                    ${item.selectedColor || 'N/A'}
+                                </span>
+                                <span>
+                                    <i class="fas fa-ruler"></i> ${item.selectedSize || 'N/A'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="quantity-control">
+                            <button onclick="updateQuantity(${index}, -1)">−</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="updateQuantity(${index}, 1)">+</button>
+                        </div>
+                        <div class="price">Rs. ${itemTotal}</div>
+                        <button class="remove-btn" onclick="removeFromCart(${index})" title="Remove item">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="cart-total">
+                    <div>
+                        <span class="total-label">Total:</span>
+                        <span class="total-price">Rs. ${total}</span>
+                    </div>
+                    <button class="btn-primary checkout-btn" onclick="proceedToCheckout()">
+                        <i class="fas fa-credit-card"></i> Proceed to Checkout
+                    </button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        function updateQuantity(index, delta) {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            cart[index].quantity = Math.max(1, cart[index].quantity + delta);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateCartBadge();
+        }
+        
+        function removeFromCart(index) {
+            if (confirm('Remove this item from cart?')) {
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                cart.splice(index, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                renderCart();
+                updateCartBadge();
+                showToast('Item removed from cart', 'info');
+            }
+        }
+        
+        function proceedToCheckout() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (cart.length === 0) {
+                showToast('Cart is empty!', 'warning');
+                return;
+            }
+            localStorage.setItem('checkoutItems', JSON.stringify(cart));
+            window.location.href = 'checkout.html';
+        }
+        
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                badge.textContent = cart.length;
+            }
+        }
+        
+        // Make functions global
+        window.updateQuantity = updateQuantity;
+        window.removeFromCart = removeFromCart;
+        window.proceedToCheckout = proceedToCheckout;
+        window.renderCart = renderCart;
+    </script>
+</body>
+</html>

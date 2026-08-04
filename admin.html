@@ -3,49 +3,26 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard - Markaz Store</title>
+    <title>Admin Panel - Markaz Store</title>
     <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        :root {
-            --admin-bg: #0b1120;
-            --admin-card: #1a2332;
-            --admin-border: #2a3a4a;
-            --admin-accent: #3b82f6;
-            --admin-success: #10b981;
-            --admin-danger: #ef4444;
-            --admin-warning: #f59e0b;
-            --text-muted: #94a3b8;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background: var(--admin-bg);
-            color: white;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .admin-container {
-            max-width: 1200px;
+        /* Admin Panel Specific Styles */
+        .admin-wrapper {
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 20px;
         }
 
-        /* Header */
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 30px;
-            background: var(--admin-card);
-            border-radius: 20px;
-            border: 1px solid var(--admin-border);
+            background: var(--bg-card);
+            border: var(--border);
+            border-radius: var(--radius-lg);
             margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 15px;
@@ -54,246 +31,371 @@
         .admin-header h1 {
             font-size: 1.8rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-header h1 i {
+            color: var(--accent);
         }
 
         .admin-header-actions {
             display: flex;
             gap: 12px;
-            align-items: center;
             flex-wrap: wrap;
         }
 
-        .admin-header-actions a {
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 8px 18px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.05);
-            transition: 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .admin-header-actions a:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
+        .admin-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
 
-        .stat-card {
-            background: var(--admin-card);
-            border: 1px solid var(--admin-border);
-            border-radius: 16px;
-            padding: 20px 25px;
-            transition: 0.3s;
+        .admin-stat-card {
+            background: var(--bg-card);
+            border: var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            transition: var(--transition);
         }
 
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--admin-accent);
+        .admin-stat-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
         }
 
-        .stat-card .label {
+        .admin-stat-card .label {
             font-size: 0.8rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .stat-card .value {
+        .admin-stat-card .value {
             font-size: 2rem;
             font-weight: 700;
-            margin-top: 5px;
+            margin-top: 4px;
+            color: var(--accent);
         }
 
-        .stat-card .value.blue { color: var(--admin-accent); }
-        .stat-card .value.green { color: var(--admin-success); }
-        .stat-card .value.orange { color: var(--admin-warning); }
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
 
-        /* Admin Cards */
         .admin-card {
-            background: var(--admin-card);
-            border: 1px solid var(--admin-border);
-            border-radius: 16px;
-            padding: 25px 30px;
-            margin-bottom: 25px;
+            background: var(--bg-card);
+            border: var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px 28px;
+            margin-bottom: 24px;
+        }
+
+        .admin-card.full {
+            grid-column: 1 / -1;
         }
 
         .admin-card h2 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .admin-card h2 .badge-count {
-            background: var(--admin-accent);
+        .admin-card h2 i {
+            color: var(--accent);
+        }
+
+        .admin-card .badge {
+            background: var(--accent);
             color: white;
             font-size: 0.7rem;
             padding: 2px 12px;
-            border-radius: 20px;
+            border-radius: 100px;
+            margin-left: 8px;
         }
 
-        /* Form Elements */
-        .form-group {
+        /* Form Styles */
+        .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
-        .form-group.full {
-            grid-template-columns: 1fr;
+        .form-row.three {
+            grid-template-columns: 1fr 1fr 1fr;
         }
 
-        .admin-card input,
-        .admin-card select,
-        .admin-card textarea {
-            width: 100%;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group label .required {
+            color: var(--danger);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             padding: 12px 16px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--admin-border);
-            border-radius: 10px;
-            color: white;
+            background: var(--bg-primary);
+            border: var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
             font-size: 0.95rem;
-            transition: 0.3s;
+            font-family: inherit;
+            transition: var(--transition);
             outline: none;
         }
 
-        .admin-card input:focus,
-        .admin-card select:focus {
-            border-color: var(--admin-accent);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        .admin-card input::placeholder {
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
             color: var(--text-muted);
         }
 
-        .admin-card select option {
-            background: var(--admin-bg);
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
         }
 
-        /* Suggestions */
-        .suggestions-container {
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Multiple Images Upload */
+        .image-upload-area {
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
             position: relative;
-            width: 100%;
         }
 
-        .suggestions-dropdown {
+        .image-upload-area:hover {
+            border-color: var(--accent);
+        }
+
+        .image-upload-area input[type="file"] {
             position: absolute;
-            top: calc(100% + 4px);
+            top: 0;
             left: 0;
             right: 0;
-            background: var(--admin-card);
-            border: 1px solid var(--admin-border);
-            border-radius: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1000;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            bottom: 0;
+            opacity: 0;
+            cursor: pointer;
         }
 
-        .suggestion-item {
-            padding: 10px 16px;
-            cursor: pointer;
-            transition: 0.2s;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+        .image-upload-area i {
+            font-size: 2.4rem;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .image-upload-area p {
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
-        .suggestion-item:hover {
-            background: rgba(255,255,255,0.08);
+        .image-upload-area .sub {
+            color: var(--text-muted);
+            font-size: 0.75rem;
         }
 
-        .suggestion-item.new-category {
-            color: var(--admin-accent);
-            font-weight: 500;
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
         }
 
-        .suggestion-item.new-category:hover {
-            background: rgba(59, 130, 246, 0.1);
+        .image-preview-item {
+            position: relative;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: var(--bg-primary);
+            border: var(--border);
         }
 
-        .suggestions-dropdown::-webkit-scrollbar {
-            width: 4px;
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .suggestions-dropdown::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .suggestions-dropdown::-webkit-scrollbar-thumb {
-            background: var(--admin-accent);
-            border-radius: 10px;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--admin-accent), #6366f1);
-            color: white;
+        .image-preview-item .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.7);
             border: none;
-            padding: 12px 28px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-danger {
-            background: var(--admin-danger);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .image-preview-item .remove-img:hover {
+            background: var(--danger);
+        }
+
+        /* Options (Size & Color) */
+        .options-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .option-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px 6px 18px;
+            background: var(--bg-primary);
+            border: var(--border);
+            border-radius: 100px;
             font-size: 0.85rem;
         }
 
-        .btn-danger:hover {
-            opacity: 0.8;
-            transform: scale(0.98);
-        }
-
-        .btn-success {
-            background: var(--admin-success);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
+        .option-tag .remove {
             cursor: pointer;
-            transition: 0.3s;
+            color: var(--danger);
+            background: none;
+            border: none;
+            font-size: 1rem;
         }
 
-        .btn-success:hover {
-            opacity: 0.8;
-            transform: translateY(-2px);
+        .option-input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .option-input-row input {
+            flex: 1;
+            padding: 8px 14px;
+            background: var(--bg-primary);
+            border: var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .option-input-row button {
+            padding: 8px 16px;
+        }
+
+        /* Product List */
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .product-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            border: var(--border);
+            transition: var(--transition);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .product-list-item:hover {
+            border-color: var(--border-hover);
+        }
+
+        .product-list-item .info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .product-list-item .info img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+        }
+
+        .product-list-item .info .details .title {
+            font-weight: 500;
+        }
+
+        .product-list-item .info .details .meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .product-list-item .info .details .meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .product-list-item .actions {
+            display: flex;
+            gap: 8px;
         }
 
         .btn-sm {
             padding: 6px 14px;
             font-size: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 2.4rem;
+            display: block;
+            margin-bottom: 12px;
         }
 
         /* Category Tags */
@@ -307,304 +409,221 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255,255,255,0.05);
             padding: 6px 14px 6px 18px;
-            border-radius: 20px;
-            border: 1px solid var(--admin-border);
+            background: var(--bg-primary);
+            border: var(--border);
+            border-radius: 100px;
+            font-size: 0.85rem;
         }
 
         .category-tag .remove {
             cursor: pointer;
-            color: var(--admin-danger);
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: 0.3s;
+            color: var(--danger);
             background: none;
             border: none;
-            color: #ef4444;
+            font-size: 1rem;
+            transition: var(--transition);
         }
 
         .category-tag .remove:hover {
             transform: scale(1.2);
         }
 
-        /* Product List */
-        .product-list {
-            display: grid;
-            gap: 10px;
-        }
-
-        .product-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 16px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.3s;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .product-item:hover {
-            background: rgba(255,255,255,0.06);
-        }
-
-        .product-item .info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .product-item .info img {
-            width: 45px;
-            height: 45px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .product-item .info .title {
-            font-weight: 500;
-        }
-
-        .product-item .info .category {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            background: rgba(255,255,255,0.05);
-            padding: 2px 10px;
-            border-radius: 12px;
-        }
-
-        .product-item .actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--admin-card);
-            border: 1px solid var(--admin-border);
-            padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            z-index: 999;
-            transform: translateY(120px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            max-width: 400px;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success { border-left: 4px solid var(--admin-success); }
-        .toast.error { border-left: 4px solid var(--admin-danger); }
-        .toast.info { border-left: 4px solid var(--admin-accent); }
-
-        #empty-products {
-            color: var(--text-muted);
-            text-align: center;
-            padding: 20px;
-            display: none;
-        }
-
         /* Responsive */
+        @media (max-width: 1024px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
-            .form-group {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .form-row.three {
                 grid-template-columns: 1fr;
             }
             .admin-header {
                 flex-direction: column;
                 text-align: center;
             }
-            .product-item {
+            .admin-header-actions {
+                justify-content: center;
+            }
+            .product-list-item {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .product-item .actions {
+            .product-list-item .actions {
                 justify-content: flex-end;
-            }
-            .admin-header-actions {
-                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="admin-container">
-    <!-- Header -->
-    <header class="admin-header">
-        <h1>⚙️ Store Management</h1>
-        <div class="admin-header-actions">
-            <a href="index.html">🏠 View Store</a>
-            <span style="color: var(--text-muted);">|</span>
-            <button onclick="resetStorage()" class="btn-danger btn-sm">🧹 Reset Data</button>
-        </div>
-    </header>
+    <div class="admin-wrapper">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <h1>
+                <i class="fas fa-crown"></i>
+                Store Management
+            </h1>
+            <div class="admin-header-actions">
+                <a href="index.html" class="btn-secondary btn-sm">
+                    <i class="fas fa-store"></i> View Store
+                </a>
+                <button class="btn-danger btn-sm" onclick="resetStorage()">
+                    <i class="fas fa-trash-alt"></i> Reset Data
+                </button>
+            </div>
+        </header>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="label">📦 Total Products</div>
-            <div class="value blue" id="total-products">0</div>
+        <!-- Stats -->
+        <div class="admin-stats">
+            <div class="admin-stat-card">
+                <div class="label">📦 Total Products</div>
+                <div class="value" id="total-products">0</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="label">🏷️ Categories</div>
+                <div class="value" id="total-categories">0</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="label">📊 Orders</div>
+                <div class="value" id="total-orders">0</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="label">👥 Customers</div>
+                <div class="value" id="total-customers">0</div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="label">🏷️ Categories</div>
-            <div class="value green" id="total-categories">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="label">📊 Orders Today</div>
-            <div class="value orange" id="total-orders">0</div>
-        </div>
-    </div>
 
-    <!-- Add Product -->
-    <div class="admin-card">
-        <h2>📦 Add New Product</h2>
-        
-        <div class="form-group">
-            <input type="text" id="p-title" placeholder="Product Title *" />
-            <input type="number" id="p-price" placeholder="Price (PKR) *" />
-        </div>
-        
-        <div class="form-group">
-            <div style="position: relative; flex:1;">
-                <div class="suggestions-container">
-                    <input type="text" id="p-category-input" placeholder="Category (auto-detected from title)" />
-                    <div class="suggestions-dropdown" id="category-suggestions-product"></div>
+        <!-- Admin Grid -->
+        <div class="admin-grid">
+            <!-- Add Product -->
+            <div class="admin-card full">
+                <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Product Title <span class="required">*</span></label>
+                        <input type="text" id="p-title" placeholder="e.g. Premium Smart Watch" />
+                    </div>
+                    <div class="form-group">
+                        <label>Price (PKR) <span class="required">*</span></label>
+                        <input type="number" id="p-price" placeholder="e.g. 2500" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category <span class="required">*</span></label>
+                        <div class="suggestions-container">
+                            <input type="text" id="p-category-input" placeholder="Type or auto-detect" />
+                            <div class="suggestions-dropdown" id="category-suggestions-product"></div>
+                        </div>
+                        <input type="hidden" id="p-category" />
+                        <small style="color:var(--text-muted);font-size:0.75rem;">
+                            <i class="fas fa-magic" style="color:var(--accent);"></i> Auto-detects from product title
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label>Multiple Images <span class="required">*</span></label>
+                        <div class="image-upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload images</p>
+                            <span class="sub">PNG, JPG, WEBP (Max 5 images)</span>
+                            <input type="file" id="p-images" accept="image/*" multiple />
+                        </div>
+                        <div class="image-preview-grid" id="image-preview-grid"></div>
+                        <input type="hidden" id="p-images-data" value="[]" />
+                    </div>
+                </div>
+
+                <!-- Size Options -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-ruler"></i> Sizes (Clothing)</label>
+                        <div class="options-group" id="sizes-container"></div>
+                        <div class="option-input-row">
+                            <input type="text" id="size-input" placeholder="e.g. S, M, L, XL" />
+                            <button class="btn-secondary btn-sm" onclick="addOption('size')">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <input type="hidden" id="p-sizes" value="[]" />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-palette"></i> Colors</label>
+                        <div class="options-group" id="colors-container"></div>
+                        <div class="option-input-row">
+                            <input type="text" id="color-input" placeholder="e.g. Black, White, Blue" />
+                            <button class="btn-secondary btn-sm" onclick="addOption('color')">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <input type="hidden" id="p-colors" value="[]" />
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn-primary" onclick="addProduct()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                    <button class="btn-secondary" onclick="addProductSmart()">
+                        <i class="fas fa-magic"></i> Auto-Detect
+                    </button>
                 </div>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="file" id="p-img-file" accept="image/*" style="flex:1;" />
-                <span style="color: var(--text-muted); font-size: 0.8rem;">or</span>
-                <input type="text" id="p-img-url" placeholder="Image URL" style="flex:1;" />
+
+            <!-- Manage Categories -->
+            <div class="admin-card">
+                <h2><i class="fas fa-tags"></i> Categories</h2>
+                <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:150px;">
+                        <div class="suggestions-container">
+                            <input type="text" id="new-cat-name" placeholder="New category..." />
+                            <div class="suggestions-dropdown" id="category-suggestions"></div>
+                        </div>
+                    </div>
+                    <button class="btn-primary btn-sm" onclick="addCategory()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+                <div class="category-tags" id="categories-list"></div>
             </div>
-        </div>
 
-        <input type="hidden" id="p-category" />
-
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="btn-primary" onclick="addProductSmart()">🧠 Auto-Detect & Add</button>
-            <button class="btn-success" onclick="syncAllCategories()">🔄 Sync Categories</button>
-        </div>
-    </div>
-
-    <!-- Manage Categories -->
-    <div class="admin-card">
-        <h2>🏷️ Manage Categories</h2>
-        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-            <div style="flex:1; min-width: 200px; position: relative;">
-                <div class="suggestions-container">
-                    <input type="text" id="new-cat-name" placeholder="New category name" />
-                    <div class="suggestions-dropdown" id="category-suggestions"></div>
+            <!-- Manage Products -->
+            <div class="admin-card">
+                <h2>
+                    <i class="fas fa-box"></i> All Products
+                    <span class="badge" id="product-count">0</span>
+                </h2>
+                <div class="product-list" id="admin-products-list"></div>
+                <div class="empty-state" id="empty-products">
+                    <i class="fas fa-box-open"></i>
+                    No products added yet
                 </div>
             </div>
-            <button class="btn-success" onclick="addCategory()">Add Category</button>
         </div>
-        <div class="category-tags" id="categories-list"></div>
     </div>
 
-    <!-- Product List -->
-    <div class="admin-card">
-        <h2>🗑️ Manage Products <span class="badge-count" id="product-count">0</span></h2>
-        <div class="product-list" id="admin-products-list"></div>
-        <p id="empty-products">No products added yet.</p>
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">Success!</span>
+            <span class="toast-message" id="toast-message">Product added successfully</span>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.classList.remove('show')">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
-</div>
 
-<!-- Toast -->
-<div class="toast" id="toast">
-    <span id="toast-message">Success!</span>
-</div>
-
-<script src="script.js"></script>
-
-<script>
-    // Admin panel initialization
-    document.addEventListener('DOMContentLoaded', function() {
-        renderAdminPanel();
-        updateStats();
-        setupCategorySuggestions('new-cat-name', 'category-suggestions');
-        setupCategorySuggestions('p-category-input', 'category-suggestions-product');
-    });
-
-    // Override addProduct for admin panel
-    const originalAddProduct = window.addProduct;
-    window.addProduct = async function() {
-        const title = document.getElementById('p-title').value.trim();
-        const price = document.getElementById('p-price').value.trim();
-        let category = document.getElementById('p-category-input').value.trim() || 'General';
-        const fileInput = document.getElementById('p-img-file');
-        const urlInput = document.getElementById('p-img-url');
-
-        if (!title || !price) {
-            showToast('Product Title and Price are required!', 'error');
-            return;
-        }
-
-        category = ensureCategoryExists(category);
-
-        let imageSrc = '';
-
-        if (fileInput && fileInput.files && fileInput.files[0]) {
-            try {
-                const formData = new FormData();
-                formData.append('image', fileInput.files[0]);
-
-                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    imageSrc = result.data.url;
-                } else {
-                    showToast('Image upload failed. Try URL instead.', 'error');
-                    return;
-                }
-            } catch (e) {
-                showToast('Image upload error. Try URL.', 'error');
-                return;
-            }
-        } else if (urlInput && urlInput.value.trim()) {
-            imageSrc = urlInput.value.trim();
-        }
-
-        if (!imageSrc) {
-            showToast('Please upload an image or enter a URL.', 'error');
-            return;
-        }
-
-        products.push({ title, price, category, images: [imageSrc] });
-
-        try {
-            localStorage.setItem('myProducts', JSON.stringify(products));
-        } catch (e) {
-            showToast('Storage full! Delete some products.', 'error');
-            products.pop();
-            return;
-        }
-
-        document.getElementById('p-title').value = '';
-        document.getElementById('p-price').value = '';
-        document.getElementById('p-category-input').value = '';
-        if (fileInput) fileInput.value = '';
-        if (urlInput) urlInput.value = '';
-
-        renderAdminPanel();
-        if (typeof displayProducts === 'function') {
-            displayProducts(products);
-        }
-        showToast(`✅ Product added in "${category}" category!`, 'success');
-    };
-</script>
+    <script src="script.js"></script>
+    <script src="admin-script.js"></script>
 </body>
 </html>

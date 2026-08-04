@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-        /* Admin Specific Styles */
         :root {
             --admin-bg: #0b1120;
             --admin-card: #1a2332;
@@ -16,12 +15,21 @@
             --admin-success: #10b981;
             --admin-danger: #ef4444;
             --admin-warning: #f59e0b;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
             background: var(--admin-bg);
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: white;
             padding: 20px;
+            min-height: 100vh;
         }
 
         .admin-container {
@@ -55,6 +63,7 @@
             display: flex;
             gap: 12px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .admin-header-actions a {
@@ -176,6 +185,61 @@
             background: var(--admin-bg);
         }
 
+        /* Suggestions */
+        .suggestions-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .suggestion-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .suggestion-item.new-category {
+            color: var(--admin-accent);
+            font-weight: 500;
+        }
+
+        .suggestion-item.new-category:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar-thumb {
+            background: var(--admin-accent);
+            border-radius: 10px;
+        }
+
         /* Buttons */
         .btn-primary {
             background: linear-gradient(135deg, var(--admin-accent), #6366f1);
@@ -224,6 +288,44 @@
 
         .btn-success:hover {
             opacity: 0.8;
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+        }
+
+        /* Category Tags */
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .category-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.05);
+            padding: 6px 14px 6px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--admin-border);
+        }
+
+        .category-tag .remove {
+            cursor: pointer;
+            color: var(--admin-danger);
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            background: none;
+            border: none;
+            color: #ef4444;
+        }
+
+        .category-tag .remove:hover {
+            transform: scale(1.2);
         }
 
         /* Product List */
@@ -279,36 +381,37 @@
             gap: 8px;
         }
 
-        /* Category Tags */
-        .category-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .category-tag {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.05);
-            padding: 6px 14px 6px 18px;
-            border-radius: 20px;
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--admin-card);
             border: 1px solid var(--admin-border);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            z-index: 999;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 400px;
         }
 
-        .category-tag .remove {
-            cursor: pointer;
-            color: var(--admin-danger);
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: 0.3s;
-            background: none;
-            border: none;
-            color: #ef4444;
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
         }
 
-        .category-tag .remove:hover {
-            transform: scale(1.2);
+        .toast.success { border-left: 4px solid var(--admin-success); }
+        .toast.error { border-left: 4px solid var(--admin-danger); }
+        .toast.info { border-left: 4px solid var(--admin-accent); }
+
+        #empty-products {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 20px;
+            display: none;
         }
 
         /* Responsive */
@@ -327,31 +430,10 @@
             .product-item .actions {
                 justify-content: flex-end;
             }
+            .admin-header-actions {
+                justify-content: center;
+            }
         }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--admin-card);
-            border: 1px solid var(--admin-border);
-            padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            z-index: 999;
-            transform: translateY(120px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success { border-left: 4px solid var(--admin-success); }
-        .toast.error { border-left: 4px solid var(--admin-danger); }
     </style>
 </head>
 <body>
@@ -362,260 +444,17 @@
         <h1>⚙️ Store Management</h1>
         <div class="admin-header-actions">
             <a href="index.html">🏠 View Store</a>
-            <span style="color: var(--text-muted); font-size: 0.85rem;">|</span>
-            <button onclick="resetStorage()" class="btn-danger" style="padding: 8px 16px; font-size: 0.8rem;">🧹 Reset Data</button>
+            <span style="color: var(--text-muted);">|</span>
+            <button onclick="resetStorage()" class="btn-danger btn-sm">🧹 Reset Data</button>
         </div>
     </header>
 
     <!-- Stats -->
-    <div class="stats-grid" id="stats-grid">
+    <div class="stats-grid">
         <div class="stat-card">
             <div class="label">📦 Total Products</div>
             <div class="value blue" id="total-products">0</div>
         </div>
         <div class="stat-card">
             <div class="label">🏷️ Categories</div>
-            <div class="value green" id="total-categories">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="label">📊 Orders Today</div>
-            <div class="value orange" id="total-orders">0</div>
-        </div>
-    </div>
-
-    <!-- Add Product -->
-    <div class="admin-card">
-        <h2>📦 Add New Product</h2>
-        <div class="form-group">
-            <input type="text" id="p-title" placeholder="Product Title *" />
-            <input type="number" id="p-price" placeholder="Price (PKR) *" />
-        </div>
-        <div class="form-group">
-            <select id="p-category"></select>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="file" id="p-img-file" accept="image/*" style="flex:1;" />
-                <span style="color: var(--text-muted); font-size: 0.8rem;">or URL</span>
-                <input type="text" id="p-img-url" placeholder="Image URL" style="flex:1;" />
-            </div>
-        </div>
-        <button class="btn-primary" onclick="addProduct()">➕ Add Product</button>
-    </div>
-
-    <!-- Manage Categories -->
-    <div class="admin-card">
-        <h2>🏷️ Manage Categories</h2>
-        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-            <input type="text" id="new-cat-name" placeholder="New category name" style="flex:1; min-width: 150px;" />
-            <button class="btn-success" onclick="addCategory()">Add Category</button>
-        </div>
-        <div class="category-tags" id="categories-list"></div>
-    </div>
-
-    <!-- Product List -->
-    <div class="admin-card">
-        <h2>🗑️ Manage Products <span class="badge-count" id="product-count">0</span></h2>
-        <div class="product-list" id="admin-products-list"></div>
-        <p id="empty-products" style="color: var(--text-muted); text-align: center; padding: 20px; display: none;">No products added yet.</p>
-    </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast">
-    <span id="toast-message">Success!</span>
-</div>
-
-<script src="script.js"></script>
-<script>
-    // Admin page specific initialization
-    document.addEventListener('DOMContentLoaded', function() {
-        renderAdminPanel();
-        updateStats();
-    });
-
-    function renderAdminPanel() {
-        // Categories dropdown
-        const select = document.getElementById('p-category');
-        if (select) {
-            select.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
-        }
-
-        // Categories list
-        const catList = document.getElementById('categories-list');
-        if (catList) {
-            catList.innerHTML = categories.map((c, i) => `
-                <span class="category-tag">
-                    ${c}
-                    <button class="remove" onclick="deleteCategory(${i})">×</button>
-                </span>
-            `).join('');
-        }
-
-        // Products list
-        const prodList = document.getElementById('admin-products-list');
-        const emptyMsg = document.getElementById('empty-products');
-        if (prodList) {
-            if (products.length === 0) {
-                prodList.innerHTML = '';
-                if (emptyMsg) emptyMsg.style.display = 'block';
-            } else {
-                if (emptyMsg) emptyMsg.style.display = 'none';
-                prodList.innerHTML = products.map((p, i) => `
-                    <div class="product-item">
-                        <div class="info">
-                            <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/45'}" alt="${p.title}" />
-                            <div>
-                                <div class="title">${p.title}</div>
-                                <span class="category">${p.category || 'General'} • Rs. ${p.price}</span>
-                            </div>
-                        </div>
-                        <div class="actions">
-                            <button class="btn-danger" onclick="deleteProduct(${i})">Delete</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        updateStats();
-    }
-
-    function updateStats() {
-        document.getElementById('total-products').textContent = products.length;
-        document.getElementById('total-categories').textContent = categories.length;
-        // Orders count - can be fetched from localStorage or API
-        document.getElementById('total-orders').textContent = localStorage.getItem('orderCount') || 0;
-        document.getElementById('product-count').textContent = products.length;
-    }
-
-    // Override addProduct for admin panel
-    const originalAddProduct = window.addProduct;
-    window.addProduct = async function() {
-        const title = document.getElementById('p-title').value.trim();
-        const price = document.getElementById('p-price').value.trim();
-        const category = document.getElementById('p-category').value;
-        const fileInput = document.getElementById('p-img-file');
-        const urlInput = document.getElementById('p-img-url');
-
-        if (!title || !price) {
-            showToast('Product Title and Price are required!', 'error');
-            return;
-        }
-
-        let imageSrc = '';
-
-        // Try file upload first
-        if (fileInput && fileInput.files && fileInput.files[0]) {
-            try {
-                const formData = new FormData();
-                formData.append('image', fileInput.files[0]);
-
-                const response = await fetch('https://api.imgbb.com/1/upload?key=YOUR_IMGBB_API_KEY', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    imageSrc = result.data.url;
-                } else {
-                    showToast('Image upload failed. Try URL instead.', 'error');
-                    return;
-                }
-            } catch (e) {
-                showToast('Image upload error. Try URL.', 'error');
-                return;
-            }
-        } else if (urlInput && urlInput.value.trim()) {
-            imageSrc = urlInput.value.trim();
-        }
-
-        if (!imageSrc) {
-            showToast('Please upload an image or enter a URL.', 'error');
-            return;
-        }
-
-        products.push({ title, price, category, images: [imageSrc] });
-
-        try {
-            localStorage.setItem('myProducts', JSON.stringify(products));
-        } catch (e) {
-            showToast('Storage full! Delete some products.', 'error');
-            products.pop();
-            return;
-        }
-
-        // Clear form
-        document.getElementById('p-title').value = '';
-        document.getElementById('p-price').value = '';
-        if (fileInput) fileInput.value = '';
-        if (urlInput) urlInput.value = '';
-
-        renderAdminPanel();
-        // Also update main store if page is open
-        if (typeof displayProducts === 'function') {
-            displayProducts(products);
-        }
-        showToast('Product added successfully! ✅', 'success');
-    };
-
-    // Toast function
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        const msgEl = document.getElementById('toast-message');
-        msgEl.textContent = message;
-        toast.className = `toast ${type}`;
-        toast.classList.add('show');
-        clearTimeout(toast._timeout);
-        toast._timeout = setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    // Update the delete functions to re-render admin
-    const originalDeleteProduct = window.deleteProduct;
-    window.deleteProduct = function(index) {
-        if (confirm('Delete this product?')) {
-            products.splice(index, 1);
-            localStorage.setItem('myProducts', JSON.stringify(products));
-            renderAdminPanel();
-            if (typeof displayProducts === 'function') {
-                displayProducts(products);
-            }
-            showToast('Product deleted.', 'success');
-        }
-    };
-
-    const originalDeleteCategory = window.deleteCategory;
-    window.deleteCategory = function(index) {
-        if (confirm('Delete this category?')) {
-            categories.splice(index, 1);
-            localStorage.setItem('myCategories', JSON.stringify(categories));
-            renderAdminPanel();
-            if (typeof renderCategoriesBar === 'function') {
-                renderCategoriesBar();
-            }
-            showToast('Category deleted.', 'success');
-        }
-    };
-
-    const originalAddCategory = window.addCategory;
-    window.addCategory = function() {
-        const name = document.getElementById('new-cat-name').value.trim();
-        if (name && !categories.includes(name)) {
-            categories.push(name);
-            localStorage.setItem('myCategories', JSON.stringify(categories));
-            document.getElementById('new-cat-name').value = '';
-            renderAdminPanel();
-            if (typeof renderCategoriesBar === 'function') {
-                renderCategoriesBar();
-            }
-            showToast('Category added!', 'success');
-        } else if (!name) {
-            showToast('Please enter a category name.', 'error');
-        } else {
-            showToast('Category already exists.', 'error');
-        }
-    };
-</script>
-</body>
-</html>
+            <div class="value green" id="total-categories">

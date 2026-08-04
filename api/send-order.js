@@ -97,4 +97,4 @@ module.exports = async function handler(req, res) {
             message: 'Failed to send email: ' + error.message 
         });
     }
-};
+}; 

@@ -154,4 +154,205 @@
             padding-left: 42px;
         }
 
-        .checkout-
+        .checkout-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .checkout-actions .btn-primary {
+            width: 100%;
+            justify-content: center;
+            padding: 16px;
+            font-size: 1.05rem;
+        }
+
+        .checkout-actions .btn-secondary {
+            width: 100%;
+            justify-content: center;
+            padding: 16px;
+            font-size: 1.05rem;
+        }
+
+        /* Success Box */
+        .success-box {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+        }
+
+        .success-box .icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 16px;
+        }
+
+        .success-box h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: var(--text-secondary);
+            max-width: 400px;
+            margin: 0 auto 24px;
+        }
+
+        .success-box .order-details {
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            text-align: left;
+            border: var(--border);
+        }
+
+        .success-box .order-details .detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .success-box .order-details .detail:last-child {
+            border-bottom: none;
+        }
+
+        .success-box .order-details .detail .label {
+            color: var(--text-secondary);
+        }
+
+        .success-box .order-details .detail .value {
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-card {
+                padding: 24px 20px;
+            }
+            .checkout-form .form-row {
+                grid-template-columns: 1fr;
+            }
+            .checkout-actions {
+                grid-template-columns: 1fr;
+            }
+            .checkout-summary {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-wrapper">
+        <div class="checkout-card">
+            <!-- Checkout Header -->
+            <div class="checkout-header">
+                <div class="logo-icon">
+                    <i class="fas fa-store-alt"></i>
+                </div>
+                <h1>Checkout</h1>
+                <p>Complete your order details below</p>
+            </div>
+
+            <!-- Checkout Form -->
+            <div id="checkout-form-box">
+                <!-- Order Summary -->
+                <div class="checkout-summary">
+                    <div class="product-info">
+                        <span class="title" id="checkout-product-title">Product Title</span>
+                        <span class="category" id="checkout-product-category">Category</span>
+                    </div>
+                    <div class="price" id="checkout-product-price">Rs. 0</div>
+                </div>
+
+                <!-- Form -->
+                <form class="checkout-form" id="checkout-form" onsubmit="return false;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="c-name" placeholder="Enter your full name" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address <span class="required">*</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="c-email" placeholder="your@email.com" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Phone Number <span class="required">*</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" id="c-phone" placeholder="e.g. 03001234567" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Delivery Address <span class="required">*</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" id="c-address" placeholder="Complete street address, city" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Order Notes (Optional)</label>
+                        <textarea id="c-notes" placeholder="Any special instructions for delivery..."></textarea>
+                    </div>
+
+                    <div class="checkout-actions">
+                        <button class="btn-primary" onclick="submitOrder()">
+                            <i class="fas fa-check-circle"></i> Place Order
+                        </button>
+                        <button class="btn-secondary" onclick="window.location.href='index.html'">
+                            <i class="fas fa-arrow-left"></i> Back to Store
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Success Box -->
+            <div class="success-box" id="success-box">
+                <div class="icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Order Placed! 🎉</h2>
+                <p>Your order has been confirmed. We'll send you a confirmation email shortly.</p>
+                <div class="order-details" id="order-details">
+                    <div class="detail">
+                        <span class="label">Order ID</span>
+                        <span class="value" id="order-id">#MK-2024-001</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Product</span>
+                        <span class="value" id="order-product">-</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Total</span>
+                        <span class="value" id="order-total">-</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Email</span>
+                        <span class="value" id="order-email">-</span>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="window.location.href='index.html'">
+                    <i class="fas fa-store"></i> Continue Shopping
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

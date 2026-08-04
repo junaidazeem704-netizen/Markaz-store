@@ -1,9 +1,8 @@
 {
   "name": "markaz-store",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Premium E-Commerce Store",
   "dependencies": {
-    "nodemailer": "^6.9.0",
-    "node-fetch": "^2.6.7"
+    "nodemailer": "^6.9.0"
   }
 }

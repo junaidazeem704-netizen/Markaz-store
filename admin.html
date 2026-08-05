@@ -1139,10 +1139,9 @@
         // ============================================
         
         // ============================================
-        // CONFIGURATION - FROM script.js
+        // CONFIGURATION
         // ============================================
         const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
-        const STORE_NAME = 'Markaz Store';
         
         // ============================================
         // STATE
@@ -1166,7 +1165,7 @@
         });
 
         // ============================================
-        // IMAGE UPLOAD
+        // IMAGE UPLOAD - FIXED
         // ============================================
         function setupImageUpload() {
             const imageInput = document.getElementById('p-images');
@@ -1183,7 +1182,10 @@
                     reader.onload = function(event) {
                         uploadedImages.push(event.target.result);
                         renderImagePreviews();
-                        analyzeImagesForColors();
+                        // Auto-analyze after upload
+                        setTimeout(() => {
+                            analyzeImagesForColors();
+                        }, 500);
                     };
                     reader.readAsDataURL(file);
                 }
@@ -1315,21 +1317,7 @@
                 'Navy': { r: 0, g: 0, b: 128 },
                 'Gold': { r: 255, g: 215, b: 0 },
                 'Silver': { r: 192, g: 192, b: 192 },
-                'Beige': { r: 245, g: 245, b: 220 },
-                'Maroon': { r: 128, g: 0, b: 0 },
-                'Olive': { r: 128, g: 128, b: 0 },
-                'Teal': { r: 0, g: 128, b: 128 },
-                'Cyan': { r: 0, g: 255, b: 255 },
-                'Magenta': { r: 255, g: 0, b: 255 },
-                'Lime': { r: 0, g: 255, b: 0 },
-                'Indigo': { r: 75, g: 0, b: 130 },
-                'Violet': { r: 238, g: 130, b: 238 },
-                'Coral': { r: 255, g: 127, b: 80 },
-                'Salmon': { r: 250, g: 128, b: 114 },
-                'Turquoise': { r: 64, g: 224, b: 208 },
-                'Lavender': { r: 230, g: 230, b: 250 },
-                'Cream': { r: 255, g: 253, b: 208 },
-                'Chocolate': { r: 210, g: 105, b: 30 }
+                'Beige': { r: 245, g: 245, b: 220 }
             };
             
             let closestColor = 'Unknown';
@@ -1430,7 +1418,7 @@
         }
 
         // ============================================
-        // ADD PRODUCT - FIXED
+        // ADD PRODUCT - FIXED WITH IMAGE UPLOAD
         // ============================================
         async function addProduct() {
             const title = document.getElementById('p-title').value.trim();
@@ -1445,7 +1433,9 @@
             // Ensure category exists
             category = ensureCategoryExists(category);
 
-            // Get images
+            // ============================================
+            // FIXED: Get images from preview
+            // ============================================
             const imagesData = document.getElementById('p-images-data');
             const uploadedImages = JSON.parse(imagesData.value || '[]');
             
@@ -1454,12 +1444,15 @@
                 return;
             }
 
-            // Upload images to IMGBB
+            // ============================================
+            // FIXED: Upload images to IMGBB
+            // ============================================
             let imageUrls = [];
-            showToast('Uploading images...', 'info');
+            showToast('📤 Uploading images to IMGBB...', 'info');
             
             for (let img of uploadedImages) {
                 try {
+                    // Convert base64 to blob
                     const response = await fetch(img);
                     const blob = await response.blob();
                     const formData = new FormData();
@@ -1474,11 +1467,11 @@
                     if (result.success) {
                         imageUrls.push(result.data.url);
                     } else {
-                        showToast('Image upload failed.', 'error');
+                        showToast('Image upload failed: ' + (result.error?.message || 'Unknown error'), 'error');
                         return;
                     }
                 } catch (e) {
-                    showToast('Image upload error.', 'error');
+                    showToast('Image upload error: ' + e.message, 'error');
                     return;
                 }
             }
@@ -1486,9 +1479,7 @@
             // Get sizes
             const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
             
-            // ============================================
-            // FIXED: Get colors from detected + manual
-            // ============================================
+            // Get colors from detected + manual
             const manualColors = JSON.parse(document.getElementById('p-colors').value || '[]');
             const detectedColors = JSON.parse(document.getElementById('p-colors-detected').value || '[]');
             
@@ -1606,6 +1597,7 @@
             
             if (uploadedImages.length === 0) {
                 grid.innerHTML = '';
+                document.getElementById('p-images-data').value = '[]';
                 return;
             }
             
@@ -1615,6 +1607,9 @@
                     <button class="remove-img" onclick="removeImage(${i})">
                         <i class="fas fa-times"></i>
                     </button>
+                    <span style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,0.6);padding:2px 8px;border-radius:4px;font-size:0.6rem;">
+                        ${i+1}
+                    </span>
                 </div>
             `).join('');
             
@@ -1630,6 +1625,7 @@
                 detectedColors = [];
                 renderDetectedColors();
                 document.getElementById('p-colors-detected').value = '[]';
+                document.getElementById('total-colors').textContent = 0;
             }
         }
 
@@ -1699,7 +1695,7 @@
         }
 
         // ============================================
-        // CATEGORY MANAGEMENT (from script.js)
+        // CATEGORY MANAGEMENT
         // ============================================
         function ensureCategoryExists(categoryName) {
             if (!categoryName || categoryName.trim() === '') return 'General';
@@ -1784,7 +1780,7 @@
         }
 
         // ============================================
-        // CATEGORY SUGGESTIONS (from script.js)
+        // CATEGORY SUGGESTIONS
         // ============================================
         function setupCategorySuggestions(inputId, containerId) {
             const input = document.getElementById(inputId);
@@ -1843,7 +1839,7 @@
         }
 
         // ============================================
-        // TOAST (from script.js)
+        // TOAST
         // ============================================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
@@ -1880,7 +1876,7 @@
         }
 
         // ============================================
-        // FUNCTIONS FROM script.js (needed for display)
+        // FUNCTIONS FROM script.js
         // ============================================
         function updateHeroStats() {
             const totalProducts = document.getElementById('total-products-display');
@@ -1910,7 +1906,7 @@
         function displayProducts(list) {
             const container = document.getElementById('products-container');
             if (!container) return;
-            // This is just a placeholder - actual display is in products.html
+            // This is handled in products.html
         }
 
         function filterCategory(cat, btn) {

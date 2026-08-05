@@ -1176,9 +1176,13 @@
         // ADD PRODUCT - FIXED
         // ============================================
         async function addProduct() {
+            console.log('🔴 addProduct() called');
+            
             const title = document.getElementById('p-title').value.trim();
             const price = document.getElementById('p-price').value.trim();
             let category = document.getElementById('p-category-input').value.trim() || 'General';
+            
+            console.log('Title:', title, 'Price:', price, 'Category:', category);
             
             if (!title || !price) {
                 showToast('Title and Price required!', 'error');
@@ -1191,6 +1195,8 @@
             // Get images
             const imagesData = document.getElementById('p-images-data');
             const images = JSON.parse(imagesData.value || '[]');
+            
+            console.log('Images:', images.length);
             
             if (images.length === 0) {
                 showToast('Please upload at least one image!', 'error');
@@ -1205,6 +1211,7 @@
             
             for (let img of images) {
                 try {
+                    console.log('Uploading image...');
                     // Convert base64 to blob
                     const response = await fetch(img);
                     const blob = await response.blob();
@@ -1217,6 +1224,7 @@
                     });
                     
                     const result = await uploadRes.json();
+                    console.log('IMGBB Result:', result);
                     
                     if (result.success) {
                         imageUrls.push(result.data.url);
@@ -1225,10 +1233,13 @@
                         return;
                     }
                 } catch (e) {
+                    console.error('Upload error:', e);
                     showToast('Upload error: ' + e.message, 'error');
                     return;
                 }
             }
+
+            console.log('✅ Images uploaded:', imageUrls.length);
 
             // Get sizes
             const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
@@ -1254,9 +1265,13 @@
                 createdAt: new Date().toISOString()
             };
 
+            console.log('📦 Product object:', product);
+
             // Save to products array
             products.push(product);
             localStorage.setItem('myProducts', JSON.stringify(products));
+
+            console.log('✅ Product saved! Total products:', products.length);
 
             // Clear form
             document.getElementById('p-title').value = '';

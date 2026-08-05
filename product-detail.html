@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* Same styles as before */
         .product-detail-page {
             padding: 100px 24px 60px;
             min-height: 100vh;
@@ -16,7 +17,6 @@
             max-width: 1280px;
             margin: 0 auto;
         }
-        
         .product-detail-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -26,13 +26,11 @@
             border-radius: var(--radius-lg);
             padding: 40px;
         }
-        
         .product-images {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-        
         .product-main-image {
             width: 100%;
             aspect-ratio: 1;
@@ -41,24 +39,20 @@
             background: var(--bg-primary);
             border: var(--border);
         }
-        
         .product-main-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-        
         .product-main-image img:hover {
             transform: scale(1.02);
         }
-        
         .product-thumbnails {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             gap: 12px;
         }
-        
         .product-thumbnails .thumb {
             aspect-ratio: 1;
             border-radius: var(--radius-sm);
@@ -68,29 +62,24 @@
             transition: all 0.3s ease;
             background: var(--bg-primary);
         }
-        
         .product-thumbnails .thumb:hover {
             border-color: var(--accent);
             transform: scale(1.05);
         }
-        
         .product-thumbnails .thumb.active {
             border-color: var(--accent);
             box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
         }
-        
         .product-thumbnails .thumb img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
         .product-info {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        
         .product-info .badge {
             display: inline-block;
             padding: 4px 16px;
@@ -102,89 +91,104 @@
             color: var(--accent);
             width: fit-content;
         }
-        
         .product-info h1 {
             font-size: 2rem;
             font-weight: 800;
             line-height: 1.2;
         }
-        
         .product-info .price-large {
             font-size: 2.4rem;
             font-weight: 700;
             color: var(--accent);
         }
-        
         .product-info .description {
             color: var(--text-secondary);
             line-height: 1.8;
         }
         
+        /* Color Picker - Enhanced */
         .color-picker {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
             margin: 4px 0;
         }
-        
         .color-picker .color-option {
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            border: 2px solid var(--admin-border);
+            border: 3px solid var(--admin-border);
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
         .color-picker .color-option:hover {
             transform: scale(1.1);
         }
-        
         .color-picker .color-option.active {
             border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
         }
-        
         .color-picker .color-option.active::after {
             content: '✓';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             color: white;
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+        .color-picker .color-option .color-label {
+            position: absolute;
+            bottom: -22px;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
         }
         
+        /* Size Picker - Enhanced */
         .size-picker {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
         }
-        
         .size-picker .size-option {
-            padding: 8px 20px;
+            padding: 10px 24px;
             background: var(--bg-primary);
-            border: 1px solid var(--admin-border);
+            border: 2px solid var(--admin-border);
             border-radius: var(--radius-sm);
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            min-width: 50px;
+            text-align: center;
         }
-        
         .size-picker .size-option:hover {
             border-color: var(--accent);
             color: var(--text-primary);
+            transform: translateY(-2px);
         }
-        
         .size-picker .size-option.active {
             background: var(--accent);
             border-color: var(--accent);
             color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .selected-info {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            border: var(--border);
+        }
+        .selected-info strong {
+            color: var(--text-primary);
         }
         
         .quantity-selector {
@@ -193,7 +197,6 @@
             gap: 16px;
             margin: 4px 0;
         }
-        
         .quantity-selector button {
             width: 40px;
             height: 40px;
@@ -205,37 +208,31 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
         .quantity-selector button:hover {
             border-color: var(--accent);
         }
-        
         .quantity-selector span {
             font-size: 1.2rem;
             font-weight: 600;
             min-width: 40px;
             text-align: center;
         }
-        
         .product-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-top: 8px;
         }
-        
         .product-actions .btn-primary {
             justify-content: center;
             padding: 16px;
             font-size: 1.05rem;
         }
-        
         .product-actions .btn-secondary {
             justify-content: center;
             padding: 16px;
             font-size: 1.05rem;
         }
-        
         .loading-state {
             text-align: center;
             padding: 60px 20px;
@@ -247,7 +244,6 @@
             display: block;
             margin-bottom: 16px;
         }
-        
         @media (max-width: 1024px) {
             .product-detail-wrapper {
                 grid-template-columns: 1fr;
@@ -257,7 +253,6 @@
                 max-height: 500px;
             }
         }
-        
         @media (max-width: 768px) {
             .product-detail-page {
                 padding: 80px 16px 40px;
@@ -278,23 +273,23 @@
                 grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
             }
         }
-        
         @media (max-width: 480px) {
             .product-detail-wrapper {
                 padding: 12px;
             }
             .color-picker .color-option {
-                width: 36px;
-                height: 36px;
+                width: 40px;
+                height: 40px;
+            }
+            .size-picker .size-option {
+                padding: 8px 16px;
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ========================================== -->
-    <!-- NAVBAR -->
-    <!-- ========================================== -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-left">
@@ -322,21 +317,15 @@
         </div>
     </nav>
 
-    <!-- ========================================== -->
-    <!-- PRODUCT DETAIL -->
-    <!-- ========================================== -->
     <section class="product-detail-page">
         <div class="container">
             <div class="product-detail-wrapper" id="product-detail-wrapper">
-                <!-- Loading State -->
                 <div class="loading-state" id="loading-state">
                     <i class="fas fa-spinner fa-spin"></i>
                     <p>Loading product details...</p>
                 </div>
                 
-                <!-- Product Content (Hidden initially) -->
                 <div id="product-content" style="display:none; width:100%;">
-                    <!-- Images -->
                     <div class="product-images">
                         <div class="product-main-image">
                             <img id="main-image" src="" alt="Product Image" />
@@ -344,7 +333,6 @@
                         <div class="product-thumbnails" id="thumbnails"></div>
                     </div>
                     
-                    <!-- Info -->
                     <div class="product-info">
                         <span class="badge" id="product-category">Category</span>
                         <h1 id="product-title">Product Title</h1>
@@ -353,25 +341,29 @@
                         
                         <!-- Colors -->
                         <div>
-                            <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:8px;">
-                                <i class="fas fa-palette"></i> Color <span style="color:var(--danger);">*</span>
+                            <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:10px;">
+                                <i class="fas fa-palette"></i> Select Color <span style="color:var(--danger);">*</span>
                             </label>
                             <div class="color-picker" id="color-picker"></div>
-                            <p id="color-selected" style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Selected: None</p>
+                            <div class="selected-info" id="color-selected" style="margin-top:12px;">
+                                <i class="fas fa-check-circle" style="color:var(--success);"></i> Selected: <strong id="color-name-display">None</strong>
+                            </div>
                         </div>
                         
                         <!-- Sizes -->
                         <div>
-                            <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:8px;">
-                                <i class="fas fa-ruler"></i> Size <span style="color:var(--danger);">*</span>
+                            <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:10px;">
+                                <i class="fas fa-ruler"></i> Select Size <span style="color:var(--danger);">*</span>
                             </label>
                             <div class="size-picker" id="size-picker"></div>
-                            <p id="size-selected" style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Selected: None</p>
+                            <div class="selected-info" id="size-selected" style="margin-top:12px;">
+                                <i class="fas fa-check-circle" style="color:var(--success);"></i> Selected: <strong id="size-name-display">None</strong>
+                            </div>
                         </div>
                         
                         <!-- Quantity -->
                         <div>
-                            <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:8px;">
+                            <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:10px;">
                                 <i class="fas fa-cube"></i> Quantity
                             </label>
                             <div class="quantity-selector">
@@ -381,7 +373,6 @@
                             </div>
                         </div>
                         
-                        <!-- Actions -->
                         <div class="product-actions">
                             <button class="btn-primary" onclick="addToCart()">
                                 <i class="fas fa-shopping-bag"></i> Add to Cart
@@ -396,9 +387,6 @@
         </div>
     </section>
 
-    <!-- ========================================== -->
-    <!-- FOOTER -->
-    <!-- ========================================== -->
     <footer class="footer" style="margin-top:0;">
         <div class="footer-container">
             <div class="footer-grid">
@@ -439,9 +427,6 @@
         </div>
     </footer>
 
-    <!-- ========================================== -->
-    <!-- TOAST -->
-    <!-- ========================================== -->
     <div class="toast" id="toast">
         <div class="toast-icon">
             <i class="fas fa-check-circle"></i>
@@ -458,20 +443,17 @@
     <script src="script.js"></script>
     <script>
         // ============================================
-        // PRODUCT DETAIL PAGE - FIXED
+        // PRODUCT DETAIL PAGE
         // ============================================
         
         let currentProduct = null;
         let selectedColor = null;
         let selectedSize = null;
         let quantity = 1;
-        let selectedImageIndex = 0;
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Update cart badge
             updateCartBadge();
             
-            // Load product from localStorage
             const productData = localStorage.getItem('viewProduct');
             if (!productData) {
                 window.location.href = 'products.html';
@@ -488,24 +470,18 @@
         });
         
         function renderProductDetail(product) {
-            // Hide loading, show content
             document.getElementById('loading-state').style.display = 'none';
             document.getElementById('product-content').style.display = 'grid';
             
-            // Basic info
             document.getElementById('product-title').textContent = product.title;
             document.getElementById('product-price').textContent = `Rs. ${product.price}`;
             document.getElementById('product-category').textContent = product.category || 'General';
             document.getElementById('product-description').textContent = 
-                product.description || `Premium ${product.title} available at Markaz Store. High quality product with best price in Pakistan.`;
+                product.description || `Premium ${product.title} available at Markaz Store.`;
             
-            // Images
             const images = product.images && product.images.length > 0 ? product.images : ['https://via.placeholder.com/600'];
-            const mainImage = document.getElementById('main-image');
-            mainImage.src = images[0];
-            mainImage.alt = product.title;
+            document.getElementById('main-image').src = images[0];
             
-            // Thumbnails
             const thumbnailsContainer = document.getElementById('thumbnails');
             thumbnailsContainer.innerHTML = images.map((img, i) => `
                 <div class="thumb ${i === 0 ? 'active' : ''}" onclick="changeMainImage(${i})">
@@ -513,42 +489,54 @@
                 </div>
             `).join('');
             
-            // Colors
+            // ============================================
+            // COLORS - Enhanced with proper display
+            // ============================================
             const colorPicker = document.getElementById('color-picker');
-            const colors = product.colors && product.colors.length > 0 ? product.colors : ['Default'];
+            const colors = product.colors && product.colors.length > 0 ? product.colors : [];
             
-            colorPicker.innerHTML = colors.map((c, i) => `
-                <div class="color-option ${i === 0 ? 'active' : ''}" 
-                     style="background:${c.toLowerCase()};" 
-                     onclick="selectColor('${c}', ${i})"
-                     title="${c}">
-                </div>
-            `).join('');
-            selectedColor = colors[0];
-            document.getElementById('color-selected').textContent = `Selected: ${selectedColor}`;
+            if (colors.length > 0) {
+                colorPicker.innerHTML = colors.map((c, i) => `
+                    <div class="color-option ${i === 0 ? 'active' : ''}" 
+                         style="background:${c.toLowerCase()};" 
+                         onclick="selectColor('${c}', ${i})"
+                         title="${c}">
+                        <span class="color-label">${c}</span>
+                    </div>
+                `).join('');
+                selectedColor = colors[0];
+                document.getElementById('color-name-display').textContent = selectedColor;
+            } else {
+                colorPicker.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;">No color options available</p>';
+                document.getElementById('color-name-display').textContent = 'N/A';
+            }
             
-            // Sizes
+            // ============================================
+            // SIZES - Enhanced with proper display
+            // ============================================
             const sizePicker = document.getElementById('size-picker');
-            const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : ['Standard'];
+            const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : [];
             
-            sizePicker.innerHTML = sizes.map((s, i) => `
-                <div class="size-option ${i === 0 ? 'active' : ''}" onclick="selectSize('${s}', ${i})">
-                    ${s}
-                </div>
-            `).join('');
-            selectedSize = sizes[0];
-            document.getElementById('size-selected').textContent = `Selected: ${selectedSize}`;
+            if (sizes.length > 0) {
+                sizePicker.innerHTML = sizes.map((s, i) => `
+                    <div class="size-option ${i === 0 ? 'active' : ''}" onclick="selectSize('${s}', ${i})">
+                        ${s}
+                    </div>
+                `).join('');
+                selectedSize = sizes[0];
+                document.getElementById('size-name-display').textContent = selectedSize;
+            } else {
+                sizePicker.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;">Standard size (One size fits all)</p>';
+                document.getElementById('size-name-display').textContent = 'Standard';
+            }
             
-            // Reset quantity
             quantity = 1;
             document.getElementById('quantity-display').textContent = quantity;
         }
         
         function changeMainImage(index) {
-            selectedImageIndex = index;
             const images = currentProduct.images || ['https://via.placeholder.com/600'];
             document.getElementById('main-image').src = images[index];
-            
             document.querySelectorAll('.thumb').forEach((el, i) => {
                 el.classList.toggle('active', i === index);
             });
@@ -559,7 +547,7 @@
             document.querySelectorAll('.color-option').forEach((el, i) => {
                 el.classList.toggle('active', i === index);
             });
-            document.getElementById('color-selected').textContent = `Selected: ${color}`;
+            document.getElementById('color-name-display').textContent = color;
         }
         
         function selectSize(size, index) {
@@ -567,7 +555,7 @@
             document.querySelectorAll('.size-option').forEach((el, i) => {
                 el.classList.toggle('active', i === index);
             });
-            document.getElementById('size-selected').textContent = `Selected: ${size}`;
+            document.getElementById('size-name-display').textContent = size;
         }
         
         function changeQuantity(delta) {
@@ -576,7 +564,7 @@
         }
         
         // ============================================
-        // ADD TO CART - FIXED
+        // ADD TO CART - WITH COLOR & SIZE
         // ============================================
         function addToCart() {
             if (!currentProduct) {
@@ -584,13 +572,16 @@
                 return;
             }
             
-            // Validate color and size selection
-            if (!selectedColor || selectedColor === 'None') {
+            // Check if color is selected
+            const hasColors = currentProduct.colors && currentProduct.colors.length > 0;
+            if (hasColors && !selectedColor) {
                 showToast('Please select a color!', 'warning');
                 return;
             }
             
-            if (!selectedSize || selectedSize === 'None') {
+            // Check if size is selected
+            const hasSizes = currentProduct.sizes && currentProduct.sizes.length > 0;
+            if (hasSizes && !selectedSize) {
                 showToast('Please select a size!', 'warning');
                 return;
             }
@@ -601,15 +592,14 @@
                 price: currentProduct.price,
                 category: currentProduct.category || 'General',
                 image: currentProduct.images && currentProduct.images[0] ? currentProduct.images[0] : 'https://via.placeholder.com/100',
-                selectedColor: selectedColor,
-                selectedSize: selectedSize,
+                selectedColor: selectedColor || 'N/A',
+                selectedSize: selectedSize || 'N/A',
                 quantity: quantity,
                 addedAt: new Date().toISOString()
             };
             
             let cart = JSON.parse(localStorage.getItem('cart') || '[]');
             
-            // Check if same product with same color and size exists
             const existingIndex = cart.findIndex(item => 
                 item.title === cartItem.title && 
                 item.selectedColor === cartItem.selectedColor && 
@@ -621,13 +611,11 @@
                 showToast(`✅ Updated ${currentProduct.title} quantity in cart!`, 'success');
             } else {
                 cart.push(cartItem);
-                showToast(`✅ ${currentProduct.title} added to cart!`, 'success');
+                showToast(`✅ ${currentProduct.title} (${selectedColor}, ${selectedSize}) added to cart!`, 'success');
             }
             
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartBadge();
-            
-            console.log('Cart updated:', cart);
         }
         
         function buyNow() {

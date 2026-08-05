@@ -49,9 +49,6 @@
                 radial-gradient(ellipse at 80% 50%, rgba(139, 92, 246, 0.04), transparent 60%);
         }
 
-        /* =============================================
-           SCROLLBAR
-           ============================================= */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -67,17 +64,12 @@
             background: var(--admin-accent-hover);
         }
 
-        /* =============================================
-           ADMIN WRAPPER
-           ============================================= */
         .admin-wrapper {
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* =============================================
-           ADMIN HEADER
-           ============================================= */
+        /* Header */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -164,9 +156,7 @@
             transform: translateY(-2px);
         }
 
-        /* =============================================
-           STATS CARDS
-           ============================================= */
+        /* Stats */
         .admin-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -212,9 +202,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* =============================================
-           ADMIN GRID
-           ============================================= */
+        /* Grid */
         .admin-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -264,9 +252,7 @@
             margin-left: 8px;
         }
 
-        /* =============================================
-           FORM ELEMENTS
-           ============================================= */
+        /* Form */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -339,9 +325,7 @@
             flex-wrap: wrap;
         }
 
-        /* =============================================
-           BUTTONS
-           ============================================= */
+        /* Buttons */
         .btn-primary {
             display: inline-flex;
             align-items: center;
@@ -392,9 +376,7 @@
             font-size: 0.8rem;
         }
 
-        /* =============================================
-           IMAGE UPLOAD
-           ============================================= */
+        /* Image Upload */
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
             border-radius: var(--admin-radius-sm);
@@ -487,9 +469,7 @@
             background: var(--admin-danger);
         }
 
-        /* =============================================
-           AUTO-DETECT BUTTON
-           ============================================= */
+        /* Auto-Detect */
         .auto-detect-btn {
             background: linear-gradient(135deg, #8b5cf6, #6366f1);
             color: white;
@@ -515,9 +495,7 @@
             transform: none;
         }
 
-        /* =============================================
-           DETECTED COLORS
-           ============================================= */
+        /* Detected Colors */
         .detected-colors {
             display: flex;
             flex-wrap: wrap;
@@ -562,9 +540,7 @@
             transform: scale(1.2);
         }
 
-        /* =============================================
-           IMAGE ANALYSIS PROGRESS
-           ============================================= */
+        /* Progress */
         .image-analysis-progress {
             display: none;
             margin-top: 8px;
@@ -596,9 +572,7 @@
             width: 0%;
         }
 
-        /* =============================================
-           OPTIONS (Sizes & Colors)
-           ============================================= */
+        /* Options */
         .options-group {
             display: flex;
             flex-wrap: wrap;
@@ -659,9 +633,7 @@
             border-color: var(--admin-accent);
         }
 
-        /* =============================================
-           CATEGORY TAGS
-           ============================================= */
+        /* Categories */
         .category-tags {
             display: flex;
             flex-wrap: wrap;
@@ -708,9 +680,7 @@
             flex: 1;
         }
 
-        /* =============================================
-           PRODUCT LIST
-           ============================================= */
+        /* Product List */
         .product-list {
             display: flex;
             flex-direction: column;
@@ -832,9 +802,7 @@
             font-weight: 600;
         }
 
-        /* =============================================
-           SUGGESTIONS
-           ============================================= */
+        /* Suggestions */
         .suggestions-container {
             position: relative;
             width: 100%;
@@ -888,9 +856,7 @@
             font-weight: 500;
         }
 
-        /* =============================================
-           TOAST
-           ============================================= */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -968,9 +934,7 @@
             color: var(--admin-text);
         }
 
-        /* =============================================
-           RESPONSIVE
-           ============================================= */
+        /* Responsive */
         @media (max-width: 1024px) {
             .admin-grid {
                 grid-template-columns: 1fr;
@@ -1026,9 +990,7 @@
 <body>
 
     <div class="admin-wrapper">
-        <!-- ========================================== -->
-        <!-- ADMIN HEADER -->
-        <!-- ========================================== -->
+        <!-- Header -->
         <header class="admin-header">
             <h1>
                 <i class="fas fa-crown"></i>
@@ -1044,9 +1006,7 @@
             </div>
         </header>
 
-        <!-- ========================================== -->
-        <!-- STATS -->
-        <!-- ========================================== -->
+        <!-- Stats -->
         <div class="admin-stats">
             <div class="admin-stat-card">
                 <div class="stat-icon">📦</div>
@@ -1070,13 +1030,9 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- ADMIN GRID -->
-        <!-- ========================================== -->
+        <!-- Admin Grid -->
         <div class="admin-grid">
-            <!-- ========================================== -->
-            <!-- ADD PRODUCT - FULL WIDTH -->
-            <!-- ========================================== -->
+            <!-- Add Product -->
             <div class="admin-card full">
                 <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
                 
@@ -1112,7 +1068,6 @@
                             <input type="file" id="p-images" accept="image/*" multiple />
                         </div>
                         
-                        <!-- Image Analysis Progress -->
                         <div class="image-analysis-progress" id="analysis-progress">
                             <div class="status-text" id="analysis-status">🔍 Analyzing images...</div>
                             <div class="progress-bar">
@@ -1122,7 +1077,6 @@
                         
                         <div class="image-preview-grid" id="image-preview-grid"></div>
                         
-                        <!-- Detected Colors -->
                         <div style="margin-top:8px;">
                             <label style="font-size:0.85rem;font-weight:500;color:var(--admin-text-secondary);">
                                 <i class="fas fa-palette"></i> Detected Colors
@@ -1136,7 +1090,6 @@
                     </div>
                 </div>
 
-                <!-- Sizes & Colors -->
                 <div class="form-row">
                     <div class="form-group">
                         <label><i class="fas fa-ruler"></i> Sizes (Clothing)</label>
@@ -1175,9 +1128,7 @@
                 </div>
             </div>
 
-            <!-- ========================================== -->
-            <!-- CATEGORIES -->
-            <!-- ========================================== -->
+            <!-- Categories -->
             <div class="admin-card">
                 <h2><i class="fas fa-tags"></i> Categories</h2>
                 <div class="category-input-row">
@@ -1192,9 +1143,7 @@
                 <div class="category-tags" id="categories-list"></div>
             </div>
 
-            <!-- ========================================== -->
-            <!-- PRODUCTS LIST -->
-            <!-- ========================================== -->
+            <!-- Products List -->
             <div class="admin-card">
                 <h2>
                     <i class="fas fa-box"></i> All Products
@@ -1213,9 +1162,7 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- TOAST -->
-    <!-- ========================================== -->
+    <!-- Toast -->
     <div class="toast" id="toast">
         <div class="toast-icon">
             <i class="fas fa-check-circle"></i>
@@ -1232,7 +1179,7 @@
     <script src="script.js"></script>
     <script>
         // ============================================
-        // ADMIN PANEL - COMPLETE SCRIPT
+        // ADMIN PANEL - COMPLETE FIXED SCRIPT
         // ============================================
         
         let uploadedImages = [];
@@ -1501,7 +1448,7 @@
         }
 
         // ============================================
-        // ADD PRODUCT
+        // ADD PRODUCT - FIXED
         // ============================================
         async function addProduct() {
             const title = document.getElementById('p-title').value.trim();
@@ -1523,6 +1470,7 @@
                 return;
             }
 
+            // Upload images to IMGBB
             let imageUrls = [];
             showToast('Uploading images...', 'info');
             
@@ -1551,14 +1499,40 @@
                 }
             }
 
+            // Get sizes
             const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
+            
+            // ============================================
+            // FIXED: Get colors from detected + manual
+            // ============================================
             const manualColors = JSON.parse(document.getElementById('p-colors').value || '[]');
             const detectedColors = JSON.parse(document.getElementById('p-colors-detected').value || '[]');
             
-            const allColors = [...new Set([
-                ...detectedColors.map(c => c.name),
-                ...manualColors
-            ])];
+            // Combine both arrays
+            let allColors = [];
+            
+            // Add detected colors (only names)
+            if (detectedColors.length > 0) {
+                detectedColors.forEach(c => {
+                    if (c.name && !allColors.includes(c.name)) {
+                        allColors.push(c.name);
+                    }
+                });
+            }
+            
+            // Add manual colors
+            if (manualColors.length > 0) {
+                manualColors.forEach(c => {
+                    if (c && !allColors.includes(c)) {
+                        allColors.push(c);
+                    }
+                });
+            }
+            
+            // If no colors at all, add default
+            if (allColors.length === 0) {
+                allColors = ['Default'];
+            }
 
             const product = {
                 title: title,

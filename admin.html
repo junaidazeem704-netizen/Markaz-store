@@ -10,12 +10,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js"></script>
     <style>
         /* =============================================
-           ADMIN PANEL - MODERN THEME
+           ADMIN PANEL - COMPLETE STYLES
            ============================================= */
         :root {
             --admin-bg: #0a0a12;
             --admin-card: rgba(26, 26, 46, 0.85);
-            --admin-card-hover: rgba(34, 34, 68, 0.95);
             --admin-border: rgba(255, 255, 255, 0.06);
             --admin-border-hover: rgba(255, 255, 255, 0.12);
             --admin-accent: #6366f1;
@@ -60,9 +59,6 @@
             background: var(--admin-accent);
             border-radius: 10px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--admin-accent-hover);
-        }
 
         .admin-wrapper {
             max-width: 1400px;
@@ -77,18 +73,12 @@
             padding: 20px 32px;
             background: var(--admin-card);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: var(--admin-border);
             border-radius: var(--admin-radius);
             margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 15px;
             box-shadow: var(--admin-shadow);
-            transition: all 0.3s ease;
-        }
-
-        .admin-header:hover {
-            border-color: var(--admin-border-hover);
         }
 
         .admin-header h1 {
@@ -167,7 +157,6 @@
         .admin-stat-card {
             background: var(--admin-card);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: var(--admin-border);
             border-radius: var(--admin-radius);
             padding: 22px 26px;
@@ -212,7 +201,6 @@
         .admin-card {
             background: var(--admin-card);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: var(--admin-border);
             border-radius: var(--admin-radius);
             padding: 28px 32px;
@@ -292,21 +280,14 @@
         }
 
         .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .form-group select:focus {
             border-color: var(--admin-accent);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
             background: rgba(255, 255, 255, 0.06);
         }
 
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
+        .form-group input::placeholder {
             color: var(--admin-text-muted);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 60px;
         }
 
         .form-group small {
@@ -434,11 +415,6 @@
             aspect-ratio: 1;
             background: rgba(255, 255, 255, 0.04);
             border: var(--admin-border);
-            transition: all 0.3s ease;
-        }
-
-        .image-preview-item:hover {
-            border-color: var(--admin-accent);
         }
 
         .image-preview-item img {
@@ -513,11 +489,6 @@
             border: var(--admin-border);
             border-radius: 100px;
             font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .detected-color-chip:hover {
-            border-color: var(--admin-border-hover);
         }
 
         .detected-color-chip .color-dot {
@@ -533,7 +504,6 @@
             background: none;
             border: none;
             font-size: 0.9rem;
-            transition: all 0.3s ease;
         }
 
         .detected-color-chip .remove:hover {
@@ -590,11 +560,6 @@
             border: var(--admin-border);
             border-radius: 100px;
             font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-
-        .option-tag:hover {
-            border-color: var(--admin-border-hover);
         }
 
         .option-tag .remove {
@@ -603,7 +568,6 @@
             background: none;
             border: none;
             font-size: 1rem;
-            transition: all 0.3s ease;
         }
 
         .option-tag .remove:hover {
@@ -626,7 +590,6 @@
             font-size: 0.9rem;
             font-family: inherit;
             outline: none;
-            transition: all 0.3s ease;
         }
 
         .option-input-row input:focus {
@@ -650,11 +613,6 @@
             border: var(--admin-border);
             border-radius: 100px;
             font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-
-        .category-tag:hover {
-            border-color: var(--admin-border-hover);
         }
 
         .category-tag .remove {
@@ -663,7 +621,6 @@
             background: none;
             border: none;
             font-size: 1rem;
-            transition: all 0.3s ease;
         }
 
         .category-tag .remove:hover {
@@ -927,7 +884,6 @@
             color: var(--admin-text-muted);
             cursor: pointer;
             padding: 4px;
-            transition: all 0.3s ease;
         }
 
         .toast-close:hover {
@@ -1025,7 +981,7 @@
             </div>
             <div class="admin-stat-card">
                 <div class="stat-icon">🎨</div>
-                <div class="label">Colors Detected</div>
+                <div class="label">Colors</div>
                 <div class="value" id="total-colors">0</div>
             </div>
         </div>
@@ -1182,12 +1138,24 @@
         // ADMIN PANEL - COMPLETE FIXED SCRIPT
         // ============================================
         
+        // ============================================
+        // CONFIGURATION - FROM script.js
+        // ============================================
+        const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
+        const STORE_NAME = 'Markaz Store';
+        
+        // ============================================
+        // STATE
+        // ============================================
         let uploadedImages = [];
         let detectedColors = [];
         let sizes = [];
         let manualColors = [];
         let isAnalyzing = false;
 
+        // ============================================
+        // DOM READY
+        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             renderAdminPanel();
             updateStats();
@@ -1333,21 +1301,35 @@
         // ============================================
         function rgbToColorName(r, g, b) {
             const colorMap = {
-                'Black': { r: 0, g: 0, b: 0, threshold: 40 },
-                'White': { r: 255, g: 255, b: 255, threshold: 40 },
-                'Red': { r: 255, g: 0, b: 0, threshold: 70 },
-                'Green': { r: 0, g: 255, b: 0, threshold: 70 },
-                'Blue': { r: 0, g: 0, b: 255, threshold: 70 },
-                'Yellow': { r: 255, g: 255, b: 0, threshold: 70 },
-                'Orange': { r: 255, g: 165, b: 0, threshold: 70 },
-                'Purple': { r: 128, g: 0, b: 128, threshold: 70 },
-                'Pink': { r: 255, g: 192, b: 203, threshold: 70 },
-                'Brown': { r: 165, g: 42, b: 42, threshold: 70 },
-                'Gray': { r: 128, g: 128, b: 128, threshold: 50 },
-                'Navy': { r: 0, g: 0, b: 128, threshold: 70 },
-                'Gold': { r: 255, g: 215, b: 0, threshold: 70 },
-                'Silver': { r: 192, g: 192, b: 192, threshold: 50 },
-                'Beige': { r: 245, g: 245, b: 220, threshold: 50 }
+                'Black': { r: 0, g: 0, b: 0 },
+                'White': { r: 255, g: 255, b: 255 },
+                'Red': { r: 255, g: 0, b: 0 },
+                'Green': { r: 0, g: 255, b: 0 },
+                'Blue': { r: 0, g: 0, b: 255 },
+                'Yellow': { r: 255, g: 255, b: 0 },
+                'Orange': { r: 255, g: 165, b: 0 },
+                'Purple': { r: 128, g: 0, b: 128 },
+                'Pink': { r: 255, g: 192, b: 203 },
+                'Brown': { r: 165, g: 42, b: 42 },
+                'Gray': { r: 128, g: 128, b: 128 },
+                'Navy': { r: 0, g: 0, b: 128 },
+                'Gold': { r: 255, g: 215, b: 0 },
+                'Silver': { r: 192, g: 192, b: 192 },
+                'Beige': { r: 245, g: 245, b: 220 },
+                'Maroon': { r: 128, g: 0, b: 0 },
+                'Olive': { r: 128, g: 128, b: 0 },
+                'Teal': { r: 0, g: 128, b: 128 },
+                'Cyan': { r: 0, g: 255, b: 255 },
+                'Magenta': { r: 255, g: 0, b: 255 },
+                'Lime': { r: 0, g: 255, b: 0 },
+                'Indigo': { r: 75, g: 0, b: 130 },
+                'Violet': { r: 238, g: 130, b: 238 },
+                'Coral': { r: 255, g: 127, b: 80 },
+                'Salmon': { r: 250, g: 128, b: 114 },
+                'Turquoise': { r: 64, g: 224, b: 208 },
+                'Lavender': { r: 230, g: 230, b: 250 },
+                'Cream': { r: 255, g: 253, b: 208 },
+                'Chocolate': { r: 210, g: 105, b: 30 }
             };
             
             let closestColor = 'Unknown';
@@ -1460,8 +1442,10 @@
                 return;
             }
 
+            // Ensure category exists
             category = ensureCategoryExists(category);
 
+            // Get images
             const imagesData = document.getElementById('p-images-data');
             const uploadedImages = JSON.parse(imagesData.value || '[]');
             
@@ -1545,6 +1529,7 @@
                 createdAt: new Date().toISOString()
             };
 
+            // Add to products array
             products.push(product);
 
             try {
@@ -1714,8 +1699,45 @@
         }
 
         // ============================================
-        // CATEGORY MANAGEMENT
+        // CATEGORY MANAGEMENT (from script.js)
         // ============================================
+        function ensureCategoryExists(categoryName) {
+            if (!categoryName || categoryName.trim() === '') return 'General';
+            const trimmed = categoryName.trim();
+            const existing = categories.find(c => c.toLowerCase() === trimmed.toLowerCase());
+            if (existing) return existing;
+            categories.push(trimmed);
+            localStorage.setItem('myCategories', JSON.stringify(categories));
+            renderCategoriesBar();
+            updateHeroStats();
+            renderFooterCategories();
+            if (typeof renderAdminPanel === 'function') renderAdminPanel();
+            showToast(`🏷️ New category "${trimmed}" created!`, 'success');
+            return trimmed;
+        }
+
+        function detectCategoryFromTitle(title) {
+            const keywords = {
+                'Watches': ['watch', 'wristwatch', 'chrono', 'timepiece', 'smartwatch'],
+                'Clothing': ['shirt', 'pants', 'jeans', 'jacket', 'coat', 'dress', 'skirt', 't-shirt', 'hoodie', 'sweater'],
+                'Electronics': ['phone', 'laptop', 'computer', 'tablet', 'tv', 'television', 'speaker', 'headphone', 'charger'],
+                'Shoes': ['shoe', 'sneaker', 'boot', 'sandal'],
+                'Accessories': ['bag', 'belt', 'cap', 'hat', 'scarf', 'sunglass', 'jewelry'],
+                'Home': ['furniture', 'lamp', 'chair', 'table', 'bed', 'sofa'],
+                'Books': ['book', 'novel', 'magazine', 'textbook'],
+                'Toys': ['toy', 'game', 'puzzle', 'doll'],
+                'Food': ['snack', 'chocolate', 'biscuit', 'cake'],
+                'Beauty': ['cream', 'lotion', 'shampoo', 'soap', 'perfume']
+            };
+            const lowerTitle = title.toLowerCase();
+            for (const [category, words] of Object.entries(keywords)) {
+                for (const word of words) {
+                    if (lowerTitle.includes(word)) return category;
+                }
+            }
+            return null;
+        }
+
         function addCategory() {
             const name = document.getElementById('new-cat-name').value.trim();
             if (name && !categories.includes(name)) {
@@ -1762,6 +1784,140 @@
         }
 
         // ============================================
+        // CATEGORY SUGGESTIONS (from script.js)
+        // ============================================
+        function setupCategorySuggestions(inputId, containerId) {
+            const input = document.getElementById(inputId);
+            const container = document.getElementById(containerId);
+            if (!input || !container) return;
+            
+            input.addEventListener('input', function() {
+                const value = this.value.toLowerCase().trim();
+                if (!value) {
+                    container.innerHTML = '';
+                    container.style.display = 'none';
+                    return;
+                }
+                const matches = categories.filter(c => c.toLowerCase().includes(value));
+                if (matches.length > 0) {
+                    container.innerHTML = matches.map(c => 
+                        `<div class="suggestion-item" onclick="selectCategory('${c}')">${c}</div>`
+                    ).join('');
+                    container.style.display = 'block';
+                } else {
+                    container.innerHTML = `<div class="suggestion-item new-category" onclick="createNewCategory('${value}')">
+                        ➕ Create "${value}" (new category)
+                    </div>`;
+                    container.style.display = 'block';
+                }
+            });
+            input.addEventListener('blur', function() {
+                setTimeout(() => { container.style.display = 'none'; }, 200);
+            });
+        }
+
+        function selectCategory(category) {
+            const input = document.getElementById('new-cat-name') || document.getElementById('p-category-input');
+            if (input) {
+                input.value = category;
+                const container = document.getElementById('category-suggestions') || document.getElementById('category-suggestions-product');
+                if (container) container.style.display = 'none';
+                if (!categories.includes(category)) ensureCategoryExists(category);
+            }
+        }
+
+        function createNewCategory(name) {
+            if (name && name.trim()) {
+                const trimmed = name.trim();
+                if (!categories.includes(trimmed)) {
+                    ensureCategoryExists(trimmed);
+                    const input = document.getElementById('new-cat-name') || document.getElementById('p-category-input');
+                    if (input) {
+                        input.value = trimmed;
+                        const container = document.getElementById('category-suggestions') || document.getElementById('category-suggestions-product');
+                        if (container) container.style.display = 'none';
+                    }
+                    if (typeof renderAdminPanel === 'function') renderAdminPanel();
+                }
+            }
+        }
+
+        // ============================================
+        // TOAST (from script.js)
+        // ============================================
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            if (!toast) {
+                alert(message);
+                return;
+            }
+            const msgEl = document.getElementById('toast-message');
+            const titleEl = toast.querySelector('.toast-title');
+            msgEl.textContent = message;
+            const titles = { 
+                success: '✅ Success!', 
+                error: '❌ Error!', 
+                info: 'ℹ️ Info', 
+                warning: '⚠️ Warning' 
+            };
+            if (titleEl) titleEl.textContent = titles[type] || titles.success;
+            toast.className = 'toast';
+            if (type) toast.classList.add(type);
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // ============================================
+        // RESET STORAGE
+        // ============================================
+        function resetStorage() {
+            if (confirm('⚠️ This will delete ALL data. Continue?')) {
+                localStorage.clear();
+                showToast('Storage cleared! Refreshing...', 'warning');
+                setTimeout(() => location.reload(), 1000);
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS FROM script.js (needed for display)
+        // ============================================
+        function updateHeroStats() {
+            const totalProducts = document.getElementById('total-products-display');
+            const totalCategories = document.getElementById('total-categories-display');
+            if (totalProducts) totalProducts.textContent = products.length;
+            if (totalCategories) totalCategories.textContent = categories.length;
+        }
+
+        function renderFooterCategories() {
+            const container = document.getElementById('footer-categories');
+            if (!container) return;
+            container.innerHTML = categories.map(c => 
+                `<a href="products.html">${c}</a>`
+            ).join('');
+        }
+
+        function renderCategoriesBar() {
+            const catBar = document.getElementById('category-bar');
+            if (!catBar) return;
+            let html = `<button class="cat-btn active" onclick="filterCategory('All', this)">All</button>`;
+            categories.forEach(cat => {
+                html += `<button class="cat-btn" onclick="filterCategory('${cat}', this)">${cat}</button>`;
+            });
+            catBar.innerHTML = html;
+        }
+
+        function displayProducts(list) {
+            const container = document.getElementById('products-container');
+            if (!container) return;
+            // This is just a placeholder - actual display is in products.html
+        }
+
+        function filterCategory(cat, btn) {
+            // Placeholder
+        }
+
+        // ============================================
         // EXPOSE FUNCTIONS
         // ============================================
         window.addOption = addOption;
@@ -1779,6 +1935,12 @@
         window.addCategory = addCategory;
         window.deleteCategory = deleteCategory;
         window.deleteProduct = deleteProduct;
+        window.resetStorage = resetStorage;
+        window.selectCategory = selectCategory;
+        window.createNewCategory = createNewCategory;
+        window.setupCategorySuggestions = setupCategorySuggestions;
+        window.ensureCategoryExists = ensureCategoryExists;
+        window.detectCategoryFromTitle = detectCategoryFromTitle;
     </script>
 </body>
 </html>

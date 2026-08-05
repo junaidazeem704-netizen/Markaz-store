@@ -38,10 +38,65 @@
         .checkout-header p {
             color: var(--text-secondary);
         }
+        
+        /* Checkout Items */
+        .checkout-items {
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            border: var(--border);
+        }
+        .checkout-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .checkout-item:last-child {
+            border-bottom: none;
+        }
+        .checkout-item img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+        }
+        .checkout-item .item-details {
+            flex: 1;
+        }
+        .checkout-item .item-details .item-title {
+            font-weight: 600;
+        }
+        .checkout-item .item-details .item-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .checkout-item .item-details .item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .checkout-item .item-details .item-meta .color-dot {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .checkout-item .item-price {
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
         .checkout-summary {
             background: var(--bg-primary);
             border-radius: var(--radius-md);
-            padding: 20px 24px;
+            padding: 16px 20px;
             margin-bottom: 28px;
             border: var(--border);
         }
@@ -60,6 +115,7 @@
         .checkout-summary .summary-item .label {
             color: var(--text-secondary);
         }
+        
         .checkout-form .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -136,6 +192,8 @@
             padding: 16px;
             font-size: 1.05rem;
         }
+        
+        /* Success Box */
         .success-box {
             text-align: center;
             padding: 40px 20px;
@@ -163,7 +221,7 @@
             margin-bottom: 24px;
             text-align: left;
             border: var(--border);
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
         }
         .success-box .order-details .detail {
@@ -183,6 +241,7 @@
             text-align: right;
             max-width: 60%;
         }
+        
         @media (max-width: 768px) {
             .checkout-card {
                 padding: 24px 20px;
@@ -201,12 +260,18 @@
                 max-width: 100%;
                 text-align: center;
             }
+            .checkout-item {
+                flex-wrap: wrap;
+            }
+            .checkout-item img {
+                width: 50px;
+                height: 50px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-left">
@@ -234,10 +299,8 @@
         </div>
     </nav>
 
-    <!-- Checkout -->
     <div class="checkout-wrapper">
         <div class="checkout-card">
-            <!-- Header -->
             <div class="checkout-header">
                 <div class="logo-icon">
                     <i class="fas fa-store-alt"></i>
@@ -246,16 +309,14 @@
                 <p>Complete your order details below</p>
             </div>
 
-            <!-- Checkout Form -->
             <div id="checkout-form-box">
+                <!-- Order Items -->
+                <div class="checkout-items" id="checkout-items-container"></div>
+
                 <!-- Order Summary -->
                 <div class="checkout-summary" id="order-summary">
                     <div class="summary-item">
-                        <span class="label">📦 Items</span>
-                        <span id="summary-items">0</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">💰 Subtotal</span>
+                        <span class="label">📦 Subtotal</span>
                         <span id="summary-subtotal">Rs. 0</span>
                     </div>
                     <div class="summary-item">
@@ -268,7 +329,6 @@
                     </div>
                 </div>
 
-                <!-- Form -->
                 <form class="checkout-form" id="checkout-form" onsubmit="return false;">
                     <div class="form-row">
                         <div class="form-group">
@@ -360,7 +420,6 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast">
         <div class="toast-icon">
             <i class="fas fa-check-circle"></i>
@@ -377,7 +436,7 @@
     <script src="script.js"></script>
     <script>
         // ============================================
-        // CHECKOUT - FIXED
+        // CHECKOUT - WITH COLOR, SIZE & IMAGE
         // ============================================
         
         let checkoutItems = [];
@@ -401,7 +460,37 @@
             }
             
             calculateTotal();
+            renderItems();
             updateSummary();
+        }
+
+        function renderItems() {
+            const container = document.getElementById('checkout-items-container');
+            
+            let html = '';
+            checkoutItems.forEach((item, index) => {
+                const colorDisplay = item.selectedColor && item.selectedColor !== 'N/A' ? 
+                    `<span><span class="color-dot" style="background:${item.selectedColor.toLowerCase()};"></span> ${item.selectedColor}</span>` : '';
+                const sizeDisplay = item.selectedSize && item.selectedSize !== 'N/A' ? 
+                    `<span><i class="fas fa-ruler"></i> ${item.selectedSize}</span>` : '';
+                
+                html += `
+                    <div class="checkout-item">
+                        <img src="${item.image || 'https://via.placeholder.com/64'}" alt="${item.title}" />
+                        <div class="item-details">
+                            <div class="item-title">${item.title}</div>
+                            <div class="item-meta">
+                                ${colorDisplay}
+                                ${sizeDisplay}
+                                <span><i class="fas fa-times"></i> ${item.quantity}</span>
+                            </div>
+                        </div>
+                        <div class="item-price">Rs. ${parseInt(item.price) * item.quantity}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
         }
 
         function calculateTotal() {
@@ -412,14 +501,12 @@
         }
 
         function updateSummary() {
-            const totalItems = checkoutItems.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('summary-items').textContent = totalItems;
             document.getElementById('summary-subtotal').textContent = `Rs. ${orderTotal}`;
             document.getElementById('summary-total').textContent = `Rs. ${orderTotal}`;
         }
 
         // ============================================
-        // SUBMIT ORDER - FIXED
+        // SUBMIT ORDER - WITH COLOR, SIZE & IMAGE
         // ============================================
         async function submitOrder() {
             const name = document.getElementById('c-name').value.trim();
@@ -438,11 +525,6 @@
                 return;
             }
 
-            if (checkoutItems.length === 0) {
-                showToast('Your cart is empty!', 'error');
-                return;
-            }
-
             const submitBtn = document.querySelector('.btn-primary');
             if (submitBtn) {
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
@@ -451,22 +533,46 @@
 
             const orderId = 'MK-' + Date.now().toString().slice(-6);
 
-            // Build items list with proper color and size
+            // Build items list with COLOR, SIZE & IMAGE
             const itemsList = checkoutItems.map(item => {
                 let details = [];
                 if (item.selectedColor && item.selectedColor !== 'N/A' && item.selectedColor !== 'None') {
-                    details.push(item.selectedColor);
+                    details.push(`Color: ${item.selectedColor}`);
                 }
                 if (item.selectedSize && item.selectedSize !== 'N/A' && item.selectedSize !== 'None') {
-                    details.push(item.selectedSize);
+                    details.push(`Size: ${item.selectedSize}`);
                 }
                 const detailStr = details.length > 0 ? ` (${details.join(', ')})` : '';
                 return `${item.title}${detailStr} x${item.quantity}`;
-            }).join(', ');
+            }).join('\n');
+
+            // Build HTML items for email with images
+            const itemsHtml = checkoutItems.map(item => {
+                const colorDisplay = item.selectedColor && item.selectedColor !== 'N/A' ? 
+                    `<span style="color:#a0a0b8;">Color: ${item.selectedColor}</span>` : '';
+                const sizeDisplay = item.selectedSize && item.selectedSize !== 'N/A' ? 
+                    `<span style="color:#a0a0b8;">Size: ${item.selectedSize}</span>` : '';
+                
+                return `
+                    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <img src="${item.image || 'https://via.placeholder.com/50'}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;" />
+                        <div style="flex:1;">
+                            <div style="font-weight:600;">${item.title}</div>
+                            <div style="font-size:0.8rem;color:#a0a0b8;display:flex;gap:12px;flex-wrap:wrap;">
+                                ${colorDisplay}
+                                ${sizeDisplay}
+                                <span>Qty: ${item.quantity}</span>
+                            </div>
+                        </div>
+                        <div style="font-weight:700;color:#6366f1;">Rs. ${parseInt(item.price) * item.quantity}</div>
+                    </div>
+                `;
+            }).join('');
 
             const orderData = {
                 orderId: orderId,
                 items: itemsList,
+                itemsHtml: itemsHtml,
                 total: orderTotal,
                 name: name,
                 email: email,
@@ -503,7 +609,7 @@
                     document.getElementById('success-box').style.display = 'block';
                     
                     document.getElementById('order-id').textContent = orderId;
-                    document.getElementById('order-items').textContent = itemsList;
+                    document.getElementById('order-items').textContent = itemsList.replace(/\n/g, ', ');
                     document.getElementById('order-total').textContent = `Rs. ${orderTotal}`;
                     document.getElementById('order-email').textContent = email;
                     document.getElementById('order-phone').textContent = phone;

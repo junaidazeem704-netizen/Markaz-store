@@ -7,143 +7,1076 @@
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <!-- Color Thief Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js"></script>
     <style>
-        /* Admin Styles - Same as before with additions */
-        .color-detection-badge {
-            display: inline-block;
-            padding: 2px 12px;
-            border-radius: 100px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-left: 8px;
+        /* =============================================
+           ADMIN PANEL - MODERN THEME
+           ============================================= */
+        :root {
+            --admin-bg: #0a0a12;
+            --admin-card: rgba(26, 26, 46, 0.85);
+            --admin-card-hover: rgba(34, 34, 68, 0.95);
+            --admin-border: rgba(255, 255, 255, 0.06);
+            --admin-border-hover: rgba(255, 255, 255, 0.12);
+            --admin-accent: #6366f1;
+            --admin-accent-hover: #818cf8;
+            --admin-success: #10b981;
+            --admin-danger: #ef4444;
+            --admin-warning: #f59e0b;
+            --admin-text: #ffffff;
+            --admin-text-secondary: #a0a0b8;
+            --admin-text-muted: #6a6a82;
+            --admin-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --admin-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.6);
+            --admin-radius: 16px;
+            --admin-radius-sm: 10px;
         }
-        .color-detection-badge.detected {
-            background: rgba(16, 185, 129, 0.15);
-            color: #10b981;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .color-detection-badge.pending {
-            background: rgba(245, 158, 11, 0.15);
-            color: #f59e0b;
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--admin-bg);
+            color: var(--admin-text);
+            min-height: 100vh;
+            padding: 24px;
+            background-image: 
+                radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.05), transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(139, 92, 246, 0.04), transparent 60%);
         }
-        .detected-colors {
+
+        /* =============================================
+           SCROLLBAR
+           ============================================= */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--admin-bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--admin-accent);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--admin-accent-hover);
+        }
+
+        /* =============================================
+           ADMIN WRAPPER
+           ============================================= */
+        .admin-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* =============================================
+           ADMIN HEADER
+           ============================================= */
+        .admin-header {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 32px;
+            background: var(--admin-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: var(--admin-border);
+            border-radius: var(--admin-radius);
+            margin-bottom: 30px;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 15px;
+            box-shadow: var(--admin-shadow);
+            transition: all 0.3s ease;
         }
-        .detected-color-chip {
+
+        .admin-header:hover {
+            border-color: var(--admin-border-hover);
+        }
+
+        .admin-header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 12px 4px 8px;
-            background: var(--bg-primary);
-            border: var(--border);
-            border-radius: 100px;
-            font-size: 0.8rem;
+            gap: 12px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .detected-color-chip .color-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.1);
+
+        .admin-header h1 i {
+            -webkit-text-fill-color: var(--admin-accent);
+            font-size: 1.8rem;
         }
-        .detected-color-chip .remove {
-            cursor: pointer;
-            color: var(--danger);
-            background: none;
-            border: none;
-            font-size: 0.9rem;
+
+        .admin-header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
         }
-        .auto-detect-btn {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
+
+        .admin-header-actions a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: var(--admin-border);
+            border-radius: var(--admin-radius-sm);
+            color: var(--admin-text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .admin-header-actions a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--admin-text);
+            border-color: var(--admin-border-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: var(--admin-radius-sm);
+            color: var(--admin-danger);
             font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* =============================================
+           STATS CARDS
+           ============================================= */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .admin-stat-card {
+            background: var(--admin-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: var(--admin-border);
+            border-radius: var(--admin-radius);
+            padding: 22px 26px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--admin-shadow);
+        }
+
+        .admin-stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--admin-accent);
+            box-shadow: var(--admin-shadow-hover);
+        }
+
+        .admin-stat-card .stat-icon {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
+
+        .admin-stat-card .label {
+            font-size: 0.75rem;
+            color: var(--admin-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 2px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* =============================================
+           ADMIN GRID
+           ============================================= */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .admin-card {
+            background: var(--admin-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: var(--admin-border);
+            border-radius: var(--admin-radius);
+            padding: 28px 32px;
+            box-shadow: var(--admin-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            border-color: var(--admin-border-hover);
+        }
+
+        .admin-card.full {
+            grid-column: 1 / -1;
+        }
+
+        .admin-card h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--admin-text);
+        }
+
+        .admin-card h2 i {
+            color: var(--admin-accent);
+            font-size: 1.2rem;
+        }
+
+        .admin-card .badge {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 12px;
+            border-radius: 100px;
+            margin-left: 8px;
+        }
+
+        /* =============================================
+           FORM ELEMENTS
+           ============================================= */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--admin-text-secondary);
+        }
+
+        .form-group label .required {
+            color: var(--admin-danger);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: var(--admin-border);
+            border-radius: var(--admin-radius-sm);
+            color: var(--admin-text);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            outline: none;
+            width: 100%;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--admin-text-muted);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .form-group small {
+            font-size: 0.75rem;
+            color: var(--admin-text-muted);
+        }
+
+        .form-group small i {
+            color: var(--admin-accent);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* =============================================
+           BUTTONS
+           ============================================= */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: var(--admin-radius-sm);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: inherit;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.05);
+            border: var(--admin-border);
+            border-radius: var(--admin-radius-sm);
+            color: var(--admin-text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--admin-text);
+            border-color: var(--admin-border-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        /* =============================================
+           IMAGE UPLOAD
+           ============================================= */
+        .image-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.08);
+            border-radius: var(--admin-radius-sm);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .image-upload-area:hover {
+            border-color: var(--admin-accent);
+            background: rgba(99, 102, 241, 0.04);
+        }
+
+        .image-upload-area input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .image-upload-area i {
+            font-size: 2.4rem;
+            color: var(--admin-accent);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .image-upload-area p {
+            color: var(--admin-text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .image-upload-area .sub {
+            color: var(--admin-text-muted);
+            font-size: 0.75rem;
+        }
+
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .image-preview-item {
+            position: relative;
+            border-radius: var(--admin-radius-sm);
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border: var(--admin-border);
+            transition: all 0.3s ease;
+        }
+
+        .image-preview-item:hover {
+            border-color: var(--admin-accent);
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview-item .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .image-preview-item .remove-img:hover {
+            background: var(--admin-danger);
+        }
+
+        /* =============================================
+           AUTO-DETECT BUTTON
+           ============================================= */
+        .auto-detect-btn {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: var(--admin-radius-sm);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            margin-left: 8px;
+        }
+
         .auto-detect-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
+
         .auto-detect-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
+
+        /* =============================================
+           DETECTED COLORS
+           ============================================= */
+        .detected-colors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+            min-height: 36px;
+        }
+
+        .detected-color-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px 4px 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: var(--admin-border);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .detected-color-chip:hover {
+            border-color: var(--admin-border-hover);
+        }
+
+        .detected-color-chip .color-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detected-color-chip .remove {
+            cursor: pointer;
+            color: var(--admin-danger);
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .detected-color-chip .remove:hover {
+            transform: scale(1.2);
+        }
+
+        /* =============================================
+           IMAGE ANALYSIS PROGRESS
+           ============================================= */
         .image-analysis-progress {
             display: none;
             margin-top: 8px;
-            padding: 8px 12px;
-            background: var(--bg-primary);
-            border-radius: var(--radius-sm);
-            border: var(--border);
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: var(--admin-radius-sm);
+            border: var(--admin-border);
         }
+
+        .image-analysis-progress .status-text {
+            font-size: 0.8rem;
+            color: var(--admin-text-secondary);
+        }
+
         .image-analysis-progress .progress-bar {
             width: 100%;
             height: 4px;
-            background: var(--admin-border);
+            background: rgba(255, 255, 255, 0.06);
             border-radius: 2px;
             overflow: hidden;
-            margin-top: 4px;
+            margin-top: 6px;
         }
+
         .image-analysis-progress .progress-bar .fill {
             height: 100%;
-            background: var(--accent);
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
             border-radius: 2px;
             transition: width 0.5s ease;
             width: 0%;
         }
-        .image-analysis-progress .status-text {
+
+        /* =============================================
+           OPTIONS (Sizes & Colors)
+           ============================================= */
+        .options-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+            min-height: 36px;
+        }
+
+        .option-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px 4px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: var(--admin-border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .option-tag:hover {
+            border-color: var(--admin-border-hover);
+        }
+
+        .option-tag .remove {
+            cursor: pointer;
+            color: var(--admin-danger);
+            background: none;
+            border: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .option-tag .remove:hover {
+            transform: scale(1.2);
+        }
+
+        .option-input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .option-input-row input {
+            flex: 1;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: var(--admin-border);
+            border-radius: var(--admin-radius-sm);
+            color: var(--admin-text);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .option-input-row input:focus {
+            border-color: var(--admin-accent);
+        }
+
+        /* =============================================
+           CATEGORY TAGS
+           ============================================= */
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .category-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px 6px 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: var(--admin-border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .category-tag:hover {
+            border-color: var(--admin-border-hover);
+        }
+
+        .category-tag .remove {
+            cursor: pointer;
+            color: var(--admin-danger);
+            background: none;
+            border: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .category-tag .remove:hover {
+            transform: scale(1.2);
+        }
+
+        .category-input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .category-input-row .suggestions-container {
+            flex: 1;
+        }
+
+        /* =============================================
+           PRODUCT LIST
+           ============================================= */
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .product-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .product-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .product-list::-webkit-scrollbar-thumb {
+            background: var(--admin-accent);
+            border-radius: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--admin-radius-sm);
+            border: var(--admin-border);
+            transition: all 0.3s ease;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .product-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--admin-border-hover);
+        }
+
+        .product-item .info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .product-item .info img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: var(--admin-radius-sm);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .product-item .info .title {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .product-item .info .category {
+            font-size: 0.75rem;
+            color: var(--admin-text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .product-item .info .category .color-dot-mini {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .product-item .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .product-item .actions .btn-danger {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--admin-text-muted);
+            display: none;
+        }
+
+        .empty-state i {
+            font-size: 2.4rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .product-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 4px 12px;
+            border-bottom: var(--admin-border);
+            margin-bottom: 8px;
+        }
+
+        .product-list-header span {
+            font-size: 0.85rem;
+            color: var(--admin-text-secondary);
+        }
+
+        .product-count {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 2px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* =============================================
+           SUGGESTIONS
+           ============================================= */
+        .suggestions-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--admin-card);
+            backdrop-filter: blur(20px);
+            border: var(--admin-border);
+            border-radius: var(--admin-radius-sm);
+            max-height: 180px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+            box-shadow: var(--admin-shadow);
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar-thumb {
+            background: var(--admin-accent);
+            border-radius: 10px;
+        }
+
+        .suggestion-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            border-bottom: var(--admin-border);
+            color: var(--admin-text-secondary);
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--admin-text);
+        }
+
+        .suggestion-item.new-category {
+            color: var(--admin-accent);
+            font-weight: 500;
+        }
+
+        /* =============================================
+           TOAST
+           ============================================= */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--admin-card);
+            backdrop-filter: blur(20px);
+            border: var(--admin-border);
+            border-radius: var(--admin-radius);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--admin-shadow-hover);
+            z-index: 9999;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 420px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toast-icon i {
+            color: var(--admin-success);
+            font-size: 1.2rem;
+        }
+
+        .toast.error .toast-icon {
+            background: rgba(239, 68, 68, 0.12);
+        }
+        .toast.error .toast-icon i {
+            color: var(--admin-danger);
+        }
+
+        .toast-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .toast-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .toast-message {
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: var(--admin-text-secondary);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--admin-text-muted);
+            cursor: pointer;
+            padding: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .toast-close:hover {
+            color: var(--admin-text);
+        }
+
+        /* =============================================
+           RESPONSIVE
+           ============================================= */
+        @media (max-width: 1024px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            .admin-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 16px 20px;
+            }
+            .admin-header-actions {
+                justify-content: center;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .admin-card {
+                padding: 16px 18px;
+            }
+            .admin-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            .product-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .product-item .actions {
+                justify-content: flex-end;
+            }
+            .toast {
+                bottom: 16px;
+                right: 16px;
+                left: 16px;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+            .admin-header h1 {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="admin-wrapper">
+        <!-- ========================================== -->
+        <!-- ADMIN HEADER -->
+        <!-- ========================================== -->
         <header class="admin-header">
             <h1>
                 <i class="fas fa-crown"></i>
                 Store Management
             </h1>
             <div class="admin-header-actions">
-                <a href="index.html" class="btn-secondary btn-sm">
+                <a href="index.html">
                     <i class="fas fa-store"></i> View Store
                 </a>
-                <button class="btn-danger btn-sm" onclick="resetStorage()">
+                <button class="btn-danger" onclick="resetStorage()">
                     <i class="fas fa-trash-alt"></i> Reset Data
                 </button>
             </div>
         </header>
 
+        <!-- ========================================== -->
+        <!-- STATS -->
+        <!-- ========================================== -->
         <div class="admin-stats">
             <div class="admin-stat-card">
-                <div class="label">📦 Total Products</div>
+                <div class="stat-icon">📦</div>
+                <div class="label">Total Products</div>
                 <div class="value" id="total-products">0</div>
             </div>
             <div class="admin-stat-card">
-                <div class="label">🏷️ Categories</div>
+                <div class="stat-icon">🏷️</div>
+                <div class="label">Categories</div>
                 <div class="value" id="total-categories">0</div>
             </div>
             <div class="admin-stat-card">
-                <div class="label">📊 Orders</div>
+                <div class="stat-icon">📊</div>
+                <div class="label">Orders</div>
                 <div class="value" id="total-orders">0</div>
             </div>
             <div class="admin-stat-card">
-                <div class="label">🎨 Colors Detected</div>
+                <div class="stat-icon">🎨</div>
+                <div class="label">Colors Detected</div>
                 <div class="value" id="total-colors">0</div>
             </div>
         </div>
 
+        <!-- ========================================== -->
+        <!-- ADMIN GRID -->
+        <!-- ========================================== -->
         <div class="admin-grid">
-            <!-- Add Product -->
+            <!-- ========================================== -->
+            <!-- ADD PRODUCT - FULL WIDTH -->
+            <!-- ========================================== -->
             <div class="admin-card full">
                 <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
                 
@@ -191,10 +1124,10 @@
                         
                         <!-- Detected Colors -->
                         <div style="margin-top:8px;">
-                            <label style="font-size:0.85rem;font-weight:500;color:var(--text-secondary);">
+                            <label style="font-size:0.85rem;font-weight:500;color:var(--admin-text-secondary);">
                                 <i class="fas fa-palette"></i> Detected Colors
                                 <button class="auto-detect-btn" id="auto-detect-btn" onclick="analyzeImagesForColors()">
-                                    <i class="fas fa-magic"></i> Auto-Detect Colors
+                                    <i class="fas fa-magic"></i> Auto-Detect
                                 </button>
                             </label>
                             <div class="detected-colors" id="detected-colors-container"></div>
@@ -203,7 +1136,7 @@
                     </div>
                 </div>
 
-                <!-- Sizes -->
+                <!-- Sizes & Colors -->
                 <div class="form-row">
                     <div class="form-group">
                         <label><i class="fas fa-ruler"></i> Sizes (Clothing)</label>
@@ -226,7 +1159,7 @@
                             </button>
                         </div>
                         <input type="hidden" id="p-colors" value="[]" />
-                        <small style="color:var(--text-muted);">
+                        <small style="color:var(--admin-text-muted);">
                             <i class="fas fa-info-circle"></i> Auto-detected colors will be added automatically
                         </small>
                     </div>
@@ -242,7 +1175,9 @@
                 </div>
             </div>
 
-            <!-- Categories -->
+            <!-- ========================================== -->
+            <!-- CATEGORIES -->
+            <!-- ========================================== -->
             <div class="admin-card">
                 <h2><i class="fas fa-tags"></i> Categories</h2>
                 <div class="category-input-row">
@@ -257,7 +1192,9 @@
                 <div class="category-tags" id="categories-list"></div>
             </div>
 
-            <!-- Products List -->
+            <!-- ========================================== -->
+            <!-- PRODUCTS LIST -->
+            <!-- ========================================== -->
             <div class="admin-card">
                 <h2>
                     <i class="fas fa-box"></i> All Products
@@ -276,7 +1213,9 @@
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- ========================================== -->
+    <!-- TOAST -->
+    <!-- ========================================== -->
     <div class="toast" id="toast">
         <div class="toast-icon">
             <i class="fas fa-check-circle"></i>
@@ -293,7 +1232,7 @@
     <script src="script.js"></script>
     <script>
         // ============================================
-        // ADMIN PANEL WITH AUTO-COLOR DETECTION
+        // ADMIN PANEL - COMPLETE SCRIPT
         // ============================================
         
         let uploadedImages = [];
@@ -312,7 +1251,7 @@
         });
 
         // ============================================
-        // IMAGE UPLOAD WITH AUTO-COLOR DETECTION
+        // IMAGE UPLOAD
         // ============================================
         function setupImageUpload() {
             const imageInput = document.getElementById('p-images');
@@ -329,7 +1268,6 @@
                     reader.onload = function(event) {
                         uploadedImages.push(event.target.result);
                         renderImagePreviews();
-                        // Auto-analyze after upload
                         analyzeImagesForColors();
                     };
                     reader.readAsDataURL(file);
@@ -339,7 +1277,7 @@
         }
 
         // ============================================
-        // COLOR DETECTION FROM IMAGES
+        // COLOR DETECTION
         // ============================================
         async function analyzeImagesForColors() {
             if (uploadedImages.length === 0) {
@@ -361,13 +1299,11 @@
             const colorThief = new ColorThief();
             
             for (let i = 0; i < uploadedImages.length; i++) {
-                // Update progress
                 const progressPercent = ((i + 1) / uploadedImages.length) * 100;
                 document.getElementById('analysis-fill').style.width = progressPercent + '%';
                 document.getElementById('analysis-status').textContent = `🔍 Analyzing image ${i + 1} of ${uploadedImages.length}...`;
                 
                 try {
-                    // Load image
                     const img = new Image();
                     img.crossOrigin = 'Anonymous';
                     
@@ -377,19 +1313,16 @@
                         img.src = uploadedImages[i];
                     });
                     
-                    // Get dominant color
                     const dominantColor = colorThief.getColor(img);
                     if (dominantColor) {
                         const [r, g, b] = dominantColor;
                         const colorName = rgbToColorName(r, g, b);
                         const hex = rgbToHex(r, g, b);
                         
-                        // Add if not already detected
                         if (!detectedColors.some(c => c.name === colorName)) {
                             detectedColors.push({
                                 name: colorName,
                                 hex: hex,
-                                rgb: `rgb(${r}, ${g}, ${b})`,
                                 r: r,
                                 g: g,
                                 b: b
@@ -401,19 +1334,15 @@
                 }
             }
             
-            // Update UI
             renderDetectedColors();
             document.getElementById('p-colors-detected').value = JSON.stringify(detectedColors);
-            
-            // Update stats
             document.getElementById('total-colors').textContent = detectedColors.length;
             
-            // Complete
             document.getElementById('analysis-status').textContent = `✅ Analysis complete! Detected ${detectedColors.length} colors.`;
             document.getElementById('analysis-fill').style.width = '100%';
             
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-magic"></i> Re-Detect Colors';
+            btn.innerHTML = '<i class="fas fa-magic"></i> Re-Detect';
             
             setTimeout(() => {
                 progress.style.display = 'none';
@@ -422,7 +1351,7 @@
             isAnalyzing = false;
             
             if (detectedColors.length > 0) {
-                showToast(`🎨 Detected ${detectedColors.length} colors: ${detectedColors.map(c => c.name).join(', ')}`, 'success');
+                showToast(`🎨 Detected ${detectedColors.length} colors`, 'success');
             } else {
                 showToast('⚠️ No colors detected. Try uploading clearer images.', 'warning');
             }
@@ -432,7 +1361,7 @@
             const container = document.getElementById('detected-colors-container');
             
             if (detectedColors.length === 0) {
-                container.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">Upload images and click "Auto-Detect Colors"</span>';
+                container.innerHTML = '<span style="color:var(--admin-text-muted);font-size:0.85rem;">Upload images and click "Auto-Detect"</span>';
                 return;
             }
             
@@ -440,7 +1369,6 @@
                 <span class="detected-color-chip">
                     <span class="color-dot" style="background:${color.hex};"></span>
                     ${color.name}
-                    <span style="font-size:0.7rem;color:var(--text-muted);">${color.hex}</span>
                     <button class="remove" onclick="removeDetectedColor(${i})">×</button>
                 </span>
             `).join('');
@@ -454,7 +1382,7 @@
         }
 
         // ============================================
-        // COLOR DETECTION HELPERS
+        // COLOR HELPERS
         // ============================================
         function rgbToColorName(r, g, b) {
             const colorMap = {
@@ -472,21 +1400,7 @@
                 'Navy': { r: 0, g: 0, b: 128, threshold: 70 },
                 'Gold': { r: 255, g: 215, b: 0, threshold: 70 },
                 'Silver': { r: 192, g: 192, b: 192, threshold: 50 },
-                'Beige': { r: 245, g: 245, b: 220, threshold: 50 },
-                'Maroon': { r: 128, g: 0, b: 0, threshold: 70 },
-                'Olive': { r: 128, g: 128, b: 0, threshold: 70 },
-                'Teal': { r: 0, g: 128, b: 128, threshold: 70 },
-                'Cyan': { r: 0, g: 255, b: 255, threshold: 70 },
-                'Magenta': { r: 255, g: 0, b: 255, threshold: 70 },
-                'Lime': { r: 0, g: 255, b: 0, threshold: 70 },
-                'Indigo': { r: 75, g: 0, b: 130, threshold: 70 },
-                'Violet': { r: 238, g: 130, b: 238, threshold: 70 },
-                'Coral': { r: 255, g: 127, b: 80, threshold: 70 },
-                'Salmon': { r: 250, g: 128, b: 114, threshold: 70 },
-                'Turquoise': { r: 64, g: 224, b: 208, threshold: 70 },
-                'Lavender': { r: 230, g: 230, b: 250, threshold: 50 },
-                'Cream': { r: 255, g: 253, b: 208, threshold: 50 },
-                'Chocolate': { r: 210, g: 105, b: 30, threshold: 70 }
+                'Beige': { r: 245, g: 245, b: 220, threshold: 50 }
             };
             
             let closestColor = 'Unknown';
@@ -515,7 +1429,7 @@
         }
 
         // ============================================
-        // SIZE & COLOR OPTIONS (Manual)
+        // SIZE & COLOR OPTIONS
         // ============================================
         function loadSavedOptions() {
             const sizesData = document.getElementById('p-sizes');
@@ -587,7 +1501,7 @@
         }
 
         // ============================================
-        // ADD PRODUCT - WITH DETECTED COLORS
+        // ADD PRODUCT
         // ============================================
         async function addProduct() {
             const title = document.getElementById('p-title').value.trim();
@@ -609,7 +1523,6 @@
                 return;
             }
 
-            // Upload images to IMGBB
             let imageUrls = [];
             showToast('Uploading images...', 'info');
             
@@ -638,12 +1551,10 @@
                 }
             }
 
-            // Get sizes and colors (combine manual + detected)
             const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
             const manualColors = JSON.parse(document.getElementById('p-colors').value || '[]');
             const detectedColors = JSON.parse(document.getElementById('p-colors-detected').value || '[]');
             
-            // Combine colors (detected + manual, remove duplicates)
             const allColors = [...new Set([
                 ...detectedColors.map(c => c.name),
                 ...manualColors
@@ -699,6 +1610,35 @@
         }
 
         // ============================================
+        // ADD PRODUCT WITH AUTO-DETECT
+        // ============================================
+        async function addProductSmart() {
+            const title = document.getElementById('p-title').value.trim();
+            const price = document.getElementById('p-price').value.trim();
+            
+            if (!title || !price) {
+                showToast('Product Title and Price are required!', 'error');
+                return;
+            }
+            
+            let detectedCategory = detectCategoryFromTitle(title);
+            
+            if (detectedCategory) {
+                detectedCategory = ensureCategoryExists(detectedCategory);
+                const input = document.getElementById('p-category-input');
+                if (input) {
+                    input.value = detectedCategory;
+                }
+                showToast(`🔍 Category "${detectedCategory}" detected!`, 'info');
+            } else {
+                showToast('⚠️ No category detected. Please select manually.', 'warning');
+                return;
+            }
+            
+            await addProduct();
+        }
+
+        // ============================================
         // RENDER FUNCTIONS
         // ============================================
         function renderImagePreviews() {
@@ -716,9 +1656,6 @@
                     <button class="remove-img" onclick="removeImage(${i})">
                         <i class="fas fa-times"></i>
                     </button>
-                    <span style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,0.7);padding:2px 8px;border-radius:4px;font-size:0.6rem;color:white;">
-                        ${i+1}
-                    </span>
                 </div>
             `).join('');
             
@@ -728,7 +1665,6 @@
         function removeImage(index) {
             uploadedImages.splice(index, 1);
             renderImagePreviews();
-            // Re-analyze colors
             if (uploadedImages.length > 0) {
                 analyzeImagesForColors();
             } else {
@@ -742,7 +1678,7 @@
             const catList = document.getElementById('categories-list');
             if (catList) {
                 if (categories.length === 0) {
-                    catList.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">No categories yet.</p>';
+                    catList.innerHTML = '<p style="color:var(--admin-text-muted);font-size:0.85rem;">No categories yet.</p>';
                 } else {
                     catList.innerHTML = categories.map((c, i) => `
                         <span class="category-tag">
@@ -771,7 +1707,6 @@
                                         ${p.category || 'General'} • Rs. ${p.price}
                                         ${p.sizes && p.sizes.length > 0 ? ` • Sizes: ${p.sizes.join(', ')}` : ''}
                                         ${p.colors && p.colors.length > 0 ? ` • Colors: ${p.colors.join(', ')}` : ''}
-                                        ${p.detectedColors && p.detectedColors.length > 0 ? ` 🎨 Detected: ${p.detectedColors.map(c => c.name).join(', ')}` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -805,7 +1740,7 @@
         }
 
         // ============================================
-        // CATEGORY & PRODUCT MANAGEMENT
+        // CATEGORY MANAGEMENT
         // ============================================
         function addCategory() {
             const name = document.getElementById('new-cat-name').value.trim();

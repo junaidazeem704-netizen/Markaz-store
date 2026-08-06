@@ -509,137 +509,159 @@
         // SUBMIT ORDER - WITH COLOR, SIZE & IMAGE
         // ============================================
         async function submitOrder() {
-            const name = document.getElementById('c-name').value.trim();
-            const email = document.getElementById('c-email').value.trim();
-            const phone = document.getElementById('c-phone').value.trim();
-            const address = document.getElementById('c-address').value.trim();
-            const notes = document.getElementById('c-notes').value.trim();
+    const name = document.getElementById('c-name').value.trim();
+    const email = document.getElementById('c-email').value.trim();
+    const phone = document.getElementById('c-phone').value.trim();
+    const address = document.getElementById('c-address').value.trim();
+    const notes = document.getElementById('c-notes').value.trim();
 
-            if (!name || !email || !phone || !address) {
-                showToast('Please fill all required fields!', 'error');
-                return;
-            }
+    // Validation
+    if (!name || !email || !phone || !address) {
+        showToast('Please fill all required fields!', 'error');
+        return;
+    }
 
-            if (!email.includes('@') || !email.includes('.')) {
-                showToast('Please enter a valid email address!', 'error');
-                return;
-            }
+    if (!email.includes('@') || !email.includes('.')) {
+        showToast('Please enter a valid email address!', 'error');
+        return;
+    }
 
-            const submitBtn = document.querySelector('.btn-primary');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-                submitBtn.disabled = true;
-            }
+    if (checkoutItems.length === 0) {
+        showToast('Your cart is empty!', 'error');
+        return;
+    }
 
-            const orderId = 'MK-' + Date.now().toString().slice(-6);
+    const submitBtn = document.querySelector('.btn-primary');
+    if (submitBtn) {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        submitBtn.disabled = true;
+    }
 
-            // Build items list with COLOR, SIZE & IMAGE
-            const itemsList = checkoutItems.map(item => {
-                let details = [];
-                if (item.selectedColor && item.selectedColor !== 'N/A' && item.selectedColor !== 'None') {
-                    details.push(`Color: ${item.selectedColor}`);
-                }
-                if (item.selectedSize && item.selectedSize !== 'N/A' && item.selectedSize !== 'None') {
-                    details.push(`Size: ${item.selectedSize}`);
-                }
-                const detailStr = details.length > 0 ? ` (${details.join(', ')})` : '';
-                return `${item.title}${detailStr} x${item.quantity}`;
-            }).join('\n');
+    // Generate Order ID
+    const orderId = 'MK-' + Date.now().toString().slice(-6);
 
-            // Build HTML items for email with images
-            const itemsHtml = checkoutItems.map(item => {
-                const colorDisplay = item.selectedColor && item.selectedColor !== 'N/A' ? 
-                    `<span style="color:#a0a0b8;">Color: ${item.selectedColor}</span>` : '';
-                const sizeDisplay = item.selectedSize && item.selectedSize !== 'N/A' ? 
-                    `<span style="color:#a0a0b8;">Size: ${item.selectedSize}</span>` : '';
-                
-                return `
-                    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
-                        <img src="${item.image || 'https://via.placeholder.com/50'}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;" />
-                        <div style="flex:1;">
-                            <div style="font-weight:600;">${item.title}</div>
-                            <div style="font-size:0.8rem;color:#a0a0b8;display:flex;gap:12px;flex-wrap:wrap;">
-                                ${colorDisplay}
-                                ${sizeDisplay}
-                                <span>Qty: ${item.quantity}</span>
-                            </div>
-                        </div>
-                        <div style="font-weight:700;color:#6366f1;">Rs. ${parseInt(item.price) * item.quantity}</div>
+    // Build items list with COLOR, SIZE & IMAGE
+    const itemsList = checkoutItems.map(item => {
+        let details = [];
+        if (item.selectedColor && item.selectedColor !== 'N/A' && item.selectedColor !== 'None') {
+            details.push(`Color: ${item.selectedColor}`);
+        }
+        if (item.selectedSize && item.selectedSize !== 'N/A' && item.selectedSize !== 'None') {
+            details.push(`Size: ${item.selectedSize}`);
+        }
+        const detailStr = details.length > 0 ? ` (${details.join(', ')})` : '';
+        return `${item.title}${detailStr} x${item.quantity}`;
+    }).join('\n');
+
+    // Build HTML items for email with images
+    const itemsHtml = checkoutItems.map(item => {
+        const colorDisplay = item.selectedColor && item.selectedColor !== 'N/A' ? 
+            `<span style="color:#a0a0b8;">Color: ${item.selectedColor}</span>` : '';
+        const sizeDisplay = item.selectedSize && item.selectedSize !== 'N/A' ? 
+            `<span style="color:#a0a0b8;">Size: ${item.selectedSize}</span>` : '';
+        
+        return `
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                <img src="${item.image || 'https://via.placeholder.com/50'}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;" />
+                <div style="flex:1;">
+                    <div style="font-weight:600;">${item.title}</div>
+                    <div style="font-size:0.8rem;color:#a0a0b8;display:flex;gap:12px;flex-wrap:wrap;">
+                        ${colorDisplay}
+                        ${sizeDisplay}
+                        <span>Qty: ${item.quantity}</span>
                     </div>
-                `;
-            }).join('');
+                </div>
+                <div style="font-weight:700;color:#6366f1;">Rs. ${parseInt(item.price) * item.quantity}</div>
+            </div>
+        `;
+    }).join('');
 
-            const orderData = {
-                orderId: orderId,
-                items: itemsList,
-                itemsHtml: itemsHtml,
-                total: orderTotal,
-                name: name,
-                email: email,
-                phone: phone,
-                address: address,
-                notes: notes || 'N/A',
-                storeName: 'Markaz Store',
-                storeEmail: 'info@markazstore.com'
-            };
+    // Extract colors, sizes, images for tracking
+    const colors = checkoutItems.map(item => item.selectedColor || 'N/A').join(', ');
+    const sizes = checkoutItems.map(item => item.selectedSize || 'N/A').join(', ');
+    const images = checkoutItems.map(item => item.image || '').filter(img => img);
 
-            try {
-                const adminResponse = await fetch('/api/send-order', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                });
+    const orderData = {
+        orderId: orderId,
+        items: itemsList,
+        itemsHtml: itemsHtml,
+        total: orderTotal,
+        name: name,
+        email: email,
+        phone: phone,
+        address: address,
+        notes: notes || 'N/A',
+        colors: colors,
+        sizes: sizes,
+        images: images,
+        storeName: 'Markaz Store',
+        storeEmail: 'info@markazstore.com',
+        status: 'processing',
+        createdAt: new Date().toISOString()
+    };
 
-                const customerResponse = await fetch('/api/send-confirmation', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                });
+    // ============================================
+    // SAVE TO LOCAL STORAGE FOR ADMIN
+    // ============================================
+    let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+    orders.push(orderData);
+    localStorage.setItem('orders', JSON.stringify(orders));
 
-                const adminResult = await adminResponse.json();
+    try {
+        // Send to Admin
+        const adminResponse = await fetch('/api/send-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        });
 
-                if (adminResult.success) {
-                    let orders = parseInt(localStorage.getItem('orderCount') || 0);
-                    localStorage.setItem('orderCount', orders + 1);
-                    
-                    localStorage.setItem('cart', '[]');
-                    localStorage.setItem('checkoutItems', '[]');
-                    
-                    document.getElementById('checkout-form-box').style.display = 'none';
-                    document.getElementById('success-box').style.display = 'block';
-                    
-                    document.getElementById('order-id').textContent = orderId;
-                    document.getElementById('order-items').textContent = itemsList.replace(/\n/g, ', ');
-                    document.getElementById('order-total').textContent = `Rs. ${orderTotal}`;
-                    document.getElementById('order-email').textContent = email;
-                    document.getElementById('order-phone').textContent = phone;
-                    document.getElementById('order-address').textContent = address;
-                    
-                    updateCartBadge();
-                    showToast('🎉 Order placed successfully! Check your email.', 'success');
-                } else {
-                    showToast('Order failed: ' + (adminResult.message || 'Please try again.'), 'error');
-                    if (submitBtn) {
-                        submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-                        submitBtn.disabled = false;
-                    }
-                }
-            } catch (error) {
-                showToast('Network error: ' + error.message, 'error');
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-                    submitBtn.disabled = false;
-                }
+        // Send to Customer
+        const customerResponse = await fetch('/api/send-confirmation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        });
+
+        const adminResult = await adminResponse.json();
+
+        if (adminResult.success) {
+            // Update order count
+            let orders = parseInt(localStorage.getItem('orderCount') || 0);
+            localStorage.setItem('orderCount', orders + 1);
+            
+            // Clear cart
+            localStorage.setItem('cart', '[]');
+            localStorage.setItem('checkoutItems', '[]');
+            
+            // Show success
+            document.getElementById('checkout-form-box').style.display = 'none';
+            document.getElementById('success-box').style.display = 'block';
+            
+            // Fill order details
+            document.getElementById('order-id').textContent = orderId;
+            document.getElementById('order-items').textContent = itemsList.replace(/\n/g, ', ');
+            document.getElementById('order-total').textContent = `Rs. ${orderTotal}`;
+            document.getElementById('order-email').textContent = email;
+            document.getElementById('order-phone').textContent = phone;
+            document.getElementById('order-address').textContent = address;
+            
+            updateCartBadge();
+            showToast('🎉 Order placed successfully! Check your email.', 'success');
+        } else {
+            showToast('Order failed: ' + (adminResult.message || 'Please try again.'), 'error');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
+                submitBtn.disabled = false;
             }
         }
-
-        function updateCartBadge() {
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const badge = document.getElementById('cart-badge');
-            if (badge) {
-                badge.textContent = cart.length;
-            }
+    } catch (error) {
+        showToast('Network error: ' + error.message, 'error');
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
+            submitBtn.disabled = false;
         }
+    }
+}
 
         window.submitOrder = submitOrder;
     </script>

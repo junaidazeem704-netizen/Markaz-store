@@ -5,32 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel - Markaz Store</title>
     <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js"></script>
     <style>
-        /* =============================================
-           ADMIN PANEL - COMPLETE MODERN THEME
-           ============================================= */
-        :root {
-            --admin-bg: #0a0a12;
-            --admin-card: rgba(26, 26, 46, 0.85);
-            --admin-border: rgba(255, 255, 255, 0.06);
-            --admin-border-hover: rgba(255, 255, 255, 0.12);
-            --admin-accent: #6366f1;
-            --admin-accent-hover: #818cf8;
-            --admin-success: #10b981;
-            --admin-danger: #ef4444;
-            --admin-warning: #f59e0b;
-            --admin-text: #ffffff;
-            --admin-text-secondary: #a0a0b8;
-            --admin-text-muted: #6a6a82;
-            --admin-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --admin-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.6);
-            --admin-radius: 16px;
-            --admin-radius-sm: 10px;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -38,61 +15,38 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--admin-bg);
-            color: var(--admin-text);
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: #0a0a12;
+            color: #ffffff;
             padding: 16px;
-            background-image: 
-                radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.05), transparent 60%),
-                radial-gradient(ellipse at 80% 50%, rgba(139, 92, 246, 0.04), transparent 60%);
+            min-height: 100vh;
         }
 
-        .admin-wrapper { max-width: 1400px; margin: 0 auto; }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--admin-bg); }
-        ::-webkit-scrollbar-thumb {
-            background: var(--admin-accent);
-            border-radius: 10px;
+        .admin-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
         }
-        ::-webkit-scrollbar-thumb:hover { background: var(--admin-accent-hover); }
 
         /* Header */
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 28px;
-            background: var(--admin-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius);
-            margin-bottom: 24px;
+            padding: 16px 20px;
+            background: rgba(26, 26, 46, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
-            gap: 12px;
-            box-shadow: var(--admin-shadow);
-            transition: all 0.3s ease;
+            gap: 10px;
         }
 
-        .admin-header:hover { border-color: var(--admin-border-hover); }
-
         .admin-header h1 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-        }
-
-        .admin-header h1 i {
-            -webkit-text-fill-color: var(--admin-accent);
-            font-size: 1.6rem;
         }
 
         .admin-header-actions {
@@ -102,114 +56,64 @@
         }
 
         .admin-header-actions a {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 18px;
+            padding: 6px 14px;
             background: rgba(255, 255, 255, 0.05);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius-sm);
-            color: var(--admin-text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            color: #a0a0b8;
             text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            font-size: 0.75rem;
         }
 
-        .admin-header-actions a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--admin-text);
-            border-color: var(--admin-border-hover);
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 18px;
+        .btn-danger-sm {
+            padding: 6px 14px;
             background: rgba(239, 68, 68, 0.12);
             border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: var(--admin-radius-sm);
-            color: var(--admin-danger);
-            font-size: 0.8rem;
-            font-weight: 500;
+            border-radius: 8px;
+            color: #ef4444;
+            font-size: 0.75rem;
             cursor: pointer;
-            transition: all 0.3s ease;
             font-family: inherit;
-        }
-
-        .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.2);
-            transform: translateY(-2px);
         }
 
         /* Stats */
         .admin-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .admin-stat-card {
-            background: var(--admin-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius);
-            padding: 18px 22px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: var(--admin-shadow);
-        }
-
-        .admin-stat-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--admin-accent);
-            box-shadow: var(--admin-shadow-hover);
-        }
-
-        .admin-stat-card .stat-icon {
-            font-size: 1.2rem;
-            margin-bottom: 4px;
+            background: rgba(26, 26, 46, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 14px 18px;
+            text-align: center;
         }
 
         .admin-stat-card .label {
-            font-size: 0.7rem;
-            color: var(--admin-text-secondary);
+            font-size: 0.65rem;
+            color: #a0a0b8;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .admin-stat-card .value {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-top: 2px;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Grid */
-        .admin-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
+        /* Cards */
         .admin-card {
-            background: var(--admin-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius);
-            padding: 22px 26px;
-            box-shadow: var(--admin-shadow);
-            transition: all 0.3s ease;
+            background: rgba(26, 26, 46, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
         }
-
-        .admin-card:hover { border-color: var(--admin-border-hover); }
-        .admin-card.full { grid-column: 1 / -1; }
 
         .admin-card h2 {
             font-size: 1rem;
@@ -217,11 +121,13 @@
             margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--admin-text);
+            gap: 10px;
         }
 
-        .admin-card h2 i { color: var(--admin-accent); font-size: 1.1rem; }
+        .admin-card h2 i {
+            color: #6366f1;
+        }
+
         .admin-card .badge {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
@@ -232,128 +138,135 @@
         }
 
         /* Form */
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-bottom: 14px;
-        }
-
         .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+            margin-bottom: 12px;
         }
 
         .form-group label {
             font-size: 0.8rem;
             font-weight: 500;
-            color: var(--admin-text-secondary);
+            color: #a0a0b8;
+            display: block;
+            margin-bottom: 4px;
         }
 
-        .form-group label .required { color: var(--admin-danger); }
+        .form-group label .required {
+            color: #ef4444;
+        }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.04);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius-sm);
-            color: var(--admin-text);
-            font-size: 0.9rem;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            outline: none;
+        .form-group input {
             width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
         }
 
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: var(--admin-accent);
+        .form-group input:focus {
+            border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            background: rgba(255, 255, 255, 0.06);
         }
 
-        .form-group input::placeholder,
-        .form-group textarea::placeholder { color: var(--admin-text-muted); }
-        .form-group textarea { resize: vertical; min-height: 50px; }
+        .form-group input::placeholder {
+            color: #6a6a82;
+        }
+
         .form-group small {
             font-size: 0.7rem;
-            color: var(--admin-text-muted);
+            color: #6a6a82;
+            display: block;
+            margin-top: 4px;
         }
-        .form-group small i { color: var(--admin-accent); }
+
+        .form-group small i {
+            color: #6366f1;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
 
         .form-actions {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-top: 6px;
-            flex-wrap: wrap;
+            margin-top: 8px;
         }
 
         /* Buttons */
         .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 24px;
+            width: 100%;
+            padding: 14px;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             border: none;
-            border-radius: var(--admin-radius-sm);
+            border-radius: 10px;
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-family: inherit;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
+        .btn-primary:active {
+            transform: scale(0.98);
         }
 
         .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 24px;
+            width: 100%;
+            padding: 14px;
             background: rgba(255, 255, 255, 0.05);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius-sm);
-            color: var(--admin-text-secondary);
-            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: #a0a0b8;
+            font-size: 0.95rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            width: auto;
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            color: #a0a0b8;
+            cursor: pointer;
             font-family: inherit;
         }
 
-        .btn-secondary:hover {
+        .btn-sm:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: var(--admin-text);
-            border-color: var(--admin-border-hover);
-            transform: translateY(-2px);
         }
 
-        .btn-sm { padding: 6px 14px; font-size: 0.75rem; }
-
-        /* Image Upload - Multiple */
+        /* Image Upload */
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
-            border-radius: var(--admin-radius-sm);
+            border-radius: 10px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
             position: relative;
             background: rgba(255, 255, 255, 0.02);
         }
 
         .image-upload-area:hover {
-            border-color: var(--admin-accent);
+            border-color: #6366f1;
             background: rgba(99, 102, 241, 0.04);
         }
 
@@ -369,18 +282,18 @@
 
         .image-upload-area i {
             font-size: 2rem;
-            color: var(--admin-accent);
+            color: #6366f1;
             display: block;
             margin-bottom: 4px;
         }
 
         .image-upload-area p {
-            color: var(--admin-text-secondary);
+            color: #a0a0b8;
             font-size: 0.85rem;
         }
 
         .image-upload-area .sub {
-            color: var(--admin-text-muted);
+            color: #6a6a82;
             font-size: 0.7rem;
         }
 
@@ -388,20 +301,18 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .image-preview-item {
             position: relative;
-            border-radius: var(--admin-radius-sm);
+            border-radius: 8px;
             overflow: hidden;
             aspect-ratio: 1;
             background: rgba(255, 255, 255, 0.04);
-            border: var(--admin-border);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .image-preview-item:hover { border-color: var(--admin-accent); }
         .image-preview-item img {
             width: 100%;
             height: 100%;
@@ -410,8 +321,8 @@
 
         .image-preview-item .remove-img {
             position: absolute;
-            top: 3px;
-            right: 3px;
+            top: 4px;
+            right: 4px;
             width: 22px;
             height: 22px;
             border-radius: 50%;
@@ -420,13 +331,12 @@
             color: white;
             cursor: pointer;
             font-size: 0.6rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
         }
 
-        .image-preview-item .remove-img:hover { background: var(--admin-danger); }
+        .image-preview-item .remove-img:hover {
+            background: #ef4444;
+        }
+
         .image-preview-item .img-number {
             position: absolute;
             bottom: 3px;
@@ -434,137 +344,37 @@
             background: rgba(0, 0, 0, 0.6);
             padding: 1px 6px;
             border-radius: 4px;
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: white;
         }
 
-        /* Auto-Detect Colors */
-        .auto-detect-btn {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
-            color: white;
-            border: none;
-            padding: 4px 14px;
-            border-radius: var(--admin-radius-sm);
-            font-size: 0.75rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: inherit;
-            margin-left: 6px;
-        }
-
-        .auto-detect-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-        }
-
-        .auto-detect-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Detected Colors */
-        .detected-colors {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 6px;
-            min-height: 30px;
-        }
-
-        .detected-color-chip {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 10px 2px 6px;
-            background: rgba(255, 255, 255, 0.06);
-            border: var(--admin-border);
-            border-radius: 100px;
-            font-size: 0.75rem;
-            transition: all 0.3s ease;
-        }
-
-        .detected-color-chip:hover { border-color: var(--admin-border-hover); }
-        .detected-color-chip .color-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .detected-color-chip .remove {
-            cursor: pointer;
-            color: var(--admin-danger);
-            background: none;
-            border: none;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-        .detected-color-chip .remove:hover { transform: scale(1.2); }
-
-        /* Progress */
-        .image-analysis-progress {
-            display: none;
-            margin-top: 6px;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: var(--admin-radius-sm);
-            border: var(--admin-border);
-        }
-
-        .image-analysis-progress .status-text {
-            font-size: 0.75rem;
-            color: var(--admin-text-secondary);
-        }
-
-        .image-analysis-progress .progress-bar {
-            width: 100%;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 4px;
-        }
-
-        .image-analysis-progress .progress-bar .fill {
-            height: 100%;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6);
-            border-radius: 2px;
-            transition: width 0.5s ease;
-            width: 0%;
-        }
-
-        /* Options (Sizes & Colors) */
+        /* Options */
         .options-group {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             margin-top: 4px;
-            min-height: 30px;
+            min-height: 28px;
         }
 
         .option-tag {
             display: flex;
             align-items: center;
             gap: 4px;
-            padding: 2px 10px 2px 14px;
+            padding: 4px 10px 4px 12px;
             background: rgba(255, 255, 255, 0.06);
-            border: var(--admin-border);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 100px;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
+            font-size: 0.75rem;
         }
 
-        .option-tag:hover { border-color: var(--admin-border-hover); }
         .option-tag .remove {
             cursor: pointer;
-            color: var(--admin-danger);
+            color: #ef4444;
             background: none;
             border: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            font-size: 0.8rem;
         }
-        .option-tag .remove:hover { transform: scale(1.2); }
 
         .option-input-row {
             display: flex;
@@ -576,70 +386,72 @@
             flex: 1;
             padding: 6px 12px;
             background: rgba(255, 255, 255, 0.04);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius-sm);
-            color: var(--admin-text);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            color: #ffffff;
             font-size: 0.85rem;
-            font-family: inherit;
             outline: none;
-            transition: all 0.3s ease;
         }
 
-        .option-input-row input:focus { border-color: var(--admin-accent); }
+        .option-input-row input:focus {
+            border-color: #6366f1;
+        }
 
         /* Categories */
         .category-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             margin-top: 4px;
         }
 
         .category-tag {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 12px 4px 16px;
+            gap: 4px;
+            padding: 4px 10px 4px 12px;
             background: rgba(255, 255, 255, 0.06);
-            border: var(--admin-border);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 100px;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
+            font-size: 0.75rem;
         }
 
-        .category-tag:hover { border-color: var(--admin-border-hover); }
         .category-tag .remove {
             cursor: pointer;
-            color: var(--admin-danger);
+            color: #ef4444;
             background: none;
             border: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            font-size: 0.8rem;
         }
-        .category-tag .remove:hover { transform: scale(1.2); }
 
         .category-input-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 12px;
         }
 
-        .category-input-row .suggestions-container { flex: 1; }
+        .category-input-row input {
+            flex: 1;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .category-input-row input:focus {
+            border-color: #6366f1;
+        }
 
         /* Product List */
         .product-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 400px;
+            gap: 6px;
+            max-height: 350px;
             overflow-y: auto;
-        }
-
-        .product-list::-webkit-scrollbar { width: 4px; }
-        .product-list::-webkit-scrollbar-track { background: transparent; }
-        .product-list::-webkit-scrollbar-thumb {
-            background: var(--admin-accent);
-            border-radius: 10px;
         }
 
         .product-item {
@@ -648,64 +460,44 @@
             align-items: center;
             padding: 10px 14px;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--admin-radius-sm);
-            border: var(--admin-border);
-            transition: all 0.3s ease;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
             flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .product-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--admin-border-hover);
+            gap: 6px;
         }
 
         .product-item .info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .product-item .info img {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             object-fit: cover;
-            border-radius: var(--admin-radius-sm);
-            background: rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
         }
 
         .product-item .info .title {
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        .product-item .info .category {
-            font-size: 0.7rem;
-            color: var(--admin-text-secondary);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            align-items: center;
+        .product-item .info .meta {
+            font-size: 0.65rem;
+            color: #a0a0b8;
         }
 
-        .product-item .info .category .color-dot-mini {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .product-item .actions .btn-danger {
-            padding: 4px 12px;
-            font-size: 0.7rem;
+        .product-item .actions .btn-danger-sm {
+            padding: 4px 10px;
+            font-size: 0.65rem;
         }
 
         .empty-state {
             text-align: center;
             padding: 30px 20px;
-            color: var(--admin-text-muted);
-            display: none;
+            color: #6a6a82;
         }
 
         .empty-state i {
@@ -714,96 +506,33 @@
             margin-bottom: 8px;
         }
 
-        .product-list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 4px 10px;
-            border-bottom: var(--admin-border);
-            margin-bottom: 6px;
-        }
-
-        .product-list-header span {
-            font-size: 0.8rem;
-            color: var(--admin-text-secondary);
-        }
-
         .product-count {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
             padding: 2px 10px;
             border-radius: 100px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
-        }
-
-        /* Suggestions */
-        .suggestions-container {
-            position: relative;
-            width: 100%;
-        }
-
-        .suggestions-dropdown {
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0;
-            right: 0;
-            background: var(--admin-card);
-            backdrop-filter: blur(20px);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius-sm);
-            max-height: 160px;
-            overflow-y: auto;
-            display: none;
-            z-index: 100;
-            box-shadow: var(--admin-shadow);
-        }
-
-        .suggestions-dropdown::-webkit-scrollbar { width: 4px; }
-        .suggestions-dropdown::-webkit-scrollbar-track { background: transparent; }
-        .suggestions-dropdown::-webkit-scrollbar-thumb {
-            background: var(--admin-accent);
-            border-radius: 10px;
-        }
-
-        .suggestion-item {
-            padding: 8px 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.85rem;
-            border-bottom: var(--admin-border);
-            color: var(--admin-text-secondary);
-        }
-
-        .suggestion-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--admin-text);
-        }
-
-        .suggestion-item.new-category {
-            color: var(--admin-accent);
-            font-weight: 500;
+            margin-left: 6px;
         }
 
         /* Toast */
         .toast {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--admin-card);
-            backdrop-filter: blur(20px);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius);
-            padding: 14px 18px;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            background: rgba(26, 26, 46, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: var(--admin-shadow-hover);
+            gap: 10px;
             z-index: 9999;
             transform: translateY(120px);
             opacity: 0;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            max-width: 400px;
+            transition: all 0.4s ease;
         }
 
         .toast.show {
@@ -812,8 +541,8 @@
         }
 
         .toast-icon {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             background: rgba(16, 185, 129, 0.12);
             display: flex;
@@ -823,93 +552,51 @@
         }
 
         .toast-icon i {
-            color: var(--admin-success);
-            font-size: 1rem;
+            color: #10b981;
+            font-size: 0.9rem;
         }
 
         .toast.error .toast-icon {
             background: rgba(239, 68, 68, 0.12);
         }
         .toast.error .toast-icon i {
-            color: var(--admin-danger);
+            color: #ef4444;
         }
 
         .toast-content {
-            display: flex;
-            flex-direction: column;
             flex: 1;
         }
 
         .toast-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
         }
 
         .toast-message {
-            font-size: 0.75rem;
-            color: var(--admin-text-secondary);
+            font-size: 0.7rem;
+            color: #a0a0b8;
         }
 
         .toast-close {
             background: none;
             border: none;
-            color: var(--admin-text-muted);
+            color: #6a6a82;
             cursor: pointer;
-            padding: 4px;
-            transition: all 0.3s ease;
+            font-size: 1rem;
         }
-
-        .toast-close:hover { color: var(--admin-text); }
-
-        /* Debug Box */
-        .debug-box {
-            background: rgba(0, 0, 0, 0.5);
-            border: var(--admin-border);
-            border-radius: var(--admin-radius-sm);
-            padding: 10px 14px;
-            margin-top: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.7rem;
-            color: #10b981;
-            max-height: 120px;
-            overflow-y: auto;
-            display: block;
-        }
-
-        .debug-box .error { color: #ef4444; }
-        .debug-box .warn { color: #f59e0b; }
-        .debug-box .info { color: #60a5fa; }
-        .debug-box .success { color: #10b981; }
 
         /* Responsive */
-        @media (max-width: 1024px) {
-            .admin-grid { grid-template-columns: 1fr; }
-        }
-
-        @media (max-width: 768px) {
-            body { padding: 12px; }
-            .admin-header {
-                flex-direction: column;
-                text-align: center;
-                padding: 14px 18px;
-            }
-            .admin-header-actions { justify-content: center; }
-            .form-row { grid-template-columns: 1fr; }
-            .admin-card { padding: 16px 18px; }
-            .admin-stats { grid-template-columns: 1fr 1fr; }
-            .product-item { flex-direction: column; align-items: stretch; }
-            .product-item .actions { justify-content: flex-end; }
-            .toast {
-                bottom: 16px;
-                right: 16px;
-                left: 16px;
-                max-width: 100%;
-            }
-        }
-
         @media (max-width: 480px) {
-            .admin-stats { grid-template-columns: 1fr; }
-            .admin-header h1 { font-size: 1.1rem; }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .form-actions {
+                grid-template-columns: 1fr;
+            }
+            .admin-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
         }
     </style>
 </head>
@@ -918,193 +605,125 @@
     <div class="admin-wrapper">
         <!-- Header -->
         <header class="admin-header">
-            <h1>
-                <i class="fas fa-crown"></i>
-                Store Management
-            </h1>
+            <h1>⚙️ Admin</h1>
             <div class="admin-header-actions">
-                <a href="index.html">
-                    <i class="fas fa-store"></i> View Store
-                </a>
-                <button class="btn-danger" onclick="resetStorage()">
-                    <i class="fas fa-trash-alt"></i> Reset
-                </button>
+                <a href="index.html"><i class="fas fa-store"></i></a>
+                <button class="btn-danger-sm" onclick="resetStorage()"><i class="fas fa-trash-alt"></i></button>
             </div>
         </header>
 
         <!-- Stats -->
         <div class="admin-stats">
             <div class="admin-stat-card">
-                <div class="stat-icon">📦</div>
-                <div class="label">Total Products</div>
+                <div class="label">📦 Products</div>
                 <div class="value" id="total-products">0</div>
             </div>
             <div class="admin-stat-card">
-                <div class="stat-icon">🏷️</div>
-                <div class="label">Categories</div>
+                <div class="label">🏷️ Categories</div>
                 <div class="value" id="total-categories">0</div>
-            </div>
-            <div class="admin-stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="label">Orders</div>
-                <div class="value" id="total-orders">0</div>
-            </div>
-            <div class="admin-stat-card">
-                <div class="stat-icon">🎨</div>
-                <div class="label">Colors</div>
-                <div class="value" id="total-colors">0</div>
             </div>
         </div>
 
-        <!-- Admin Grid -->
-        <div class="admin-grid">
-            <!-- Add Product -->
-            <div class="admin-card full">
-                <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
+        <!-- Add Product -->
+        <div class="admin-card">
+            <h2><i class="fas fa-plus-circle"></i> Add Product</h2>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Product Title <span class="required">*</span></label>
-                        <input type="text" id="p-title" placeholder="e.g. Premium Smart Watch" />
-                    </div>
-                    <div class="form-group">
-                        <label>Price (PKR) <span class="required">*</span></label>
-                        <input type="number" id="p-price" placeholder="e.g. 2500" />
-                    </div>
+            <div class="form-group">
+                <label>Title <span class="required">*</span></label>
+                <input type="text" id="p-title" placeholder="e.g. Red T-Shirt" />
+            </div>
+
+            <div class="form-group">
+                <label>Price (PKR) <span class="required">*</span></label>
+                <input type="number" id="p-price" placeholder="1500" />
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <input type="text" id="p-category" placeholder="Clothing, Watches, etc." />
+                <small><i class="fas fa-magic"></i> Auto-detects from title</small>
+            </div>
+
+            <div class="form-group">
+                <label>Multiple Images <span class="required">*</span></label>
+                <div class="image-upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Tap to upload multiple images</p>
+                    <span class="sub">PNG, JPG, WEBP (Max 5 images)</span>
+                    <input type="file" id="p-images" accept="image/*" multiple />
                 </div>
+                <div class="image-preview-grid" id="image-preview-grid"></div>
+                <input type="hidden" id="p-images-data" value="[]" />
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Category <span class="required">*</span></label>
-                        <div class="suggestions-container">
-                            <input type="text" id="p-category-input" placeholder="Type or auto-detect" />
-                            <div class="suggestions-dropdown" id="category-suggestions-product"></div>
-                        </div>
-                        <input type="hidden" id="p-category" />
-                        <small>
-                            <i class="fas fa-magic"></i> Auto-detects from product title
-                        </small>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-ruler"></i> Sizes</label>
+                    <div class="options-group" id="sizes-container"></div>
+                    <div class="option-input-row">
+                        <input type="text" id="size-input" placeholder="S, M, L" />
+                        <button class="btn-sm" onclick="addOption('size')">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <label>Multiple Images <span class="required">*</span></label>
-                        <div class="image-upload-area">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <p>Click to upload images</p>
-                            <span class="sub">PNG, JPG, WEBP (Max 5 images)</span>
-                            <input type="file" id="p-images" accept="image/*" multiple />
-                        </div>
-
-                        <!-- Analysis Progress -->
-                        <div class="image-analysis-progress" id="analysis-progress">
-                            <div class="status-text" id="analysis-status">🔍 Analyzing images...</div>
-                            <div class="progress-bar">
-                                <div class="fill" id="analysis-fill"></div>
-                            </div>
-                        </div>
-
-                        <!-- Image Preview -->
-                        <div class="image-preview-grid" id="image-preview-grid"></div>
-
-                        <!-- Detected Colors -->
-                        <div style="margin-top:8px;">
-                            <label style="font-size:0.8rem;font-weight:500;color:var(--admin-text-secondary);">
-                                <i class="fas fa-palette"></i> Detected Colors
-                                <button class="auto-detect-btn" id="auto-detect-btn" onclick="analyzeImagesForColors()">
-                                    <i class="fas fa-magic"></i> Auto-Detect
-                                </button>
-                            </label>
-                            <div class="detected-colors" id="detected-colors-container"></div>
-                            <input type="hidden" id="p-colors-detected" value="[]" />
-                        </div>
-                    </div>
+                    <input type="hidden" id="p-sizes" value="[]" />
                 </div>
-
-                <!-- Sizes & Colors -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label><i class="fas fa-ruler"></i> Sizes (Clothing)</label>
-                        <div class="options-group" id="sizes-container"></div>
-                        <div class="option-input-row">
-                            <input type="text" id="size-input" placeholder="e.g. S, M, L, XL" />
-                            <button class="btn-secondary btn-sm" onclick="addOption('size')">
-                                <i class="fas fa-plus"></i> Add
-                            </button>
-                        </div>
-                        <input type="hidden" id="p-sizes" value="[]" />
+                <div class="form-group">
+                    <label><i class="fas fa-palette"></i> Colors <span class="required">*</span></label>
+                    <div class="options-group" id="colors-container"></div>
+                    <div class="option-input-row">
+                        <input type="text" id="color-input" placeholder="e.g. Red, Black, Blue" />
+                        <button class="btn-sm" onclick="addOption('color')">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-tag"></i> Manual Colors (Optional)</label>
-                        <div class="options-group" id="colors-container"></div>
-                        <div class="option-input-row">
-                            <input type="text" id="color-input" placeholder="e.g. Black, White, Blue" />
-                            <button class="btn-secondary btn-sm" onclick="addOption('color')">
-                                <i class="fas fa-plus"></i> Add
-                            </button>
-                        </div>
-                        <input type="hidden" id="p-colors" value="[]" />
-                        <small style="color:var(--admin-text-muted);">
-                            <i class="fas fa-info-circle"></i> Auto-detected colors will be added automatically
-                        </small>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button class="btn-primary" onclick="addProduct()">
-                        <i class="fas fa-plus"></i> Add Product
-                    </button>
-                    <button class="btn-secondary" onclick="addProductSmart()">
-                        <i class="fas fa-magic"></i> Auto-Detect
-                    </button>
-                </div>
-
-                <!-- Debug Box -->
-                <div class="debug-box" id="debug-box">
-                    <div class="success">✅ Ready</div>
+                    <input type="hidden" id="p-colors" value="[]" />
+                    <small><i class="fas fa-info-circle"></i> Colors se product preview mein image change hogi</small>
                 </div>
             </div>
 
-            <!-- Categories -->
-            <div class="admin-card">
-                <h2><i class="fas fa-tags"></i> Categories</h2>
-                <div class="category-input-row">
-                    <div class="suggestions-container">
-                        <input type="text" id="new-cat-name" placeholder="New category..." />
-                        <div class="suggestions-dropdown" id="category-suggestions"></div>
-                    </div>
-                    <button class="btn-primary btn-sm" onclick="addCategory()">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
-                </div>
-                <div class="category-tags" id="categories-list"></div>
+            <div class="form-actions">
+                <button class="btn-primary" onclick="addProduct()">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+                <button class="btn-secondary" onclick="addProductSmart()">
+                    <i class="fas fa-magic"></i> Auto-Detect
+                </button>
             </div>
+        </div>
 
-            <!-- Products List -->
-            <div class="admin-card">
-                <h2>
-                    <i class="fas fa-box"></i> All Products
-                    <span class="badge" id="product-count">0</span>
-                </h2>
-                <div class="product-list-header">
-                    <span><i class="fas fa-list"></i> Product List</span>
-                    <span class="product-count" id="product-count-badge">0</span>
-                </div>
-                <div class="product-list" id="admin-products-list"></div>
-                <div class="empty-state" id="empty-products">
-                    <i class="fas fa-box-open"></i>
-                    No products added yet
-                </div>
+        <!-- Categories -->
+        <div class="admin-card">
+            <h2><i class="fas fa-tags"></i> Categories</h2>
+            <div class="category-input-row">
+                <input type="text" id="new-cat-name" placeholder="New category..." />
+                <button class="btn-sm" onclick="addCategory()">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+            <div class="category-tags" id="categories-list"></div>
+        </div>
+
+        <!-- Products List -->
+        <div class="admin-card">
+            <h2>
+                <i class="fas fa-box"></i> Products
+                <span class="badge" id="product-count">0</span>
+            </h2>
+            <div class="product-list" id="products-list"></div>
+            <div class="empty-state" id="empty-state">
+                <i class="fas fa-box-open"></i>
+                No products
             </div>
         </div>
     </div>
 
     <!-- Toast -->
     <div class="toast" id="toast">
-        <div class="toast-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
+        <div class="toast-icon"><i class="fas fa-check-circle"></i></div>
         <div class="toast-content">
             <span class="toast-title">Success!</span>
-            <span class="toast-message" id="toast-message">Product added successfully</span>
+            <span class="toast-message" id="toast-msg">Done</span>
         </div>
         <button class="toast-close" onclick="this.parentElement.classList.remove('show')">
             <i class="fas fa-times"></i>
@@ -1113,7 +732,7 @@
 
     <script>
         // ============================================
-        // CONFIGURATION
+        // CONFIG
         // ============================================
         const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
 
@@ -1123,40 +742,21 @@
         let categories = JSON.parse(localStorage.getItem('myCategories')) || ['Watches', 'Clothing', 'Electronics'];
         let products = JSON.parse(localStorage.getItem('myProducts')) || [];
         let uploadedImages = [];
-        let detectedColors = [];
         let sizes = [];
-        let manualColors = [];
-        let isAnalyzing = false;
-
-        // ============================================
-        // DEBUG
-        // ============================================
-        function debugLog(msg, type = 'info') {
-            const box = document.getElementById('debug-box');
-            if (!box) return;
-            const colors = { info: '#60a5fa', error: '#ef4444', warn: '#f59e0b', success: '#10b981' };
-            const time = new Date().toLocaleTimeString();
-            box.innerHTML += `<div class="${type}">[${time}] ${msg}</div>`;
-            box.scrollTop = box.scrollHeight;
-            console.log(`[${type}]`, msg);
-        }
+        let colors = [];
 
         // ============================================
         // DOM READY
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            debugLog('🚀 Admin loaded!', 'success');
-            debugLog(`📦 Products: ${products.length}`, 'info');
-            renderAdminPanel();
-            updateStats();
+            renderAll();
             setupImageUpload();
-            loadSavedOptions();
-            setupCategorySuggestions('new-cat-name', 'category-suggestions');
-            setupCategorySuggestions('p-category-input', 'category-suggestions-product');
+            loadOptions();
+            setupCategorySuggestions();
         });
 
         // ============================================
-        // IMAGE UPLOAD - MULTIPLE
+        // IMAGE UPLOAD - Multiple
         // ============================================
         function setupImageUpload() {
             const input = document.getElementById('p-images');
@@ -1164,19 +764,15 @@
 
             input.addEventListener('change', function(e) {
                 const files = e.target.files;
-                debugLog(`📸 ${files.length} images selected`, 'info');
                 for (let file of files) {
                     if (uploadedImages.length >= 5) {
-                        showToast('Maximum 5 images allowed!', 'warning');
+                        showToast('Max 5 images!', 'warning');
                         break;
                     }
                     const reader = new FileReader();
                     reader.onload = function(event) {
                         uploadedImages.push(event.target.result);
-                        renderImagePreviews();
-                        debugLog(`✅ Image ${uploadedImages.length} loaded`, 'success');
-                        // Auto-analyze after upload
-                        setTimeout(analyzeImagesForColors, 300);
+                        renderPreviews();
                     };
                     reader.readAsDataURL(file);
                 }
@@ -1184,7 +780,7 @@
             });
         }
 
-        function renderImagePreviews() {
+        function renderPreviews() {
             const grid = document.getElementById('image-preview-grid');
             if (!grid) return;
 
@@ -1196,7 +792,7 @@
 
             grid.innerHTML = uploadedImages.map((img, i) => `
                 <div class="image-preview-item">
-                    <img src="${img}" alt="Product image ${i+1}" />
+                    <img src="${img}" alt="Image ${i+1}" />
                     <button class="remove-img" onclick="removeImage(${i})">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1209,198 +805,36 @@
 
         function removeImage(index) {
             uploadedImages.splice(index, 1);
-            renderImagePreviews();
-            debugLog(`🗑️ Image ${index+1} removed`, 'warn');
-            if (uploadedImages.length > 0) {
-                analyzeImagesForColors();
-            } else {
-                detectedColors = [];
-                renderDetectedColors();
-                document.getElementById('p-colors-detected').value = '[]';
-                document.getElementById('total-colors').textContent = 0;
-            }
-        }
-
-        // ============================================
-        // AUTO-COLOR DETECTION
-        // ============================================
-        async function analyzeImagesForColors() {
-            if (uploadedImages.length === 0) {
-                showToast('Upload images first!', 'warning');
-                return;
-            }
-
-            if (isAnalyzing) return;
-            isAnalyzing = true;
-
-            const btn = document.getElementById('auto-detect-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
-
-            const progress = document.getElementById('analysis-progress');
-            progress.style.display = 'block';
-
-            detectedColors = [];
-            const colorThief = new ColorThief();
-            debugLog('🔍 Starting color analysis...', 'info');
-
-            for (let i = 0; i < uploadedImages.length; i++) {
-                const pct = ((i + 1) / uploadedImages.length) * 100;
-                document.getElementById('analysis-fill').style.width = pct + '%';
-                document.getElementById('analysis-status').textContent = `🔍 Image ${i+1} of ${uploadedImages.length}...`;
-
-                try {
-                    const img = new Image();
-                    img.crossOrigin = 'Anonymous';
-
-                    await new Promise((resolve, reject) => {
-                        img.onload = resolve;
-                        img.onerror = reject;
-                        img.src = uploadedImages[i];
-                    });
-
-                    const color = colorThief.getColor(img);
-                    if (color) {
-                        const [r, g, b] = color;
-                        const name = rgbToColorName(r, g, b);
-                        const hex = rgbToHex(r, g, b);
-
-                        if (!detectedColors.some(c => c.name === name)) {
-                            detectedColors.push({ name, hex, r, g, b });
-                            debugLog(`🎨 Detected color: ${name}`, 'success');
-                        }
-                    }
-                } catch (e) {
-                    debugLog(`❌ Color detection failed: ${e.message}`, 'error');
-                }
-            }
-
-            renderDetectedColors();
-            document.getElementById('p-colors-detected').value = JSON.stringify(detectedColors);
-            document.getElementById('total-colors').textContent = detectedColors.length;
-
-            document.getElementById('analysis-status').textContent = `✅ Detected ${detectedColors.length} colors`;
-            document.getElementById('analysis-fill').style.width = '100%';
-
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-magic"></i> Re-Detect';
-
-            setTimeout(() => { progress.style.display = 'none'; }, 1500);
-            isAnalyzing = false;
-
-            if (detectedColors.length > 0) {
-                showToast(`🎨 Detected ${detectedColors.length} colors`, 'success');
-                debugLog(`✅ Analysis complete: ${detectedColors.length} colors`, 'success');
-            } else {
-                showToast('⚠️ No colors detected. Try clearer images.', 'warning');
-            }
-        }
-
-        function renderDetectedColors() {
-            const container = document.getElementById('detected-colors-container');
-            if (!container) return;
-
-            if (detectedColors.length === 0) {
-                container.innerHTML = '<span style="color:var(--admin-text-muted);font-size:0.8rem;">Upload images and click "Auto-Detect"</span>';
-                return;
-            }
-
-            container.innerHTML = detectedColors.map((color, i) => `
-                <span class="detected-color-chip">
-                    <span class="color-dot" style="background:${color.hex};"></span>
-                    ${color.name}
-                    <button class="remove" onclick="removeDetectedColor(${i})">×</button>
-                </span>
-            `).join('');
-        }
-
-        function removeDetectedColor(index) {
-            detectedColors.splice(index, 1);
-            document.getElementById('p-colors-detected').value = JSON.stringify(detectedColors);
-            renderDetectedColors();
-            document.getElementById('total-colors').textContent = detectedColors.length;
-        }
-
-        // ============================================
-        // COLOR HELPERS
-        // ============================================
-        function rgbToColorName(r, g, b) {
-            const colorMap = {
-                'Black': [0, 0, 0],
-                'White': [255, 255, 255],
-                'Red': [255, 0, 0],
-                'Green': [0, 255, 0],
-                'Blue': [0, 0, 255],
-                'Yellow': [255, 255, 0],
-                'Orange': [255, 165, 0],
-                'Purple': [128, 0, 128],
-                'Pink': [255, 192, 203],
-                'Brown': [165, 42, 42],
-                'Gray': [128, 128, 128],
-                'Navy': [0, 0, 128],
-                'Gold': [255, 215, 0],
-                'Silver': [192, 192, 192],
-                'Beige': [245, 245, 220],
-                'Maroon': [128, 0, 0],
-                'Olive': [128, 128, 0],
-                'Teal': [0, 128, 128],
-                'Cyan': [0, 255, 255],
-                'Magenta': [255, 0, 255],
-                'Lime': [0, 255, 0],
-                'Violet': [238, 130, 238],
-                'Coral': [255, 127, 80],
-                'Salmon': [250, 128, 114],
-                'Turquoise': [64, 224, 208],
-                'Lavender': [230, 230, 250],
-                'Cream': [255, 253, 208],
-                'Chocolate': [210, 105, 30]
-            };
-
-            let closest = 'Unknown';
-            let minDist = Infinity;
-
-            for (const [name, [cr, cg, cb]] of Object.entries(colorMap)) {
-                const d = Math.sqrt((r - cr) ** 2 + (g - cg) ** 2 + (b - cb) ** 2);
-                if (d < minDist) { minDist = d;
-                    closest = name; }
-            }
-            return closest;
-        }
-
-        function rgbToHex(r, g, b) {
-            return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+            renderPreviews();
         }
 
         // ============================================
         // OPTIONS (Sizes & Colors)
         // ============================================
-        function loadSavedOptions() {
+        function loadOptions() {
             const s = document.getElementById('p-sizes');
             const c = document.getElementById('p-colors');
             if (s && s.value) { sizes = JSON.parse(s.value);
                 renderOptions('size'); }
-            if (c && c.value) { manualColors = JSON.parse(c.value);
+            if (c && c.value) { colors = JSON.parse(c.value);
                 renderOptions('color'); }
         }
 
         function addOption(type) {
             const input = document.getElementById(type === 'size' ? 'size-input' : 'color-input');
-            const arr = type === 'size' ? sizes : manualColors;
+            const arr = type === 'size' ? sizes : colors;
             const hidden = type === 'size' ? 'p-sizes' : 'p-colors';
-
             const val = input.value.trim();
-            if (!val) { showToast('Enter a value!', 'error'); return; }
+            if (!val) { showToast('Enter value!', 'error'); return; }
             if (arr.includes(val)) { showToast('Already exists!', 'warning'); return; }
-
             arr.push(val);
             document.getElementById(hidden).value = JSON.stringify(arr);
             input.value = '';
             renderOptions(type);
-            debugLog(`➕ Added ${type}: ${val}`, 'success');
         }
 
         function removeOption(type, index) {
-            const arr = type === 'size' ? sizes : manualColors;
+            const arr = type === 'size' ? sizes : colors;
             const hidden = type === 'size' ? 'p-sizes' : 'p-colors';
             arr.splice(index, 1);
             document.getElementById(hidden).value = JSON.stringify(arr);
@@ -1409,11 +843,9 @@
 
         function renderOptions(type) {
             const container = document.getElementById(type === 'size' ? 'sizes-container' : 'colors-container');
-            const arr = type === 'size' ? sizes : manualColors;
+            const arr = type === 'size' ? sizes : colors;
             if (!container) return;
-
             if (arr.length === 0) { container.innerHTML = ''; return; }
-
             container.innerHTML = arr.map((item, i) => `
                 <span class="option-tag">
                     ${item}
@@ -1423,86 +855,62 @@
         }
 
         // ============================================
-        // ADD PRODUCT - COMPLETE
+        // ADD PRODUCT
         // ============================================
         async function addProduct() {
-            debugLog('🔴 addProduct() called', 'info');
-
             const title = document.getElementById('p-title').value.trim();
             const price = document.getElementById('p-price').value.trim();
-            let category = document.getElementById('p-category-input').value.trim() || 'General';
-
-            debugLog(`📝 Title: "${title}", Price: "${price}", Category: "${category}"`, 'info');
+            let category = document.getElementById('p-category').value.trim() || 'General';
 
             if (!title || !price) {
-                showToast('Product Title and Price are required!', 'error');
-                debugLog('❌ Title or Price missing!', 'error');
+                showToast('Title and Price required!', 'error');
                 return;
             }
 
-            // Ensure category exists
-            category = ensureCategoryExists(category);
+            // Category auto-create
+            category = ensureCategory(category);
 
             // Get images
             const imagesData = document.getElementById('p-images-data');
             const images = JSON.parse(imagesData.value || '[]');
 
-            debugLog(`🖼️ Images in preview: ${images.length}`, 'info');
-
             if (images.length === 0) {
-                showToast('Please upload at least one image!', 'error');
-                debugLog('❌ No images uploaded!', 'error');
+                showToast('Upload at least one image!', 'error');
                 return;
             }
 
             // Upload to IMGBB
             let imageUrls = [];
-            showToast('📤 Uploading images to IMGBB...', 'info');
-            debugLog('📤 Starting IMGBB upload...', 'info');
+            showToast('📤 Uploading images...', 'info');
 
             for (let i = 0; i < images.length; i++) {
                 try {
-                    debugLog(`📤 Uploading image ${i+1}/${images.length}...`, 'info');
                     const response = await fetch(images[i]);
                     const blob = await response.blob();
                     const formData = new FormData();
                     formData.append('image', blob);
 
-                    const uploadRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
                         method: 'POST',
                         body: formData
                     });
 
                     const result = await uploadRes.json();
-
                     if (result.success) {
                         imageUrls.push(result.data.url);
-                        debugLog(`✅ Image ${i+1} uploaded`, 'success');
                     } else {
-                        debugLog(`❌ IMGBB error: ${result.error?.message || 'Unknown'}`, 'error');
-                        showToast('Image upload failed!', 'error');
+                        showToast('Upload failed!', 'error');
                         return;
                     }
                 } catch (e) {
-                    debugLog(`❌ Upload error: ${e.message}`, 'error');
-                    showToast('Upload error: ' + e.message, 'error');
+                    showToast('Upload error!', 'error');
                     return;
                 }
             }
 
-            debugLog(`✅ All ${imageUrls.length} images uploaded!`, 'success');
-
-            // Get sizes
+            // Get sizes & colors
             const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
-
-            // Get colors - combine detected + manual
-            const manualColors = JSON.parse(document.getElementById('p-colors').value || '[]');
-            const detectedColors = JSON.parse(document.getElementById('p-colors-detected').value || '[]');
-
-            let allColors = [];
-            detectedColors.forEach(c => { if (c.name && !allColors.includes(c.name)) allColors.push(c.name); });
-            manualColors.forEach(c => { if (c && !allColors.includes(c)) allColors.push(c); });
-            if (allColors.length === 0) allColors = ['Default'];
+            const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
 
             const product = {
                 title: title,
@@ -1510,107 +918,80 @@
                 category: category,
                 images: imageUrls,
                 sizes: sizes,
-                colors: allColors,
-                detectedColors: detectedColors,
+                colors: colors,
                 createdAt: new Date().toISOString()
             };
 
-            debugLog(`📦 Product object created`, 'info');
-
-            // Save to products array
+            // Save
             products.push(product);
             localStorage.setItem('myProducts', JSON.stringify(products));
-
-            debugLog(`✅ Product saved! Total products: ${products.length}`, 'success');
 
             // Clear form
             document.getElementById('p-title').value = '';
             document.getElementById('p-price').value = '';
-            document.getElementById('p-category-input').value = '';
+            document.getElementById('p-category').value = '';
+            document.getElementById('p-images').value = '';
             document.getElementById('p-images-data').value = '[]';
             document.getElementById('p-sizes').value = '[]';
             document.getElementById('p-colors').value = '[]';
-            document.getElementById('p-colors-detected').value = '[]';
-            document.getElementById('p-images').value = '';
-
             uploadedImages = [];
             sizes = [];
-            manualColors = [];
-            detectedColors = [];
-            renderImagePreviews();
+            colors = [];
+            renderPreviews();
             renderOptions('size');
             renderOptions('color');
-            renderDetectedColors();
 
-            renderAdminPanel();
-            updateStats();
-
-            showToast(`✅ "${title}" added with ${allColors.length} colors!`, 'success');
-            debugLog(`🎉 Product "${title}" added successfully!`, 'success');
+            renderAll();
+            showToast('✅ "' + title + '" added with ' + colors.length + ' colors!', 'success');
         }
 
         // ============================================
         // ADD PRODUCT WITH AUTO-DETECT
         // ============================================
         async function addProductSmart() {
-            debugLog('🧠 addProductSmart() called', 'info');
             const title = document.getElementById('p-title').value.trim();
             const price = document.getElementById('p-price').value.trim();
 
             if (!title || !price) {
-                showToast('Product Title and Price are required!', 'error');
+                showToast('Title and Price required!', 'error');
                 return;
             }
 
-            let detectedCategory = detectCategoryFromTitle(title);
-
-            if (detectedCategory) {
-                detectedCategory = ensureCategoryExists(detectedCategory);
-                const input = document.getElementById('p-category-input');
-                if (input) {
-                    input.value = detectedCategory;
-                }
-                debugLog(`🔍 Category detected: "${detectedCategory}"`, 'success');
-                showToast(`🔍 Category "${detectedCategory}" detected!`, 'info');
-            } else {
-                debugLog('⚠️ No category detected', 'warn');
-                showToast('⚠️ No category detected. Please select manually.', 'warning');
-                return;
+            const cat = detectCategory(title);
+            if (cat) {
+                document.getElementById('p-category').value = cat;
+                showToast('🔍 "' + cat + '" detected!', 'info');
             }
 
             await addProduct();
         }
 
         // ============================================
-        // CATEGORY MANAGEMENT
+        // CATEGORY HELPERS
         // ============================================
-        function ensureCategoryExists(name) {
+        function ensureCategory(name) {
             if (!name) return 'General';
             const trimmed = name.trim();
             const existing = categories.find(c => c.toLowerCase() === trimmed.toLowerCase());
             if (existing) return existing;
             categories.push(trimmed);
             localStorage.setItem('myCategories', JSON.stringify(categories));
-            renderCategoriesBar();
-            renderAdminPanel();
-            updateStats();
-            debugLog(`🏷️ New category created: "${trimmed}"`, 'success');
-            showToast(`🏷️ New category "${trimmed}" created!`, 'success');
+            renderAll();
+            showToast('🏷️ "' + trimmed + '" created', 'success');
             return trimmed;
         }
 
-        function detectCategoryFromTitle(title) {
+        function detectCategory(title) {
             const keywords = {
-                'Watches': ['watch', 'wristwatch', 'chrono', 'timepiece', 'smartwatch', 'analog'],
-                'Clothing': ['shirt', 'pants', 'jeans', 'jacket', 'coat', 'dress', 'skirt', 't-shirt', 'hoodie', 'sweater', 'kurta'],
-                'Electronics': ['phone', 'laptop', 'computer', 'tablet', 'tv', 'television', 'speaker', 'headphone', 'charger'],
-                'Shoes': ['shoe', 'sneaker', 'boot', 'sandal', 'loafer'],
-                'Accessories': ['bag', 'belt', 'cap', 'hat', 'scarf', 'sunglass', 'jewelry', 'necklace'],
-                'Home': ['furniture', 'lamp', 'chair', 'table', 'bed', 'sofa', 'curtain'],
-                'Books': ['book', 'novel', 'magazine', 'textbook'],
-                'Toys': ['toy', 'game', 'puzzle', 'doll', 'car', 'lego'],
-                'Food': ['snack', 'chocolate', 'biscuit', 'cake', 'bread', 'rice'],
-                'Beauty': ['cream', 'lotion', 'shampoo', 'soap', 'perfume', 'makeup']
+                'Watches': ['watch', 'smartwatch', 'chrono'],
+                'Clothing': ['shirt', 'jeans', 'jacket', 'dress', 'hoodie', 'sweater', 'tshirt'],
+                'Electronics': ['phone', 'laptop', 'tablet', 'tv', 'speaker'],
+                'Shoes': ['shoe', 'sneaker', 'boot'],
+                'Accessories': ['bag', 'belt', 'cap', 'hat', 'sunglass'],
+                'Home': ['furniture', 'lamp', 'chair', 'table', 'bed'],
+                'Books': ['book', 'novel', 'magazine'],
+                'Toys': ['toy', 'game', 'puzzle', 'doll'],
+                'Beauty': ['cream', 'lotion', 'shampoo', 'soap', 'perfume']
             };
             const lower = title.toLowerCase();
             for (const [cat, words] of Object.entries(keywords)) {
@@ -1623,171 +1004,114 @@
 
         function addCategory() {
             const name = document.getElementById('new-cat-name').value.trim();
-            if (!name) { showToast('Enter category name!', 'error'); return; }
+            if (!name) { showToast('Enter name!', 'error'); return; }
             if (categories.includes(name)) { showToast('Already exists!', 'warning'); return; }
-
             categories.push(name);
             localStorage.setItem('myCategories', JSON.stringify(categories));
             document.getElementById('new-cat-name').value = '';
-
-            renderCategoriesBar();
-            renderAdminPanel();
-            updateStats();
-            debugLog(`🏷️ Category added: "${name}"`, 'success');
+            renderAll();
             showToast('Category added!', 'success');
         }
 
         function deleteCategory(index) {
-            if (!confirm('Delete this category?')) return;
+            if (!confirm('Delete?')) return;
             categories.splice(index, 1);
             localStorage.setItem('myCategories', JSON.stringify(categories));
-            renderCategoriesBar();
-            renderAdminPanel();
-            updateStats();
-            debugLog(`🗑️ Category deleted`, 'warn');
+            renderAll();
             showToast('Category deleted.', 'success');
         }
 
         function deleteProduct(index) {
-            if (!confirm('Delete this product?')) return;
+            if (!confirm('Delete?')) return;
             products.splice(index, 1);
             localStorage.setItem('myProducts', JSON.stringify(products));
-            renderAdminPanel();
-            updateStats();
-            debugLog(`🗑️ Product deleted`, 'warn');
+            renderAll();
             showToast('Product deleted.', 'success');
         }
 
         // ============================================
         // CATEGORY SUGGESTIONS
         // ============================================
-        function setupCategorySuggestions(inputId, containerId) {
-            const input = document.getElementById(inputId);
-            const container = document.getElementById(containerId);
-            if (!input || !container) return;
+        function setupCategorySuggestions() {
+            const input = document.getElementById('new-cat-name');
+            if (!input) return;
 
             input.addEventListener('input', function() {
+                // Simple suggestion - just show existing categories
                 const val = this.value.toLowerCase().trim();
-                if (!val) { container.innerHTML = '';
-                    container.style.display = 'none'; return; }
-
-                const matches = categories.filter(c => c.toLowerCase().includes(val));
-                if (matches.length > 0) {
-                    container.innerHTML = matches.map(c =>
-                        `<div class="suggestion-item" onclick="selectCategory('${c}')">${c}</div>`
-                    ).join('');
-                    container.style.display = 'block';
-                } else {
-                    container.innerHTML = `<div class="suggestion-item new-category" onclick="createNewCategory('${val}')">
-                        ➕ Create "${val}"
-                    </div>`;
-                    container.style.display = 'block';
-                }
-            });
-
-            input.addEventListener('blur', function() {
-                setTimeout(() => { container.style.display = 'none'; }, 200);
-            });
-        }
-
-        function selectCategory(category) {
-            const input = document.getElementById('new-cat-name') || document.getElementById('p-category-input');
-            if (input) {
-                input.value = category;
-                const container = document.getElementById('category-suggestions') || document.getElementById('category-suggestions-product');
-                if (container) container.style.display = 'none';
-                if (!categories.includes(category)) ensureCategoryExists(category);
-            }
-        }
-
-        function createNewCategory(name) {
-            if (name && name.trim()) {
-                const trimmed = name.trim();
-                if (!categories.includes(trimmed)) {
-                    ensureCategoryExists(trimmed);
-                    const input = document.getElementById('new-cat-name') || document.getElementById('p-category-input');
-                    if (input) {
-                        input.value = trimmed;
-                        const container = document.getElementById('category-suggestions') || document.getElementById('category-suggestions-product');
-                        if (container) container.style.display = 'none';
+                if (!val) return;
+                // Highlight matching categories
+                document.querySelectorAll('.category-tag').forEach(tag => {
+                    const text = tag.textContent.toLowerCase();
+                    if (text.includes(val)) {
+                        tag.style.borderColor = '#6366f1';
+                    } else {
+                        tag.style.borderColor = 'rgba(255,255,255,0.06)';
                     }
-                    renderAdminPanel();
-                }
-            }
+                });
+            });
         }
 
         // ============================================
-        // RENDER FUNCTIONS
+        // RENDER
         // ============================================
-        function renderAdminPanel() {
-            // Categories
-            const catList = document.getElementById('categories-list');
-            if (catList) {
-                if (categories.length === 0) {
-                    catList.innerHTML = '<p style="color:var(--admin-text-muted);font-size:0.85rem;">No categories yet.</p>';
-                } else {
-                    catList.innerHTML = categories.map((c, i) => `
-                        <span class="category-tag">
-                            ${c}
-                            <button class="remove" onclick="deleteCategory(${i})">×</button>
-                        </span>
-                    `).join('');
-                }
-            }
+        function renderAll() {
+            renderCategories();
+            renderProducts();
+            updateStats();
+        }
 
-            // Products
-            const prodList = document.getElementById('admin-products-list');
-            const emptyMsg = document.getElementById('empty-products');
-            if (prodList) {
-                if (products.length === 0) {
-                    prodList.innerHTML = '';
-                    if (emptyMsg) emptyMsg.style.display = 'block';
-                } else {
-                    if (emptyMsg) emptyMsg.style.display = 'none';
-                    prodList.innerHTML = products.map((p, i) => `
-                        <div class="product-item">
-                            <div class="info">
-                                <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/45'}" alt="${p.title}" />
-                                <div>
-                                    <div class="title">${p.title}</div>
-                                    <div class="category">
-                                        ${p.category || 'General'} • Rs. ${p.price}
-                                        ${p.sizes && p.sizes.length > 0 ? ` • Sizes: ${p.sizes.join(', ')}` : ''}
-                                        ${p.colors && p.colors.length > 0 ? ` • Colors: ${p.colors.join(', ')}` : ''}
-                                        ${p.detectedColors && p.detectedColors.length > 0 ? ` 🎨 Detected: ${p.detectedColors.map(c => c.name).join(', ')}` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="actions">
-                                <button class="btn-danger" onclick="deleteProduct(${i})">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
+        function renderCategories() {
+            const list = document.getElementById('categories-list');
+            if (!list) return;
+            if (categories.length === 0) {
+                list.innerHTML = '<span style="color:#6a6a82;font-size:0.75rem;">No categories</span>';
+                return;
+            }
+            list.innerHTML = categories.map((c, i) => `
+                <span class="category-tag">
+                    ${c}
+                    <button class="remove" onclick="deleteCategory(${i})">×</button>
+                </span>
+            `).join('');
+        }
+
+        function renderProducts() {
+            const list = document.getElementById('products-list');
+            const empty = document.getElementById('empty-state');
+            if (!list) return;
+
+            if (products.length === 0) {
+                list.innerHTML = '';
+                if (empty) empty.style.display = 'block';
+                return;
+            }
+            if (empty) empty.style.display = 'none';
+
+            list.innerHTML = products.map((p, i) => `
+                <div class="product-item">
+                    <div class="info">
+                        <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/40'}" alt="${p.title}" />
+                        <div>
+                            <div class="title">${p.title}</div>
+                            <div class="meta">
+                                ${p.category || 'General'} • Rs. ${p.price}
+                                ${p.colors && p.colors.length > 0 ? ' • Colors: ' + p.colors.join(', ') : ''}
+                                ${p.sizes && p.sizes.length > 0 ? ' • Sizes: ' + p.sizes.join(', ') : ''}
                             </div>
                         </div>
-                    `).join('');
-                }
-            }
-
-            updateStats();
+                    </div>
+                    <button class="btn-danger-sm" onclick="deleteProduct(${i})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
         }
 
         function updateStats() {
             document.getElementById('total-products').textContent = products.length;
             document.getElementById('total-categories').textContent = categories.length;
-            document.getElementById('total-orders').textContent = localStorage.getItem('orderCount') || 0;
-            document.getElementById('total-colors').textContent = detectedColors.length;
             document.getElementById('product-count').textContent = products.length;
-            document.getElementById('product-count-badge').textContent = products.length;
-        }
-
-        function renderCategoriesBar() {
-            const bar = document.getElementById('category-bar');
-            if (!bar) return;
-            let html = `<button class="cat-btn active" onclick="filterCategory('All', this)">All</button>`;
-            categories.forEach(c => {
-                html += `<button class="cat-btn" onclick="filterCategory('${c}', this)">${c}</button>`;
-            });
-            bar.innerHTML = html;
         }
 
         // ============================================
@@ -1796,17 +1120,14 @@
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             if (!toast) { alert(message); return; }
-
-            document.getElementById('toast-message').textContent = message;
+            document.getElementById('toast-msg').textContent = message;
             const titles = { success: '✅ Success!', error: '❌ Error!', warning: '⚠️ Warning', info: 'ℹ️ Info' };
             toast.querySelector('.toast-title').textContent = titles[type] || titles.success;
-
             toast.className = 'toast';
             if (type) toast.classList.add(type);
             toast.classList.add('show');
-
             clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         // ============================================
@@ -1815,37 +1136,23 @@
         function resetStorage() {
             if (confirm('⚠️ Delete ALL data?')) {
                 localStorage.clear();
-                showToast('Storage cleared! Refreshing...', 'warning');
+                showToast('Cleared! Refreshing...', 'warning');
                 setTimeout(() => location.reload(), 1000);
             }
         }
 
         // ============================================
-        // FILTER (Placeholder)
-        // ============================================
-        function filterCategory(cat, btn) {
-            // Used on frontend
-        }
-
-        // ============================================
-        // EXPOSE GLOBALS
+        // EXPOSE
         // ============================================
         window.addOption = addOption;
         window.removeOption = removeOption;
         window.removeImage = removeImage;
-        window.analyzeImagesForColors = analyzeImagesForColors;
-        window.removeDetectedColor = removeDetectedColor;
         window.addProduct = addProduct;
         window.addProductSmart = addProductSmart;
         window.addCategory = addCategory;
         window.deleteCategory = deleteCategory;
         window.deleteProduct = deleteProduct;
         window.resetStorage = resetStorage;
-        window.selectCategory = selectCategory;
-        window.createNewCategory = createNewCategory;
-        window.setupCategorySuggestions = setupCategorySuggestions;
-        window.ensureCategoryExists = ensureCategoryExists;
-        window.detectCategoryFromTitle = detectCategoryFromTitle;
     </script>
 </body>
 </html>

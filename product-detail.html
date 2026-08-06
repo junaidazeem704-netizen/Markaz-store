@@ -1012,33 +1012,50 @@
         function changeImageByColor(color) {
             const images = currentProduct.images || ['https://via.placeholder.com/600'];
             
-            // If color is "Red", try to find red-specific image
-            // You can map colors to specific images here
+            // Create color mapping based on admin panel colors
+            // Agar admin ne "Red" color add kiya hai, toh Red ka image 0 index par hai
+            // Agar admin ne "White" color add kiya hai, toh White ka image 1 index par hai
+            // etc.
+            
             const colorLower = color.toLowerCase();
-            
-            // Check if any image contains the color name in its URL or filename
             let foundImage = null;
+            let foundIndex = -1;
             
-            // Try to find image that matches the color
-            for (let img of images) {
-                if (img.toLowerCase().includes(colorLower)) {
-                    foundImage = img;
+            // Check if any image URL contains the color name
+            for (let i = 0; i < images.length; i++) {
+                const imgLower = images[i].toLowerCase();
+                if (imgLower.includes(colorLower)) {
+                    foundImage = images[i];
+                    foundIndex = i;
                     break;
                 }
             }
             
-            // If no color-specific image found, use the first image
-            const newImage = foundImage || images[0];
+            // Agar color-specific image nahi mili, toh hum color index ke hisab se image select karenge
+            // Colors array se index match karenge
+            if (!foundImage && currentProduct.colors) {
+                const colorIndex = currentProduct.colors.findIndex(c => c.toLowerCase() === colorLower);
+                if (colorIndex !== -1 && colorIndex < images.length) {
+                    foundImage = images[colorIndex];
+                    foundIndex = colorIndex;
+                }
+            }
+            
+            // Agar phir bhi image nahi mili, toh first image use karein
+            if (!foundImage) {
+                foundImage = images[0];
+                foundIndex = 0;
+            }
             
             // Update main image
-            document.getElementById('main-image').src = newImage;
+            document.getElementById('main-image').src = foundImage;
             
-            // Also update thumbnails - highlight the active one
+            // Update thumbnails - highlight the active one
             document.querySelectorAll('.thumb').forEach((el, i) => {
-                el.classList.toggle('active', i === 0);
+                el.classList.toggle('active', i === foundIndex);
             });
             
-            console.log(`🔄 Image changed for color: ${color} → ${newImage.substring(0, 50)}...`);
+            console.log(`🔄 Image changed for color: ${color} → Index: ${foundIndex}`);
         }
 
         function selectColor(color, index) {

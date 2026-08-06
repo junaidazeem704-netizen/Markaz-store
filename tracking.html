@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Track Order - Markaz Store</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .tracking-page {
+            padding: 100px 24px 60px;
+            min-height: 100vh;
+        }
+        .tracking-page .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .tracking-card {
+            background: var(--bg-card);
+            border: var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+        }
+        .tracking-card .icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        .tracking-card h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .tracking-card p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        .tracking-input-group {
+            display: flex;
+            gap: 12px;
+        }
+        .tracking-input-group input {
+            flex: 1;
+            padding: 14px 18px;
+            background: var(--bg-primary);
+            border: var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            font-family: inherit;
+        }
+        .tracking-input-group input:focus {
+            border-color: var(--accent);
+        }
+        .tracking-input-group button {
+            padding: 14px 28px;
+        }
+        .order-details {
+            margin-top: 24px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: var(--border);
+            text-align: left;
+            display: none;
+        }
+        .order-details .status-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .order-details .status-badge.processing {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+        .order-details .status-badge.shipped {
+            background: rgba(99, 102, 241, 0.15);
+            color: #6366f1;
+        }
+        .order-details .status-badge.delivered {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+        .order-details .status-badge.cancelled {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+        .order-details .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .order-details .detail-row:last-child {
+            border-bottom: none;
+        }
+        .order-details .detail-row .label {
+            color: var(--text-secondary);
+        }
+        .order-details .detail-row .value {
+            font-weight: 500;
+            text-align: right;
+        }
+        .order-details .timeline {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: var(--border);
+        }
+        .order-details .timeline .step {
+            display: flex;
+            gap: 12px;
+            padding: 8px 0;
+            align-items: center;
+        }
+        .order-details .timeline .step .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .order-details .timeline .step .dot.active {
+            background: var(--accent);
+            box-shadow: 0 0 20px rgba(99,102,241,0.3);
+        }
+        .order-details .timeline .step .dot.completed {
+            background: var(--success);
+        }
+        .order-details .timeline .step .step-content {
+            flex: 1;
+        }
+        .order-details .timeline .step .step-content .step-title {
+            font-weight: 500;
+        }
+        .order-details .timeline .step .step-content .step-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .error-message {
+            color: var(--danger);
+            margin-top: 12px;
+            display: none;
+        }
+        @media (max-width: 480px) {
+            .tracking-input-group {
+                flex-direction: column;
+            }
+            .tracking-card {
+                padding: 24px;
+            }
+            .order-details .detail-row {
+                flex-direction: column;
+                text-align: center;
+            }
+            .order-details .detail-row .value {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-store-alt"></i>
+                    <span>Markaz</span>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="nav-btn" onclick="window.location.href='admin.html'">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                </button>
+                <button class="nav-btn" onclick="window.location.href='cart.html'">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge" id="cart-badge">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="tracking-page">
+        <div class="container">
+            <div class="tracking-card">
+                <div class="icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <h1>Track Your Order</h1>
+                <p>Enter your Order ID to track your order status</p>
+
+                <div class="tracking-input-group">
+                    <input type="text" id="order-id-input" placeholder="e.g. MK-123456" />
+                    <button class="btn-primary" onclick="trackOrder()">
+                        <i class="fas fa-search"></i> Track
+                    </button>
+                </div>
+
+                <div class="error-message" id="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="error-text">Order not found</span>
+                </div>
+
+                <div class="order-details" id="order-details">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                        <span style="font-weight:600;">Order #<span id="track-order-id">-</span></span>
+                        <span class="status-badge" id="track-status">Processing</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Items</span>
+                        <span class="value" id="track-items">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Total</span>
+                        <span class="value" id="track-total">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Date</span>
+                        <span class="value" id="track-date">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Delivery Address</span>
+                        <span class="value" id="track-address">-</span>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="timeline" id="track-timeline">
+                        <div class="step">
+                            <div class="dot active" id="step1-dot"></div>
+                            <div class="step-content">
+                                <div class="step-title">Order Placed</div>
+                                <div class="step-desc" id="step1-desc">Your order has been confirmed</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="dot" id="step2-dot"></div>
+                            <div class="step-content">
+                                <div class="step-title">Processing</div>
+                                <div class="step-desc" id="step2-desc">Your order is being prepared</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="dot" id="step3-dot"></div>
+                            <div class="step-content">
+                                <div class="step-title">Shipped</div>
+                                <div class="step-desc" id="step3-desc">Your order has been shipped</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="dot" id="step4-dot"></div>
+                            <div class="step-content">
+                                <div class="step-title">Delivered</div>
+                                <div class="step-desc" id="step4-desc">Your order has been delivered</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer" style="margin-top:0;">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-store-alt"></i>
+                        <span>Markaz</span>
+                    </div>
+                    <p>Your trusted destination for premium products in Pakistan.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Categories</h4>
+                    <div id="footer-categories"></div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+                    <p><i class="fas fa-envelope"></i> info@markazstore.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Markaz Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">Success!</span>
+            <span class="toast-message" id="toast-message">Done</span>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.classList.remove('show')">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <script>
+        // ============================================
+        // TRACK ORDER
+        // ============================================
+        async function trackOrder() {
+            const orderId = document.getElementById('order-id-input').value.trim();
+            const errorMsg = document.getElementById('error-message');
+            const details = document.getElementById('order-details');
+
+            if (!orderId) {
+                errorMsg.style.display = 'block';
+                document.getElementById('error-text').textContent = 'Please enter an Order ID';
+                details.style.display = 'none';
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/track-order?id=${orderId}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const order = result.order;
+                    displayOrderDetails(order);
+                    details.style.display = 'block';
+                    showToast('✅ Order found!', 'success');
+                } else {
+                    errorMsg.style.display = 'block';
+                    document.getElementById('error-text').textContent = result.message || 'Order not found';
+                    details.style.display = 'none';
+                }
+            } catch (error) {
+                errorMsg.style.display = 'block';
+                document.getElementById('error-text').textContent = 'Error tracking order. Please try again.';
+                details.style.display = 'none';
+            }
+        }
+
+        function displayOrderDetails(order) {
+            document.getElementById('track-order-id').textContent = order.orderId;
+
+            const statusBadge = document.getElementById('track-status');
+            statusBadge.textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+            statusBadge.className = 'status-badge ' + order.status;
+
+            document.getElementById('track-items').textContent = order.items || 'N/A';
+            document.getElementById('track-total').textContent = `Rs. ${order.total}`;
+            document.getElementById('track-date').textContent = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
+            document.getElementById('track-address').textContent = order.address || 'N/A';
+
+            // Update timeline
+            const statuses = ['processing', 'processing', 'shipped', 'delivered'];
+            const currentIndex = statuses.indexOf(order.status);
+            
+            // Reset all dots
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(`step${i}-dot`);
+                dot.className = 'dot';
+                if (i <= currentIndex + 1) {
+                    dot.classList.add('active');
+                }
+            }
+        }
+
+        // ============================================
+        // CHECK ORDER ID FROM URL
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const orderId = params.get('id');
+            if (orderId) {
+                document.getElementById('order-id-input').value = orderId;
+                trackOrder();
+            }
+            updateCartBadge();
+        });
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                badge.textContent = cart.length;
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            document.getElementById('toast-message').textContent = message;
+            const titles = { success: '✅ Success!', error: '❌ Error!', warning: '⚠️ Warning', info: 'ℹ️ Info' };
+            toast.querySelector('.toast-title').textContent = titles[type] || titles.success;
+            toast.className = 'toast';
+            if (type) toast.classList.add(type);
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        window.trackOrder = trackOrder;
+    </script>
+</body>
+</html>

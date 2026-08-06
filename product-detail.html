@@ -43,10 +43,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        .product-main-image img:hover {
-            transform: scale(1.02);
         }
         .product-thumbnails {
             display: grid;
@@ -105,19 +101,17 @@
             color: var(--text-secondary);
             line-height: 1.8;
         }
-        
-        /* Color Picker - Enhanced */
         .color-picker {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
             margin: 4px 0;
         }
         .color-picker .color-option {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            border: 3px solid var(--admin-border);
+            border: 2px solid var(--admin-border);
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
@@ -130,47 +124,42 @@
         }
         .color-picker .color-option.active {
             border-color: var(--accent);
-            box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
         }
         .color-picker .color-option.active::after {
             content: '✓';
             position: absolute;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 700;
-            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
         }
         .color-picker .color-option .color-label {
             position: absolute;
             bottom: -22px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--text-secondary);
             white-space: nowrap;
         }
-        
-        /* Size Picker - Enhanced */
         .size-picker {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         .size-picker .size-option {
-            padding: 10px 24px;
+            padding: 8px 20px;
             background: var(--bg-primary);
             border: 2px solid var(--admin-border);
             border-radius: var(--radius-sm);
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 50px;
-            text-align: center;
         }
         .size-picker .size-option:hover {
             border-color: var(--accent);
             color: var(--text-primary);
-            transform: translateY(-2px);
         }
         .size-picker .size-option.active {
             background: var(--accent);
@@ -178,7 +167,6 @@
             color: white;
             box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
-        
         .selected-info {
             font-size: 0.85rem;
             color: var(--text-secondary);
@@ -190,7 +178,6 @@
         .selected-info strong {
             color: var(--text-primary);
         }
-        
         .quantity-selector {
             display: flex;
             align-items: center;
@@ -278,12 +265,12 @@
                 padding: 12px;
             }
             .color-picker .color-option {
-                width: 40px;
-                height: 40px;
+                width: 36px;
+                height: 36px;
             }
             .size-picker .size-option {
-                padding: 8px 16px;
-                font-size: 0.85rem;
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -324,7 +311,7 @@
                     <i class="fas fa-spinner fa-spin"></i>
                     <p>Loading product details...</p>
                 </div>
-                
+
                 <div id="product-content" style="display:none; width:100%;">
                     <div class="product-images">
                         <div class="product-main-image">
@@ -332,13 +319,13 @@
                         </div>
                         <div class="product-thumbnails" id="thumbnails"></div>
                     </div>
-                    
+
                     <div class="product-info">
                         <span class="badge" id="product-category">Category</span>
                         <h1 id="product-title">Product Title</h1>
                         <div class="price-large" id="product-price">Rs. 0</div>
                         <p class="description" id="product-description">Product description goes here.</p>
-                        
+
                         <!-- Colors -->
                         <div>
                             <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:10px;">
@@ -349,7 +336,7 @@
                                 <i class="fas fa-check-circle" style="color:var(--success);"></i> Selected: <strong id="color-name-display">None</strong>
                             </div>
                         </div>
-                        
+
                         <!-- Sizes -->
                         <div>
                             <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:10px;">
@@ -360,7 +347,7 @@
                                 <i class="fas fa-check-circle" style="color:var(--success);"></i> Selected: <strong id="size-name-display">None</strong>
                             </div>
                         </div>
-                        
+
                         <!-- Quantity -->
                         <div>
                             <label style="font-weight:600;font-size:0.95rem;display:block;margin-bottom:10px;">
@@ -372,7 +359,7 @@
                                 <button onclick="changeQuantity(1)">+</button>
                             </div>
                         </div>
-                        
+
                         <div class="product-actions">
                             <button class="btn-primary" onclick="addToCart()">
                                 <i class="fas fa-shopping-bag"></i> Add to Cart
@@ -443,23 +430,23 @@
     <script src="script.js"></script>
     <script>
         // ============================================
-        // PRODUCT DETAIL PAGE
+        // PRODUCT DETAIL PAGE - WITH COLOR CHANGE
         // ============================================
-        
+
         let currentProduct = null;
         let selectedColor = null;
         let selectedSize = null;
         let quantity = 1;
-        
+
         document.addEventListener('DOMContentLoaded', function() {
             updateCartBadge();
-            
+
             const productData = localStorage.getItem('viewProduct');
             if (!productData) {
                 window.location.href = 'products.html';
                 return;
             }
-            
+
             try {
                 currentProduct = JSON.parse(productData);
                 renderProductDetail(currentProduct);
@@ -468,33 +455,35 @@
                 window.location.href = 'products.html';
             }
         });
-        
+
         function renderProductDetail(product) {
             document.getElementById('loading-state').style.display = 'none';
             document.getElementById('product-content').style.display = 'grid';
-            
+
             document.getElementById('product-title').textContent = product.title;
             document.getElementById('product-price').textContent = `Rs. ${product.price}`;
             document.getElementById('product-category').textContent = product.category || 'General';
-            document.getElementById('product-description').textContent = 
+            document.getElementById('product-description').textContent =
                 product.description || `Premium ${product.title} available at Markaz Store.`;
-            
+
+            // Images - multiple
             const images = product.images && product.images.length > 0 ? product.images : ['https://via.placeholder.com/600'];
             document.getElementById('main-image').src = images[0];
-            
+
+            // Thumbnails
             const thumbnailsContainer = document.getElementById('thumbnails');
             thumbnailsContainer.innerHTML = images.map((img, i) => `
                 <div class="thumb ${i === 0 ? 'active' : ''}" onclick="changeMainImage(${i})">
                     <img src="${img}" alt="Thumbnail ${i+1}" />
                 </div>
             `).join('');
-            
+
             // ============================================
-            // COLORS - Enhanced with proper display
+            // COLORS - From admin panel
             // ============================================
             const colorPicker = document.getElementById('color-picker');
             const colors = product.colors && product.colors.length > 0 ? product.colors : [];
-            
+
             if (colors.length > 0) {
                 colorPicker.innerHTML = colors.map((c, i) => `
                     <div class="color-option ${i === 0 ? 'active' : ''}" 
@@ -506,17 +495,20 @@
                 `).join('');
                 selectedColor = colors[0];
                 document.getElementById('color-name-display').textContent = selectedColor;
+                
+                // Change main image based on color
+                changeImageByColor(selectedColor);
             } else {
                 colorPicker.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;">No color options available</p>';
                 document.getElementById('color-name-display').textContent = 'N/A';
             }
-            
+
             // ============================================
-            // SIZES - Enhanced with proper display
+            // SIZES
             // ============================================
             const sizePicker = document.getElementById('size-picker');
             const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : [];
-            
+
             if (sizes.length > 0) {
                 sizePicker.innerHTML = sizes.map((s, i) => `
                     <div class="size-option ${i === 0 ? 'active' : ''}" onclick="selectSize('${s}', ${i})">
@@ -526,14 +518,14 @@
                 selectedSize = sizes[0];
                 document.getElementById('size-name-display').textContent = selectedSize;
             } else {
-                sizePicker.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;">Standard size (One size fits all)</p>';
+                sizePicker.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;">Standard size</p>';
                 document.getElementById('size-name-display').textContent = 'Standard';
             }
-            
+
             quantity = 1;
             document.getElementById('quantity-display').textContent = quantity;
         }
-        
+
         function changeMainImage(index) {
             const images = currentProduct.images || ['https://via.placeholder.com/600'];
             document.getElementById('main-image').src = images[index];
@@ -541,15 +533,37 @@
                 el.classList.toggle('active', i === index);
             });
         }
-        
+
+        // ============================================
+        // CHANGE IMAGE BY COLOR
+        // ============================================
+        function changeImageByColor(color) {
+            // Check if we have color-specific images
+            // For now, just use the first image
+            // You can extend this to load different images per color
+            const images = currentProduct.images || ['https://via.placeholder.com/600'];
+            document.getElementById('main-image').src = images[0];
+            
+            // You can add logic here to load color-specific images
+            // Example: if color is "Red", load red-image.jpg
+            // if (color.toLowerCase() === 'red' && currentProduct.images[1]) {
+            //     document.getElementById('main-image').src = currentProduct.images[1];
+            // }
+        }
+
         function selectColor(color, index) {
             selectedColor = color;
             document.querySelectorAll('.color-option').forEach((el, i) => {
                 el.classList.toggle('active', i === index);
             });
             document.getElementById('color-name-display').textContent = color;
+            
+            // Change image based on color
+            changeImageByColor(color);
+            
+            showToast(`Selected color: ${color}`, 'info');
         }
-        
+
         function selectSize(size, index) {
             selectedSize = size;
             document.querySelectorAll('.size-option').forEach((el, i) => {
@@ -557,35 +571,30 @@
             });
             document.getElementById('size-name-display').textContent = size;
         }
-        
+
         function changeQuantity(delta) {
             quantity = Math.max(1, quantity + delta);
             document.getElementById('quantity-display').textContent = quantity;
         }
-        
-        // ============================================
-        // ADD TO CART - WITH COLOR & SIZE
-        // ============================================
+
         function addToCart() {
             if (!currentProduct) {
                 showToast('Product not found!', 'error');
                 return;
             }
-            
-            // Check if color is selected
+
             const hasColors = currentProduct.colors && currentProduct.colors.length > 0;
             if (hasColors && !selectedColor) {
                 showToast('Please select a color!', 'warning');
                 return;
             }
-            
-            // Check if size is selected
+
             const hasSizes = currentProduct.sizes && currentProduct.sizes.length > 0;
             if (hasSizes && !selectedSize) {
                 showToast('Please select a size!', 'warning');
                 return;
             }
-            
+
             const cartItem = {
                 id: Date.now(),
                 title: currentProduct.title,
@@ -597,15 +606,15 @@
                 quantity: quantity,
                 addedAt: new Date().toISOString()
             };
-            
+
             let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            
-            const existingIndex = cart.findIndex(item => 
-                item.title === cartItem.title && 
-                item.selectedColor === cartItem.selectedColor && 
+
+            const existingIndex = cart.findIndex(item =>
+                item.title === cartItem.title &&
+                item.selectedColor === cartItem.selectedColor &&
                 item.selectedSize === cartItem.selectedSize
             );
-            
+
             if (existingIndex > -1) {
                 cart[existingIndex].quantity += quantity;
                 showToast(`✅ Updated ${currentProduct.title} quantity in cart!`, 'success');
@@ -613,18 +622,18 @@
                 cart.push(cartItem);
                 showToast(`✅ ${currentProduct.title} (${selectedColor}, ${selectedSize}) added to cart!`, 'success');
             }
-            
+
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartBadge();
         }
-        
+
         function buyNow() {
             addToCart();
             setTimeout(() => {
                 window.location.href = 'checkout.html';
             }, 600);
         }
-        
+
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
             const badge = document.getElementById('cart-badge');
@@ -632,7 +641,20 @@
                 badge.textContent = cart.length;
             }
         }
-        
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            if (!toast) { alert(message); return; }
+            document.getElementById('toast-message').textContent = message;
+            const titles = { success: '✅ Success!', error: '❌ Error!', warning: '⚠️ Warning', info: 'ℹ️ Info' };
+            toast.querySelector('.toast-title').textContent = titles[type] || titles.success;
+            toast.className = 'toast';
+            if (type) toast.classList.add(type);
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
         // Make functions global
         window.changeMainImage = changeMainImage;
         window.selectColor = selectColor;

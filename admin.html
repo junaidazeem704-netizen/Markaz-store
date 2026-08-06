@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /* =============================================
-           ADMIN PANEL - WITHOUT AUTO-COLOR
+           ADMIN PANEL - COMPLETE
            ============================================= */
         * {
             margin: 0;
@@ -252,6 +252,21 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
+        .btn-edit {
+            padding: 4px 10px;
+            font-size: 0.65rem;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 6px;
+            color: #6366f1;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-edit:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
             border-radius: 10px;
@@ -444,7 +459,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
@@ -483,6 +498,11 @@
             color: #a0a0b8;
         }
 
+        .product-item .actions {
+            display: flex;
+            gap: 4px;
+        }
+
         .product-item .actions .btn-danger-sm {
             padding: 4px 10px;
             font-size: 0.65rem;
@@ -510,6 +530,21 @@
             margin-left: 6px;
         }
 
+        /* Edit Mode */
+        .edit-mode-badge {
+            background: #f59e0b;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 100px;
+            margin-left: 8px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -589,6 +624,10 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 8px;
             }
+            .product-item .actions {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
@@ -616,9 +655,15 @@
             </div>
         </div>
 
-        <!-- Add Product -->
+        <!-- Add/Edit Product -->
         <div class="admin-card">
-            <h2><i class="fas fa-plus-circle"></i> Add Product</h2>
+            <h2>
+                <i class="fas fa-plus-circle"></i>
+                <span id="form-title">Add Product</span>
+                <span class="edit-mode-badge hidden" id="edit-badge">Editing</span>
+            </h2>
+
+            <input type="hidden" id="edit-index" value="-1" />
 
             <div class="form-group">
                 <label>Title <span class="required">*</span></label>
@@ -675,8 +720,11 @@
             </div>
 
             <div class="form-actions">
-                <button class="btn-primary" onclick="addProduct()">
+                <button class="btn-primary" id="submit-btn" onclick="saveProduct()">
                     <i class="fas fa-plus"></i> Add Product
+                </button>
+                <button class="btn-secondary" id="cancel-btn" onclick="cancelEdit()">
+                    <i class="fas fa-times"></i> Cancel
                 </button>
                 <button class="btn-secondary" onclick="addProductSmart()">
                     <i class="fas fa-magic"></i> Auto-Detect
@@ -736,6 +784,7 @@
         let uploadedImages = [];
         let sizes = [];
         let colors = [];
+        let editIndex = -1;
 
         // ============================================
         // DOM READY
@@ -744,6 +793,7 @@
             renderAll();
             setupImageUpload();
             loadOptions();
+            document.getElementById('cancel-btn').classList.add('hidden');
         });
 
         // ============================================
@@ -846,12 +896,84 @@
         }
 
         // ============================================
-        // ADD PRODUCT
+        // CLEAR FORM
         // ============================================
-        async function addProduct() {
+        function clearForm() {
+            document.getElementById('p-title').value = '';
+            document.getElementById('p-price').value = '';
+            document.getElementById('p-category').value = '';
+            document.getElementById('p-images').value = '';
+            document.getElementById('p-images-data').value = '[]';
+            document.getElementById('p-sizes').value = '[]';
+            document.getElementById('p-colors').value = '[]';
+            document.getElementById('edit-index').value = '-1';
+            document.getElementById('form-title').textContent = 'Add Product';
+            document.getElementById('edit-badge').classList.add('hidden');
+            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> Add Product';
+            document.getElementById('cancel-btn').classList.add('hidden');
+            uploadedImages = [];
+            sizes = [];
+            colors = [];
+            editIndex = -1;
+            renderPreviews();
+            renderOptions('size');
+            renderOptions('color');
+        }
+
+        // ============================================
+        // CANCEL EDIT
+        // ============================================
+        function cancelEdit() {
+            clearForm();
+            showToast('Edit cancelled', 'info');
+        }
+
+        // ============================================
+        // EDIT PRODUCT
+        // ============================================
+        function editProduct(index) {
+            const product = products[index];
+            if (!product) return;
+
+            editIndex = index;
+            document.getElementById('edit-index').value = index;
+            document.getElementById('form-title').textContent = 'Edit Product';
+            document.getElementById('edit-badge').classList.remove('hidden');
+            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Update Product';
+            document.getElementById('cancel-btn').classList.remove('hidden');
+
+            // Fill form with product data
+            document.getElementById('p-title').value = product.title || '';
+            document.getElementById('p-price').value = product.price || '';
+            document.getElementById('p-category').value = product.category || '';
+
+            // Load existing images
+            if (product.images && product.images.length > 0) {
+                uploadedImages = [...product.images];
+                renderPreviews();
+            }
+
+            // Load sizes
+            sizes = product.sizes ? [...product.sizes] : [];
+            document.getElementById('p-sizes').value = JSON.stringify(sizes);
+            renderOptions('size');
+
+            // Load colors
+            colors = product.colors ? [...product.colors] : [];
+            document.getElementById('p-colors').value = JSON.stringify(colors);
+            renderOptions('color');
+
+            showToast('Edit mode: ' + product.title, 'info');
+        }
+
+        // ============================================
+        // SAVE PRODUCT (Add or Update)
+        // ============================================
+        async function saveProduct() {
             const title = document.getElementById('p-title').value.trim();
             const price = document.getElementById('p-price').value.trim();
             let category = document.getElementById('p-category').value.trim() || 'General';
+            const editIndex = parseInt(document.getElementById('edit-index').value);
 
             if (!title || !price) {
                 showToast('Title and Price required!', 'error');
@@ -869,30 +991,36 @@
             }
 
             let imageUrls = [];
-            showToast('📤 Uploading images...', 'info');
+            
+            // Check if images are already URLs (from edit) or need upload
+            for (let img of images) {
+                if (img.startsWith('http://') || img.startsWith('https://')) {
+                    // Already uploaded URL
+                    imageUrls.push(img);
+                } else {
+                    // Need to upload to IMGBB
+                    try {
+                        const response = await fetch(img);
+                        const blob = await response.blob();
+                        const formData = new FormData();
+                        formData.append('image', blob);
 
-            for (let i = 0; i < images.length; i++) {
-                try {
-                    const response = await fetch(images[i]);
-                    const blob = await response.blob();
-                    const formData = new FormData();
-                    formData.append('image', blob);
+                        const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
+                            method: 'POST',
+                            body: formData
+                        });
 
-                    const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await uploadRes.json();
-                    if (result.success) {
-                        imageUrls.push(result.data.url);
-                    } else {
-                        showToast('Upload failed!', 'error');
+                        const result = await uploadRes.json();
+                        if (result.success) {
+                            imageUrls.push(result.data.url);
+                        } else {
+                            showToast('Upload failed!', 'error');
+                            return;
+                        }
+                    } catch (e) {
+                        showToast('Upload error!', 'error');
                         return;
                     }
-                } catch (e) {
-                    showToast('Upload error!', 'error');
-                    return;
                 }
             }
 
@@ -906,28 +1034,25 @@
                 images: imageUrls,
                 sizes: sizes,
                 colors: colors,
-                createdAt: new Date().toISOString()
+                updatedAt: new Date().toISOString()
             };
 
-            products.push(product);
+            if (editIndex >= 0 && editIndex < products.length) {
+                // Update existing product
+                product.createdAt = products[editIndex].createdAt || new Date().toISOString();
+                products[editIndex] = product;
+                showToast('✅ "' + title + '" updated!', 'success');
+            } else {
+                // Add new product
+                product.createdAt = new Date().toISOString();
+                products.push(product);
+                showToast('✅ "' + title + '" added!', 'success');
+            }
+
             localStorage.setItem('myProducts', JSON.stringify(products));
 
-            document.getElementById('p-title').value = '';
-            document.getElementById('p-price').value = '';
-            document.getElementById('p-category').value = '';
-            document.getElementById('p-images').value = '';
-            document.getElementById('p-images-data').value = '[]';
-            document.getElementById('p-sizes').value = '[]';
-            document.getElementById('p-colors').value = '[]';
-            uploadedImages = [];
-            sizes = [];
-            colors = [];
-            renderPreviews();
-            renderOptions('size');
-            renderOptions('color');
-
+            clearForm();
             renderAll();
-            showToast('✅ "' + title + '" added!', 'success');
         }
 
         // ============================================
@@ -948,7 +1073,7 @@
                 showToast('🔍 "' + cat + '" detected!', 'info');
             }
 
-            await addProduct();
+            await saveProduct();
         }
 
         // ============================================
@@ -1007,7 +1132,7 @@
         }
 
         function deleteProduct(index) {
-            if (!confirm('Delete?')) return;
+            if (!confirm('Delete this product?')) return;
             products.splice(index, 1);
             localStorage.setItem('myProducts', JSON.stringify(products));
             renderAll();
@@ -1063,9 +1188,14 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn-danger-sm" onclick="deleteProduct(${i})">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <div class="actions">
+                        <button class="btn-edit" onclick="editProduct(${i})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-danger-sm" onclick="deleteProduct(${i})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -1109,12 +1239,15 @@
         window.addOption = addOption;
         window.removeOption = removeOption;
         window.removeImage = removeImage;
-        window.addProduct = addProduct;
+        window.saveProduct = saveProduct;
         window.addProductSmart = addProductSmart;
         window.addCategory = addCategory;
         window.deleteCategory = deleteCategory;
         window.deleteProduct = deleteProduct;
+        window.editProduct = editProduct;
+        window.cancelEdit = cancelEdit;
         window.resetStorage = resetStorage;
+        window.clearForm = clearForm;
     </script>
 </body>
 </html>

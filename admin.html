@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* =============================================
+           ADMIN PANEL - WITHOUT AUTO-COLOR
+           ============================================= */
         * {
             margin: 0;
             padding: 0;
@@ -27,7 +30,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -76,7 +78,6 @@
             font-family: inherit;
         }
 
-        /* Stats */
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -106,7 +107,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Cards */
         .admin-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -137,7 +137,6 @@
             margin-left: 6px;
         }
 
-        /* Form */
         .form-group {
             margin-bottom: 12px;
         }
@@ -198,7 +197,6 @@
             margin-top: 8px;
         }
 
-        /* Buttons */
         .btn-primary {
             width: 100%;
             padding: 14px;
@@ -254,7 +252,6 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        /* Image Upload */
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
             border-radius: 10px;
@@ -348,7 +345,6 @@
             color: white;
         }
 
-        /* Options */
         .options-group {
             display: flex;
             flex-wrap: wrap;
@@ -397,7 +393,6 @@
             border-color: #6366f1;
         }
 
-        /* Categories */
         .category-tags {
             display: flex;
             flex-wrap: wrap;
@@ -445,7 +440,6 @@
             border-color: #6366f1;
         }
 
-        /* Product List */
         .product-list {
             display: flex;
             flex-direction: column;
@@ -516,7 +510,6 @@
             margin-left: 6px;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -585,7 +578,6 @@
             font-size: 1rem;
         }
 
-        /* Responsive */
         @media (max-width: 480px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -752,11 +744,10 @@
             renderAll();
             setupImageUpload();
             loadOptions();
-            setupCategorySuggestions();
         });
 
         // ============================================
-        // IMAGE UPLOAD - Multiple
+        // IMAGE UPLOAD
         // ============================================
         function setupImageUpload() {
             const input = document.getElementById('p-images');
@@ -809,7 +800,7 @@
         }
 
         // ============================================
-        // OPTIONS (Sizes & Colors)
+        // OPTIONS
         // ============================================
         function loadOptions() {
             const s = document.getElementById('p-sizes');
@@ -867,10 +858,8 @@
                 return;
             }
 
-            // Category auto-create
             category = ensureCategory(category);
 
-            // Get images
             const imagesData = document.getElementById('p-images-data');
             const images = JSON.parse(imagesData.value || '[]');
 
@@ -879,7 +868,6 @@
                 return;
             }
 
-            // Upload to IMGBB
             let imageUrls = [];
             showToast('📤 Uploading images...', 'info');
 
@@ -908,7 +896,6 @@
                 }
             }
 
-            // Get sizes & colors
             const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
             const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
 
@@ -922,11 +909,9 @@
                 createdAt: new Date().toISOString()
             };
 
-            // Save
             products.push(product);
             localStorage.setItem('myProducts', JSON.stringify(products));
 
-            // Clear form
             document.getElementById('p-title').value = '';
             document.getElementById('p-price').value = '';
             document.getElementById('p-category').value = '';
@@ -942,7 +927,7 @@
             renderOptions('color');
 
             renderAll();
-            showToast('✅ "' + title + '" added with ' + colors.length + ' colors!', 'success');
+            showToast('✅ "' + title + '" added!', 'success');
         }
 
         // ============================================
@@ -1027,29 +1012,6 @@
             localStorage.setItem('myProducts', JSON.stringify(products));
             renderAll();
             showToast('Product deleted.', 'success');
-        }
-
-        // ============================================
-        // CATEGORY SUGGESTIONS
-        // ============================================
-        function setupCategorySuggestions() {
-            const input = document.getElementById('new-cat-name');
-            if (!input) return;
-
-            input.addEventListener('input', function() {
-                // Simple suggestion - just show existing categories
-                const val = this.value.toLowerCase().trim();
-                if (!val) return;
-                // Highlight matching categories
-                document.querySelectorAll('.category-tag').forEach(tag => {
-                    const text = tag.textContent.toLowerCase();
-                    if (text.includes(val)) {
-                        tag.style.borderColor = '#6366f1';
-                    } else {
-                        tag.style.borderColor = 'rgba(255,255,255,0.06)';
-                    }
-                });
-            });
         }
 
         // ============================================

@@ -8,11 +8,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* =============================================
+           ADMIN PANEL STYLES
+           ============================================= */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a12;
@@ -20,10 +24,12 @@
             padding: 12px;
             min-height: 100vh;
         }
+
         .admin-wrapper {
             max-width: 700px;
             margin: 0 auto;
         }
+
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -36,6 +42,7 @@
             flex-wrap: wrap;
             gap: 8px;
         }
+
         .admin-header h1 {
             font-size: 1.1rem;
             font-weight: 800;
@@ -43,11 +50,13 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .admin-header-actions {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
         }
+
         .admin-header-actions a {
             padding: 5px 12px;
             background: rgba(255, 255, 255, 0.05);
@@ -57,6 +66,7 @@
             text-decoration: none;
             font-size: 0.7rem;
         }
+
         .btn-danger-sm {
             padding: 5px 12px;
             background: rgba(239, 68, 68, 0.12);
@@ -67,12 +77,14 @@
             cursor: pointer;
             font-family: inherit;
         }
+
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-bottom: 16px;
         }
+
         .admin-stat-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -80,11 +92,13 @@
             padding: 12px 14px;
             text-align: center;
         }
+
         .admin-stat-card .label {
             font-size: 0.6rem;
             color: #a0a0b8;
             text-transform: uppercase;
         }
+
         .admin-stat-card .value {
             font-size: 1.3rem;
             font-weight: 700;
@@ -92,6 +106,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .admin-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -99,6 +114,7 @@
             padding: 16px 18px;
             margin-bottom: 14px;
         }
+
         .admin-card h2 {
             font-size: 0.95rem;
             font-weight: 700;
@@ -107,9 +123,11 @@
             align-items: center;
             gap: 8px;
         }
+
         .admin-card h2 i {
             color: #6366f1;
         }
+
         .admin-card .badge {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
@@ -118,9 +136,11 @@
             border-radius: 100px;
             margin-left: 6px;
         }
+
         .form-group {
             margin-bottom: 10px;
         }
+
         .form-group label {
             font-size: 0.75rem;
             font-weight: 500;
@@ -128,9 +148,11 @@
             display: block;
             margin-bottom: 3px;
         }
+
         .form-group label .required {
             color: #ef4444;
         }
+
         .form-group input,
         .form-group textarea {
             width: 100%;
@@ -143,39 +165,47 @@
             outline: none;
             font-family: inherit;
         }
+
         .form-group textarea {
             resize: vertical;
             min-height: 60px;
         }
+
         .form-group input:focus,
         .form-group textarea:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
+
         .form-group input::placeholder,
         .form-group textarea::placeholder {
             color: #6a6a82;
         }
+
         .form-group small {
             font-size: 0.65rem;
             color: #6a6a82;
             display: block;
             margin-top: 3px;
         }
+
         .form-group small i {
             color: #6366f1;
         }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
+
         .form-actions {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin-top: 6px;
         }
+
         .btn-primary {
             width: 100%;
             padding: 12px;
@@ -192,6 +222,7 @@
             justify-content: center;
             gap: 6px;
         }
+
         .btn-secondary {
             width: 100%;
             padding: 12px;
@@ -208,6 +239,7 @@
             justify-content: center;
             gap: 6px;
         }
+
         .btn-sm {
             padding: 5px 12px;
             font-size: 0.7rem;
@@ -220,9 +252,11 @@
             cursor: pointer;
             font-family: inherit;
         }
+
         .btn-sm:hover {
             background: rgba(255, 255, 255, 0.1);
         }
+
         .btn-edit {
             padding: 3px 8px;
             font-size: 0.6rem;
@@ -235,7 +269,7 @@
         }
 
         /* =============================================
-           IMAGE UPLOAD - WORKING
+           IMAGE UPLOAD - IMPROVED
            ============================================= */
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
@@ -252,10 +286,12 @@
             align-items: center;
             justify-content: center;
         }
+
         .image-upload-area:hover {
             border-color: #6366f1;
             background: rgba(99, 102, 241, 0.04);
         }
+
         .image-upload-area input[type="file"] {
             position: absolute;
             top: 0;
@@ -268,31 +304,38 @@
             width: 100%;
             height: 100%;
         }
+
         .image-upload-area i {
             font-size: 1.8rem;
             color: #6366f1;
             display: block;
             margin-bottom: 4px;
         }
+
         .image-upload-area p {
             color: #a0a0b8;
             font-size: 0.8rem;
         }
+
         .image-upload-area .sub {
             color: #6a6a82;
             font-size: 0.65rem;
         }
+
         .image-upload-area .file-count {
             margin-top: 4px;
             font-size: 0.7rem;
             color: #6366f1;
+            font-weight: 500;
         }
+
         .image-preview-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
             gap: 8px;
             margin-top: 10px;
         }
+
         .image-preview-item {
             position: relative;
             border-radius: 6px;
@@ -301,11 +344,13 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
+
         .image-preview-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .image-preview-item .remove-img {
             position: absolute;
             top: 3px;
@@ -322,9 +367,11 @@
             align-items: center;
             justify-content: center;
         }
+
         .image-preview-item .remove-img:hover {
             background: #ef4444;
         }
+
         .image-preview-item .img-number {
             position: absolute;
             bottom: 3px;
@@ -343,6 +390,7 @@
             margin-top: 3px;
             min-height: 24px;
         }
+
         .option-tag {
             display: flex;
             align-items: center;
@@ -353,6 +401,7 @@
             border-radius: 100px;
             font-size: 0.7rem;
         }
+
         .option-tag .remove {
             cursor: pointer;
             color: #ef4444;
@@ -360,11 +409,13 @@
             border: none;
             font-size: 0.7rem;
         }
+
         .option-input-row {
             display: flex;
             gap: 5px;
             margin-top: 5px;
         }
+
         .option-input-row input {
             flex: 1;
             padding: 5px 10px;
@@ -375,12 +426,14 @@
             font-size: 0.8rem;
             outline: none;
         }
+
         .category-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
             margin-top: 3px;
         }
+
         .category-tag {
             display: flex;
             align-items: center;
@@ -391,6 +444,7 @@
             border-radius: 100px;
             font-size: 0.7rem;
         }
+
         .category-tag .remove {
             cursor: pointer;
             color: #ef4444;
@@ -398,11 +452,13 @@
             border: none;
             font-size: 0.7rem;
         }
+
         .category-input-row {
             display: flex;
             gap: 6px;
             margin-bottom: 10px;
         }
+
         .category-input-row input {
             flex: 1;
             padding: 6px 12px;
@@ -413,6 +469,7 @@
             font-size: 0.8rem;
             outline: none;
         }
+
         .product-list {
             display: flex;
             flex-direction: column;
@@ -420,6 +477,7 @@
             max-height: 300px;
             overflow-y: auto;
         }
+
         .product-item {
             display: flex;
             justify-content: space-between;
@@ -431,40 +489,48 @@
             flex-wrap: wrap;
             gap: 4px;
         }
+
         .product-item .info {
             display: flex;
             align-items: center;
             gap: 8px;
         }
+
         .product-item .info img {
             width: 32px;
             height: 32px;
             object-fit: cover;
             border-radius: 5px;
         }
+
         .product-item .info .title {
             font-weight: 500;
             font-size: 0.8rem;
         }
+
         .product-item .info .meta {
             font-size: 0.6rem;
             color: #a0a0b8;
         }
+
         .product-item .actions {
             display: flex;
             gap: 3px;
         }
+
         .empty-state {
             text-align: center;
             padding: 24px 16px;
             color: #6a6a82;
             display: none;
         }
+
         .empty-state i {
             font-size: 1.6rem;
             display: block;
             margin-bottom: 6px;
         }
+
         .order-item {
             display: flex;
             justify-content: space-between;
@@ -477,14 +543,17 @@
             flex-wrap: wrap;
             gap: 4px;
         }
+
         .order-item .order-info .order-id {
             font-weight: 600;
             font-size: 0.75rem;
         }
+
         .order-item .order-info .order-meta {
             font-size: 0.6rem;
             color: #a0a0b8;
         }
+
         .order-item .order-status select {
             padding: 3px 6px;
             background: rgba(255, 255, 255, 0.04);
@@ -495,12 +564,14 @@
             font-family: inherit;
             outline: none;
         }
+
         .order-status-badge {
             padding: 2px 8px;
             border-radius: 100px;
             font-size: 0.55rem;
             font-weight: 600;
         }
+
         .order-status-badge.processing {
             background: rgba(245, 158, 11, 0.15);
             color: #f59e0b;
@@ -517,26 +588,31 @@
             background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
         }
+
         .order-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin-bottom: 12px;
         }
+
         .order-stat-box {
             background: rgba(255, 255, 255, 0.04);
             padding: 8px;
             border-radius: 6px;
             text-align: center;
         }
+
         .order-stat-box .stat-label {
             font-size: 0.55rem;
             color: #a0a0b8;
         }
+
         .order-stat-box .stat-value {
             font-size: 1rem;
             font-weight: 700;
         }
+
         .order-stat-box .stat-value.delivered {
             color: #10b981;
         }
@@ -546,6 +622,7 @@
         .order-stat-box .stat-value.total {
             color: #6366f1;
         }
+
         .edit-mode-badge {
             background: #f59e0b;
             color: white;
@@ -554,9 +631,11 @@
             border-radius: 100px;
             margin-left: 6px;
         }
+
         .hidden {
             display: none !important;
         }
+
         .toast {
             position: fixed;
             bottom: 16px;
@@ -574,10 +653,12 @@
             opacity: 0;
             transition: all 0.4s ease;
         }
+
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
+
         .toast-icon {
             width: 24px;
             height: 24px;
@@ -588,27 +669,33 @@
             justify-content: center;
             flex-shrink: 0;
         }
+
         .toast-icon i {
             color: #10b981;
             font-size: 0.8rem;
         }
+
         .toast.error .toast-icon {
             background: rgba(239, 68, 68, 0.12);
         }
         .toast.error .toast-icon i {
             color: #ef4444;
         }
+
         .toast-content {
             flex: 1;
         }
+
         .toast-title {
             font-size: 0.7rem;
             font-weight: 600;
         }
+
         .toast-message {
             font-size: 0.65rem;
             color: #a0a0b8;
         }
+
         .toast-close {
             background: none;
             border: none;
@@ -616,6 +703,7 @@
             cursor: pointer;
             font-size: 0.9rem;
         }
+
         @media (max-width: 480px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -680,7 +768,7 @@
             </div>
 
             <!-- ========================================== -->
-            <!-- IMAGE UPLOAD - WORKING -->
+            <!-- IMAGE UPLOAD - FIXED WORKING -->
             <!-- ========================================== -->
             <div class="form-group">
                 <label>Images <span class="required">*</span></label>
@@ -802,47 +890,52 @@
         });
 
         // ============================================
-        // IMAGE UPLOAD - COMPLETE WORKING
+        // IMAGE UPLOAD - WORKING
         // ============================================
         function setupImageUpload() {
             const input = document.getElementById('p-images');
             if (!input) return;
 
-            // Direct event listener
-            input.addEventListener('change', function(e) {
-                const files = e.target.files;
-                console.log('📸 Files selected:', files.length);
+            // Remove any existing listeners to avoid duplicates
+            input.removeEventListener('change', handleFileSelect);
+            input.addEventListener('change', handleFileSelect);
+        }
 
-                if (files.length === 0) return;
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            console.log('📸 Files selected:', files.length);
 
-                for (let file of files) {
-                    if (uploadedImages.length >= 5) {
-                        showToast('Max 5 images!', 'warning');
-                        break;
-                    }
+            if (files.length === 0) return;
 
-                    if (file.size > 2 * 1024 * 1024) {
-                        showToast('Image too large! Max 2MB', 'error');
-                        continue;
-                    }
-
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        uploadedImages.push(event.target.result);
-                        renderPreviews();
-                        updateFileCount();
-                        console.log('✅ Image loaded:', uploadedImages.length);
-                    };
-                    reader.onerror = function() {
-                        showToast('Error reading file!', 'error');
-                        console.error('❌ FileReader error');
-                    };
-                    reader.readAsDataURL(file);
+            for (let file of files) {
+                if (uploadedImages.length >= 5) {
+                    showToast('Max 5 images allowed!', 'warning');
+                    break;
                 }
 
-                // Reset input so same file can be selected again
-                e.target.value = '';
-            });
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('Image too large! Max 2MB', 'error');
+                    continue;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    uploadedImages.push(event.target.result);
+                    renderPreviews();
+                    updateFileCount();
+                    console.log('✅ Image loaded:', uploadedImages.length);
+                    // Show a small success
+                    showToast('✅ Image ' + uploadedImages.length + ' loaded', 'success');
+                };
+                reader.onerror = function() {
+                    showToast('Error reading file!', 'error');
+                    console.error('❌ FileReader error');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // Reset input so same file can be selected again
+            e.target.value = '';
         }
 
         function updateFileCount() {

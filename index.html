@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /* =============================================
-           COMPLETE E-COMMERCE STYLES
+           DARAZ-STYLE COMPLETE E-COMMERCE
            ============================================= */
         :root {
             --bg-primary: #0a0a12;
@@ -60,7 +60,7 @@
         }
 
         /* =============================================
-           NAVBAR
+           NAVBAR - DARAZ STYLE
            ============================================= */
         .navbar {
             position: fixed;
@@ -68,7 +68,7 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(10, 10, 15, 0.92);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -205,223 +205,188 @@
         }
 
         /* =============================================
-           HERO BANNER
+           BANNER SLIDER - DARAZ STYLE
            ============================================= */
-        .hero-section {
-            padding: 80px 24px 40px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            background:
-                radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.08), transparent 60%),
-                radial-gradient(ellipse at 80% 50%, rgba(139, 92, 246, 0.06), transparent 60%),
-                var(--bg-primary);
+        .banner-section {
+            padding: 80px 24px 20px;
         }
 
-        .hero-container {
+        .banner-section .container {
             max-width: 1400px;
-            width: 100%;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
         }
 
-        .hero-content {
+        .banner-slider {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            aspect-ratio: 16/5;
+            min-height: 250px;
+        }
+
+        .banner-slides {
             display: flex;
-            flex-direction: column;
-            gap: 24px;
+            transition: transform 0.6s ease-in-out;
+            height: 100%;
         }
 
-        .hero-badge {
+        .banner-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 60px;
+            position: relative;
+            background: linear-gradient(135deg, #1a1a2e, #2a2a4e);
+        }
+
+        .banner-slide .banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 40px;
+        }
+
+        .banner-slide .banner-text {
+            flex: 1;
+        }
+
+        .banner-slide .banner-text .discount-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 100px;
+            color: #ef4444;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .banner-slide .banner-text h2 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .banner-slide .banner-text h2 .highlight {
+            color: var(--accent);
+        }
+
+        .banner-slide .banner-text p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+
+        .banner-slide .banner-text .btn-shop {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 18px;
-            background: rgba(99, 102, 241, 0.12);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--accent);
-            width: fit-content;
-        }
-
-        .hero-content h1 {
-            font-size: 3.8rem;
-            font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -2px;
-        }
-
-        .hero-content h1 .gradient-text {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-content p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 480px;
-            line-height: 1.8;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 16px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 32px;
+            padding: 12px 28px;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             border: none;
             border-radius: var(--radius-sm);
             color: white;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-family: inherit;
             text-decoration: none;
+            font-family: inherit;
         }
 
-        .btn-primary:hover {
+        .banner-slide .banner-text .btn-shop:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.35);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
         }
 
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 32px;
-            background: rgba(255, 255, 255, 0.05);
+        .banner-slide .banner-image {
+            flex: 0 0 200px;
+            height: 200px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: var(--radius-sm);
-            color: var(--text-secondary);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: inherit;
-            text-decoration: none;
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 48px;
-            margin-top: 8px;
-        }
-
-        .hero-stats .stat {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .hero-stats .number {
-            font-size: 1.8rem;
-            font-weight: 800;
-        }
-
-        .hero-stats .label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        /* Hero Visual */
-        .hero-visual {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 400px;
-        }
-
-        .hero-image-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            aspect-ratio: 1;
-        }
-
-        .hero-image-container img {
+        .banner-slide .banner-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: var(--radius-lg);
-            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .hero-floating-card {
+        /* Banner Dots */
+        .banner-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .banner-dots .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .banner-dots .dot.active {
+            background: var(--accent);
+            width: 28px;
+            border-radius: 10px;
+        }
+
+        .banner-dots .dot:hover {
+            background: var(--accent);
+        }
+
+        /* Banner Arrows */
+        .banner-arrow {
             position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 14px 22px;
-            background: var(--bg-card-2);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: var(--radius-sm);
-            box-shadow: var(--shadow);
-            animation: float 6s ease-in-out infinite;
+            justify-content: center;
         }
 
-        .hero-floating-card i {
-            font-size: 1.2rem;
-            color: var(--accent);
+        .banner-arrow:hover {
+            background: var(--accent);
+            border-color: var(--accent);
         }
 
-        .hero-floating-card span {
-            font-size: 0.85rem;
-            font-weight: 500;
+        .banner-arrow.prev {
+            left: 16px;
         }
 
-        .hero-floating-card.card-1 {
-            top: 5%;
-            right: -5%;
-            animation-delay: 0s;
-        }
-        .hero-floating-card.card-2 {
-            bottom: 15%;
-            left: -10%;
-            animation-delay: 2s;
-        }
-        .hero-floating-card.card-3 {
-            bottom: 25%;
-            right: -8%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-12px);
-            }
+        .banner-arrow.next {
+            right: 16px;
         }
 
         /* =============================================
-           CATEGORIES SECTION
+           CATEGORIES SECTION - DARAZ STYLE
            ============================================= */
         .categories-section {
-            padding: 40px 24px 20px;
+            padding: 20px 24px;
         }
 
         .categories-section .container {
@@ -433,20 +398,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 12px;
         }
 
         .section-header h2 {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 700;
+        }
+
+        .section-header h2 i {
+            color: var(--accent);
+            margin-right: 8px;
         }
 
         .section-header .view-all {
             color: var(--accent);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.3s ease;
         }
@@ -457,7 +427,7 @@
 
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 16px;
         }
 
@@ -465,7 +435,7 @@
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius);
-            padding: 24px 16px;
+            padding: 20px 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -481,18 +451,19 @@
         }
 
         .category-card .cat-icon {
-            font-size: 2.4rem;
-            margin-bottom: 8px;
+            font-size: 2rem;
+            margin-bottom: 6px;
             display: block;
+            color: var(--accent);
         }
 
         .category-card .cat-name {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
         .category-card .cat-count {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             display: block;
             margin-top: 2px;
@@ -512,8 +483,8 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
         }
 
         /* Product Card */
@@ -559,7 +530,7 @@
             background: rgba(99, 102, 241, 0.15);
             border: 1px solid rgba(99, 102, 241, 0.2);
             border-radius: 100px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
             color: var(--accent);
             text-transform: uppercase;
@@ -577,7 +548,7 @@
         }
 
         .product-card .product-title {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -588,16 +559,16 @@
 
         .product-card .product-meta {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
             margin: 6px 0;
         }
 
         .product-card .product-meta .tag {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--text-secondary);
             background: rgba(255, 255, 255, 0.05);
-            padding: 2px 10px;
+            padding: 2px 8px;
             border-radius: 100px;
         }
 
@@ -610,20 +581,28 @@
         }
 
         .product-card .product-price {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--accent);
             margin: 8px 0 12px;
         }
 
+        .product-card .product-price .original-price {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+
         .product-card .btn-add {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: rgba(99, 102, 241, 0.12);
             border: 1px solid rgba(99, 102, 241, 0.2);
             border-radius: var(--radius-sm);
             color: var(--accent);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -642,7 +621,7 @@
         }
 
         /* =============================================
-           FOOTER
+           FOOTER - DARAZ STYLE
            ============================================= */
         .footer {
             background: var(--bg-secondary);
@@ -655,7 +634,7 @@
             margin: 0 auto;
         }
 
-        .footer-grid {
+        .footer-top {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1.5fr;
             gap: 48px;
@@ -705,6 +684,7 @@
             font-size: 0.9rem;
             font-weight: 600;
             margin-bottom: 16px;
+            color: var(--text-primary);
         }
 
         .footer-links a {
@@ -718,6 +698,7 @@
 
         .footer-links a:hover {
             color: var(--text-primary);
+            padding-left: 4px;
         }
 
         .footer-contact p {
@@ -734,12 +715,42 @@
             color: var(--accent);
         }
 
+        /* Footer Bottom - Payment & Copyright */
         .footer-bottom {
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             padding-top: 24px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-bottom .copyright {
             color: var(--text-muted);
             font-size: 0.85rem;
+        }
+
+        .footer-bottom .payment-methods {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .footer-bottom .payment-methods span {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .footer-bottom .payment-methods i {
+            font-size: 1.6rem;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .footer-bottom .payment-methods i:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
         }
 
         /* =============================================
@@ -826,46 +837,23 @@
            RESPONSIVE
            ============================================= */
         @media (max-width: 1024px) {
-            .hero-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            .hero-content {
-                align-items: center;
-            }
-            .hero-content p {
-                max-width: 100%;
-            }
-            .hero-buttons {
-                justify-content: center;
-            }
-            .hero-stats {
-                justify-content: center;
-            }
-            .hero-visual {
-                min-height: 300px;
-            }
-            .hero-image-container {
-                max-width: 400px;
-            }
-            .hero-content h1 {
-                font-size: 2.8rem;
-            }
-            .hero-floating-card.card-1 {
-                top: 0;
-                right: 0;
-            }
-            .hero-floating-card.card-2 {
-                bottom: 5%;
-                left: -5%;
-            }
-            .hero-floating-card.card-3 {
-                bottom: 15%;
-                right: -5%;
-            }
-            .footer-grid {
+            .footer-top {
                 grid-template-columns: 1fr 1fr;
                 gap: 32px;
+            }
+            .banner-slide .banner-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .banner-slide .banner-text {
+                text-align: center;
+            }
+            .banner-slide .banner-image {
+                flex: 0 0 150px;
+                height: 150px;
+            }
+            .banner-slide .banner-text h2 {
+                font-size: 1.8rem;
             }
         }
 
@@ -876,42 +864,67 @@
             .nav-btn span {
                 display: none;
             }
-            .hero-content h1 {
-                font-size: 2rem;
+            .banner-slide {
+                padding: 24px 20px;
             }
-            .hero-section {
-                padding: 80px 16px 30px;
+            .banner-slide .banner-text h2 {
+                font-size: 1.4rem;
             }
-            .hero-stats {
-                gap: 24px;
+            .banner-slide .banner-image {
+                flex: 0 0 120px;
+                height: 120px;
             }
-            .hero-floating-card {
-                padding: 10px 16px;
-                font-size: 0.75rem;
+            .banner-arrow {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
             }
-            .hero-floating-card i {
-                font-size: 1rem;
+            .banner-arrow.prev {
+                left: 8px;
             }
-            .hero-image-container {
-                max-width: 300px;
+            .banner-arrow.next {
+                right: 8px;
+            }
+            .banner-slider {
+                min-height: 200px;
             }
             .categories-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 12px;
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
             }
             .category-card {
-                padding: 16px 12px;
+                padding: 14px 10px;
             }
             .category-card .cat-icon {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
+            }
+            .category-card .cat-name {
+                font-size: 0.75rem;
             }
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 16px;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
             }
-            .footer-grid {
+            .product-card {
+                padding: 12px;
+            }
+            .product-card .product-title {
+                font-size: 0.8rem;
+            }
+            .product-card .product-price {
+                font-size: 0.95rem;
+            }
+            .product-card .btn-add {
+                padding: 8px;
+                font-size: 0.75rem;
+            }
+            .footer-top {
                 grid-template-columns: 1fr;
                 gap: 24px;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
             }
             .toast {
                 bottom: 16px;
@@ -922,39 +935,35 @@
         }
 
         @media (max-width: 480px) {
-            .hero-content h1 {
-                font-size: 1.6rem;
+            .banner-slider {
+                min-height: 160px;
             }
-            .hero-buttons .btn-primary,
-            .hero-buttons .btn-secondary {
-                width: 100%;
-                justify-content: center;
+            .banner-slide .banner-text h2 {
+                font-size: 1.1rem;
             }
-            .hero-image-container {
-                max-width: 250px;
+            .banner-slide .banner-text p {
+                font-size: 0.8rem;
+            }
+            .banner-slide .banner-text .btn-shop {
+                padding: 8px 20px;
+                font-size: 0.8rem;
+            }
+            .banner-slide .banner-image {
+                flex: 0 0 80px;
+                height: 80px;
             }
             .products-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-            .product-card {
-                padding: 12px;
-            }
-            .product-card .product-title {
-                font-size: 0.8rem;
-            }
-            .product-card .product-price {
-                font-size: 1rem;
-            }
-            .product-card .btn-add {
-                padding: 8px;
-                font-size: 0.8rem;
-            }
-            .categories-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
             }
             .section-header h2 {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
+            }
+            .product-card .product-img {
+                aspect-ratio: 1;
+            }
+            .banner-arrow {
+                display: none;
             }
         }
     </style>
@@ -997,53 +1006,72 @@
     </nav>
 
     <!-- ========================================== -->
-    <!-- HERO BANNER -->
+    <!-- BANNER SLIDER -->
     <!-- ========================================== -->
-    <section class="hero-section" id="home">
-        <div class="hero-container">
-            <div class="hero-content">
-                <span class="hero-badge">✨ Premium Collection</span>
-                <h1>Discover <span class="gradient-text">Quality</span> Products</h1>
-                <p>Curated selection of premium watches, clothing, and electronics at the best prices in Pakistan.</p>
-                <div class="hero-buttons">
-                    <a href="#products" class="btn-primary">
-                        <i class="fas fa-shopping-bag"></i> Shop Now
-                    </a>
-                    <a href="#categories" class="btn-secondary">
-                        <i class="fas fa-th-large"></i> Browse Categories
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="number" id="total-products-display">0</span>
-                        <span class="label">Products</span>
+    <section class="banner-section">
+        <div class="container">
+            <div class="banner-slider" id="bannerSlider">
+                <button class="banner-arrow prev" onclick="prevSlide()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="banner-arrow next" onclick="nextSlide()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="banner-slides" id="bannerSlides">
+                    <!-- Slide 1 -->
+                    <div class="banner-slide">
+                        <div class="banner-content">
+                            <div class="banner-text">
+                                <span class="discount-badge">🔥 Limited Time Offer</span>
+                                <h2>Summer <span class="highlight">Sale</span> 50% Off</h2>
+                                <p>Get the best deals on premium watches, clothing & electronics</p>
+                                <a href="#products" class="btn-shop">
+                                    <i class="fas fa-shopping-bag"></i> Shop Now
+                                </a>
+                            </div>
+                            <div class="banner-image">
+                                <img src="https://i.ibb.co/YT0WLQPr/1784793502879.webp" alt="Summer Sale" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat">
-                        <span class="number" id="total-categories-display">0</span>
-                        <span class="label">Categories</span>
+                    <!-- Slide 2 -->
+                    <div class="banner-slide">
+                        <div class="banner-content">
+                            <div class="banner-text">
+                                <span class="discount-badge">✨ New Arrivals</span>
+                                <h2>Premium <span class="highlight">Collection</span> 2026</h2>
+                                <p>Discover our latest collection of premium products</p>
+                                <a href="#products" class="btn-shop">
+                                    <i class="fas fa-arrow-right"></i> Explore Now
+                                </a>
+                            </div>
+                            <div class="banner-image">
+                                <img src="https://i.ibb.co/YT0WLQPr/1784793502879.webp" alt="New Arrivals" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat">
-                        <span class="number">100%</span>
-                        <span class="label">Satisfaction</span>
+                    <!-- Slide 3 -->
+                    <div class="banner-slide">
+                        <div class="banner-content">
+                            <div class="banner-text">
+                                <span class="discount-badge">🎯 Weekend Special</span>
+                                <h2>Flat <span class="highlight">30% Off</span> Electronics</h2>
+                                <p>Smart watches, headphones & more at unbeatable prices</p>
+                                <a href="#products" class="btn-shop">
+                                    <i class="fas fa-bolt"></i> Grab Deal
+                                </a>
+                            </div>
+                            <div class="banner-image">
+                                <img src="https://i.ibb.co/YT0WLQPr/1784793502879.webp" alt="Electronics Sale" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="hero-image-container">
-                    <img src="https://i.ibb.co/YT0WLQPr/1784793502879.webp" alt="Hero Banner" />
-                    <div class="hero-floating-card card-1">
-                        <i class="fas fa-watch"></i>
-                        <span>Smart Watches</span>
-                    </div>
-                    <div class="hero-floating-card card-2">
-                        <i class="fas fa-tshirt"></i>
-                        <span>Clothing</span>
-                    </div>
-                    <div class="hero-floating-card card-3">
-                        <i class="fas fa-laptop"></i>
-                        <span>Electronics</span>
-                    </div>
-                </div>
+            <div class="banner-dots" id="bannerDots">
+                <button class="dot active" onclick="goToSlide(0)"></button>
+                <button class="dot" onclick="goToSlide(1)"></button>
+                <button class="dot" onclick="goToSlide(2)"></button>
             </div>
         </div>
     </section>
@@ -1054,8 +1082,8 @@
     <section class="categories-section" id="categories">
         <div class="container">
             <div class="section-header">
-                <h2>Browse <span class="gradient-text">Categories</span></h2>
-                <a href="#products" class="view-all">View All →</a>
+                <h2><i class="fas fa-th-large"></i> Categories</h2>
+                <a href="products.html" class="view-all">View All →</a>
             </div>
             <div class="categories-grid" id="categories-grid"></div>
         </div>
@@ -1067,7 +1095,7 @@
     <section class="products-section" id="products">
         <div class="container">
             <div class="section-header">
-                <h2>Featured <span class="gradient-text">Products</span></h2>
+                <h2><i class="fas fa-star"></i> Featured Products</h2>
                 <a href="products.html" class="view-all">View All →</a>
             </div>
             <div class="products-grid" id="products-grid"></div>
@@ -1080,7 +1108,7 @@
     <section class="products-section" id="about" style="padding-top:0;">
         <div class="container">
             <div class="section-header">
-                <h2>About <span class="gradient-text">Us</span></h2>
+                <h2><i class="fas fa-info-circle"></i> About Us</h2>
             </div>
             <div style="background:var(--bg-card);border-radius:var(--radius-lg);padding:40px;border:1px solid rgba(255,255,255,0.06);text-align:center;max-width:800px;margin:0 auto;">
                 <p style="color:var(--text-secondary);font-size:1.05rem;line-height:1.8;">
@@ -1099,7 +1127,7 @@
     <section class="products-section" id="contact" style="padding-top:0;">
         <div class="container">
             <div class="section-header">
-                <h2>Get In <span class="gradient-text">Touch</span></h2>
+                <h2><i class="fas fa-envelope"></i> Get In Touch</h2>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:900px;margin:0 auto;">
                 <div style="background:var(--bg-card);border-radius:var(--radius-lg);padding:32px;border:1px solid rgba(255,255,255,0.06);">
@@ -1125,7 +1153,7 @@
                         </div>
                     </div>
                 </div>
-                <form style="background:var(--bg-card);border-radius:var(--radius-lg);padding:32px;border:1px solid rgba(255,255,255,0.06);" id="contact-form">
+                <form style="background:var(--bg-card);border-radius:var(--radius-lg);padding:32px;border:1px solid rgba(255,255,255,0.06);">
                     <div style="margin-bottom:16px;">
                         <input type="text" placeholder="Your Name" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius-sm);color:white;font-size:0.95rem;outline:none;font-family:inherit;" />
                     </div>
@@ -1135,7 +1163,7 @@
                     <div style="margin-bottom:16px;">
                         <textarea placeholder="Your Message" rows="4" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius-sm);color:white;font-size:0.95rem;outline:none;font-family:inherit;resize:vertical;"></textarea>
                     </div>
-                    <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">
+                    <button type="submit" class="btn-shop" style="width:100%;justify-content:center;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:var(--radius-sm);color:white;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;">
                         <i class="fas fa-paper-plane"></i> Send Message
                     </button>
                 </form>
@@ -1144,11 +1172,11 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- FOOTER -->
+    <!-- FOOTER - DARAZ STYLE -->
     <!-- ========================================== -->
     <footer class="footer">
         <div class="footer-container">
-            <div class="footer-grid">
+            <div class="footer-top">
                 <div class="footer-brand">
                     <a href="index.html" class="logo">
                         <i class="fas fa-store-alt"></i>
@@ -1160,6 +1188,7 @@
                         <a href="#"><i class="fab fa-instagram"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
                         <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
                 <div class="footer-links">
@@ -1167,8 +1196,8 @@
                     <a href="index.html">Home</a>
                     <a href="products.html">Products</a>
                     <a href="tracking.html">Track Order</a>
-                    <a href="#about">About</a>
-                    <a href="#contact">Contact</a>
+                    <a href="#about">About Us</a>
+                    <a href="#contact">Contact Us</a>
                 </div>
                 <div class="footer-links">
                     <h4>Categories</h4>
@@ -1179,10 +1208,21 @@
                     <p><i class="fas fa-phone"></i> +92 300 1234567</p>
                     <p><i class="fas fa-envelope"></i> info@markazstore.com</p>
                     <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
+                    <p><i class="fas fa-clock"></i> Mon-Sat: 9AM - 9PM</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Markaz Store. All rights reserved.</p>
+                <div class="copyright">
+                    &copy; 2026 <span style="color:var(--accent);">Markaz Store</span>. All rights reserved.
+                </div>
+                <div class="payment-methods">
+                    <span>Secure Payments:</span>
+                    <i class="fas fa-credit-card"></i>
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fas fa-university"></i>
+                </div>
             </div>
         </div>
     </footer>
@@ -1212,6 +1252,8 @@
         // ============================================
         let products = JSON.parse(localStorage.getItem('myProducts')) || [];
         let categories = JSON.parse(localStorage.getItem('myCategories')) || ['Watches', 'Clothing', 'Electronics'];
+        let currentSlide = 0;
+        let slideInterval;
 
         // ============================================
         // DOM READY
@@ -1222,7 +1264,56 @@
             updateStats();
             updateCartBadge();
             renderFooterCategories();
+            startSlider();
         });
+
+        // ============================================
+        // BANNER SLIDER
+        // ============================================
+        function startSlider() {
+            slideInterval = setInterval(() => {
+                nextSlide();
+            }, 5000);
+        }
+
+        function nextSlide() {
+            const slides = document.getElementById('bannerSlides');
+            const dots = document.querySelectorAll('.banner-dots .dot');
+            currentSlide = (currentSlide + 1) % 3;
+            slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+        }
+
+        function prevSlide() {
+            const slides = document.getElementById('bannerSlides');
+            const dots = document.querySelectorAll('.banner-dots .dot');
+            currentSlide = (currentSlide - 1 + 3) % 3;
+            slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+            resetInterval();
+        }
+
+        function goToSlide(index) {
+            const slides = document.getElementById('bannerSlides');
+            const dots = document.querySelectorAll('.banner-dots .dot');
+            currentSlide = index;
+            slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+            resetInterval();
+        }
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(() => {
+                nextSlide();
+            }, 5000);
+        }
 
         // ============================================
         // RENDER CATEGORIES
@@ -1276,7 +1367,6 @@
                 return;
             }
 
-            // Show only 8 products on homepage
             const displayProducts = products.slice(0, 8);
 
             grid.innerHTML = displayProducts.map((p, i) => {
@@ -1298,6 +1388,10 @@
                     ).join('');
                 }
 
+                const price = parseInt(p.price);
+                const discountPrice = Math.round(price * 0.7);
+                const hasDiscount = price > 1000;
+
                 return `
                     <div class="product-card" onclick="viewProduct(${i})">
                         <span class="badge">${p.category || 'General'}</span>
@@ -1307,7 +1401,10 @@
                             ${colorHtml}
                             ${sizeHtml}
                         </div>
-                        <div class="product-price">Rs. ${p.price}</div>
+                        <div class="product-price">
+                            Rs. ${price}
+                            ${hasDiscount ? `<span class="original-price">Rs. ${Math.round(price * 1.3)}</span>` : ''}
+                        </div>
                         <button class="btn-add" onclick="event.stopPropagation(); quickAdd(${i})">
                             <i class="fas fa-plus"></i> Add to Cart
                         </button>
@@ -1382,10 +1479,7 @@
         // UPDATE STATS
         // ============================================
         function updateStats() {
-            const totalProducts = document.getElementById('total-products-display');
-            const totalCategories = document.getElementById('total-categories-display');
-            if (totalProducts) totalProducts.textContent = products.length;
-            if (totalCategories) totalCategories.textContent = categories.length;
+            // Not needed for this version
         }
 
         // ============================================
@@ -1421,6 +1515,9 @@
         window.viewProduct = viewProduct;
         window.quickAdd = quickAdd;
         window.updateCartBadge = updateCartBadge;
+        window.nextSlide = nextSlide;
+        window.prevSlide = prevSlide;
+        window.goToSlide = goToSlide;
     </script>
 </body>
 </html>

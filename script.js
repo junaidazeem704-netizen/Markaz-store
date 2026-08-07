@@ -1,4 +1,60 @@
 // ============================================
+// YAHAN SE START - SCRIPT.JS KE TOP PAR PASTE KAREIN
+// ============================================
+
+// SUPABASE CLIENT - GLOBAL
+const SUPABASE_URL = 'https://vnzipnxrasonkhlwcynq.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuemlwbnhyYXNvbmtobHdjeW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjY0ODcsImV4cCI6MjA1NjUwMjQ4N30.KfgUQ-fn1L0A_Jv3pFESuC8jR1R7S_iC9RPNlWpTbJ0';
+
+let supabase;
+if (typeof window.supabase !== 'undefined') {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('✅ Supabase connected in script.js');
+}
+
+// LOAD PRODUCTS FROM SUPABASE
+async function loadProductsFromSupabase() {
+    if (!supabase) {
+        products = JSON.parse(localStorage.getItem('myProducts')) || [];
+        categories = JSON.parse(localStorage.getItem('myCategories')) || ['Watches', 'Clothing', 'Electronics'];
+        return;
+    }
+    
+    try {
+        const { data: productsData, error: pError } = await supabase
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (pError) throw pError;
+        products = productsData || [];
+        
+        const { data: categoriesData, error: cError } = await supabase
+            .from('categories')
+            .select('*')
+            .order('name');
+        
+        if (cError) throw cError;
+        categories = categoriesData ? categoriesData.map(c => c.name) : ['Watches', 'Clothing', 'Electronics'];
+        
+        console.log('📦 Products loaded from Supabase:', products.length);
+        
+        if (typeof renderCategories === 'function') renderCategories();
+        if (typeof renderProducts === 'function') renderProducts();
+        if (typeof updateStats === 'function') updateStats();
+        if (typeof updateCartBadge === 'function') updateCartBadge();
+        
+    } catch (error) {
+        console.error('❌ Load products error:', error);
+        products = JSON.parse(localStorage.getItem('myProducts')) || [];
+        categories = JSON.parse(localStorage.getItem('myCategories')) || ['Watches', 'Clothing', 'Electronics'];
+    }
+}
+
+// ============================================
+// YAHAN TAK - SCRIPT.JS KE TOP PAR PASTE KAREIN
+// ============================================
+// ============================================
 // CONFIGURATION
 // ============================================
 const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';

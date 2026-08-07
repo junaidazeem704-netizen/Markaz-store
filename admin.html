@@ -6,18 +6,13 @@
     <title>Admin Panel - Markaz Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* =============================================
-           ADMIN PANEL STYLES
-           ============================================= */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a12;
@@ -25,12 +20,10 @@
             padding: 16px;
             min-height: 100vh;
         }
-
         .admin-wrapper {
             max-width: 700px;
             margin: 0 auto;
         }
-
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -43,7 +36,6 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-
         .admin-header h1 {
             font-size: 1.2rem;
             font-weight: 800;
@@ -51,13 +43,11 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .admin-header-actions {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
-
         .admin-header-actions a {
             padding: 6px 14px;
             background: rgba(255, 255, 255, 0.05);
@@ -67,7 +57,6 @@
             text-decoration: none;
             font-size: 0.75rem;
         }
-
         .btn-danger-sm {
             padding: 6px 14px;
             background: rgba(239, 68, 68, 0.12);
@@ -78,14 +67,12 @@
             cursor: pointer;
             font-family: inherit;
         }
-
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 12px;
             margin-bottom: 20px;
         }
-
         .admin-stat-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -93,13 +80,11 @@
             padding: 14px 18px;
             text-align: center;
         }
-
         .admin-stat-card .label {
             font-size: 0.65rem;
             color: #a0a0b8;
             text-transform: uppercase;
         }
-
         .admin-stat-card .value {
             font-size: 1.5rem;
             font-weight: 700;
@@ -107,7 +92,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .admin-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -115,7 +99,6 @@
             padding: 20px;
             margin-bottom: 16px;
         }
-
         .admin-card h2 {
             font-size: 1rem;
             font-weight: 700;
@@ -124,11 +107,9 @@
             align-items: center;
             gap: 10px;
         }
-
         .admin-card h2 i {
             color: #6366f1;
         }
-
         .admin-card .badge {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
@@ -137,11 +118,9 @@
             border-radius: 100px;
             margin-left: 6px;
         }
-
         .form-group {
             margin-bottom: 12px;
         }
-
         .form-group label {
             font-size: 0.8rem;
             font-weight: 500;
@@ -149,11 +128,9 @@
             display: block;
             margin-bottom: 4px;
         }
-
         .form-group label .required {
             color: #ef4444;
         }
-
         .form-group input,
         .form-group textarea {
             width: 100%;
@@ -166,47 +143,39 @@
             outline: none;
             font-family: inherit;
         }
-
         .form-group textarea {
             resize: vertical;
             min-height: 80px;
         }
-
         .form-group input:focus,
         .form-group textarea:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
-
         .form-group input::placeholder,
         .form-group textarea::placeholder {
             color: #6a6a82;
         }
-
         .form-group small {
             font-size: 0.7rem;
             color: #6a6a82;
             display: block;
             margin-top: 4px;
         }
-
         .form-group small i {
             color: #6366f1;
         }
-
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
-
         .form-actions {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-top: 8px;
         }
-
         .btn-primary {
             width: 100%;
             padding: 14px;
@@ -223,7 +192,6 @@
             justify-content: center;
             gap: 8px;
         }
-
         .btn-secondary {
             width: 100%;
             padding: 14px;
@@ -240,7 +208,6 @@
             justify-content: center;
             gap: 8px;
         }
-
         .btn-sm {
             padding: 6px 14px;
             font-size: 0.75rem;
@@ -253,11 +220,9 @@
             cursor: pointer;
             font-family: inherit;
         }
-
         .btn-sm:hover {
             background: rgba(255, 255, 255, 0.1);
         }
-
         .btn-edit {
             padding: 4px 10px;
             font-size: 0.65rem;
@@ -268,7 +233,6 @@
             cursor: pointer;
             font-family: inherit;
         }
-
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
             border-radius: 10px;
@@ -278,12 +242,10 @@
             position: relative;
             background: rgba(255, 255, 255, 0.02);
         }
-
         .image-upload-area:hover {
             border-color: #6366f1;
             background: rgba(99, 102, 241, 0.04);
         }
-
         .image-upload-area input[type="file"] {
             position: absolute;
             top: 0;
@@ -293,31 +255,26 @@
             opacity: 0;
             cursor: pointer;
         }
-
         .image-upload-area i {
             font-size: 2rem;
             color: #6366f1;
             display: block;
             margin-bottom: 4px;
         }
-
         .image-upload-area p {
             color: #a0a0b8;
             font-size: 0.85rem;
         }
-
         .image-upload-area .sub {
             color: #6a6a82;
             font-size: 0.7rem;
         }
-
         .image-preview-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
             gap: 10px;
             margin-top: 12px;
         }
-
         .image-preview-item {
             position: relative;
             border-radius: 8px;
@@ -326,13 +283,11 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
-
         .image-preview-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         .image-preview-item .remove-img {
             position: absolute;
             top: 4px;
@@ -346,11 +301,9 @@
             cursor: pointer;
             font-size: 0.6rem;
         }
-
         .image-preview-item .remove-img:hover {
             background: #ef4444;
         }
-
         .options-group {
             display: flex;
             flex-wrap: wrap;
@@ -358,7 +311,6 @@
             margin-top: 4px;
             min-height: 28px;
         }
-
         .option-tag {
             display: flex;
             align-items: center;
@@ -369,7 +321,6 @@
             border-radius: 100px;
             font-size: 0.75rem;
         }
-
         .option-tag .remove {
             cursor: pointer;
             color: #ef4444;
@@ -377,13 +328,11 @@
             border: none;
             font-size: 0.8rem;
         }
-
         .option-input-row {
             display: flex;
             gap: 6px;
             margin-top: 6px;
         }
-
         .option-input-row input {
             flex: 1;
             padding: 6px 12px;
@@ -394,14 +343,12 @@
             font-size: 0.85rem;
             outline: none;
         }
-
         .category-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             margin-top: 4px;
         }
-
         .category-tag {
             display: flex;
             align-items: center;
@@ -412,7 +359,6 @@
             border-radius: 100px;
             font-size: 0.75rem;
         }
-
         .category-tag .remove {
             cursor: pointer;
             color: #ef4444;
@@ -420,13 +366,11 @@
             border: none;
             font-size: 0.8rem;
         }
-
         .category-input-row {
             display: flex;
             gap: 8px;
             margin-bottom: 12px;
         }
-
         .category-input-row input {
             flex: 1;
             padding: 8px 14px;
@@ -437,7 +381,6 @@
             font-size: 0.85rem;
             outline: none;
         }
-
         .product-list {
             display: flex;
             flex-direction: column;
@@ -445,7 +388,6 @@
             max-height: 350px;
             overflow-y: auto;
         }
-
         .product-item {
             display: flex;
             justify-content: space-between;
@@ -457,48 +399,40 @@
             flex-wrap: wrap;
             gap: 6px;
         }
-
         .product-item .info {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-
         .product-item .info img {
             width: 40px;
             height: 40px;
             object-fit: cover;
             border-radius: 6px;
         }
-
         .product-item .info .title {
             font-weight: 500;
             font-size: 0.85rem;
         }
-
         .product-item .info .meta {
             font-size: 0.65rem;
             color: #a0a0b8;
         }
-
         .product-item .actions {
             display: flex;
             gap: 4px;
         }
-
         .empty-state {
             text-align: center;
             padding: 30px 20px;
             color: #6a6a82;
             display: none;
         }
-
         .empty-state i {
             font-size: 2rem;
             display: block;
             margin-bottom: 8px;
         }
-
         .order-item {
             display: flex;
             justify-content: space-between;
@@ -511,17 +445,14 @@
             flex-wrap: wrap;
             gap: 6px;
         }
-
         .order-item .order-info .order-id {
             font-weight: 600;
             font-size: 0.8rem;
         }
-
         .order-item .order-info .order-meta {
             font-size: 0.65rem;
             color: #a0a0b8;
         }
-
         .order-item .order-status select {
             padding: 4px 8px;
             background: rgba(255, 255, 255, 0.04);
@@ -532,14 +463,12 @@
             font-family: inherit;
             outline: none;
         }
-
         .order-status-badge {
             padding: 2px 10px;
             border-radius: 100px;
             font-size: 0.6rem;
             font-weight: 600;
         }
-
         .order-status-badge.processing {
             background: rgba(245, 158, 11, 0.15);
             color: #f59e0b;
@@ -556,31 +485,26 @@
             background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
         }
-
         .order-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-bottom: 16px;
         }
-
         .order-stat-box {
             background: rgba(255, 255, 255, 0.04);
             padding: 10px;
             border-radius: 8px;
             text-align: center;
         }
-
         .order-stat-box .stat-label {
             font-size: 0.6rem;
             color: #a0a0b8;
         }
-
         .order-stat-box .stat-value {
             font-size: 1.1rem;
             font-weight: 700;
         }
-
         .order-stat-box .stat-value.delivered {
             color: #10b981;
         }
@@ -590,7 +514,6 @@
         .order-stat-box .stat-value.total {
             color: #6366f1;
         }
-
         .edit-mode-badge {
             background: #f59e0b;
             color: white;
@@ -599,11 +522,9 @@
             border-radius: 100px;
             margin-left: 8px;
         }
-
         .hidden {
             display: none !important;
         }
-
         .toast {
             position: fixed;
             bottom: 20px;
@@ -621,12 +542,10 @@
             opacity: 0;
             transition: all 0.4s ease;
         }
-
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
-
         .toast-icon {
             width: 28px;
             height: 28px;
@@ -637,33 +556,27 @@
             justify-content: center;
             flex-shrink: 0;
         }
-
         .toast-icon i {
             color: #10b981;
             font-size: 0.9rem;
         }
-
         .toast.error .toast-icon {
             background: rgba(239, 68, 68, 0.12);
         }
         .toast.error .toast-icon i {
             color: #ef4444;
         }
-
         .toast-content {
             flex: 1;
         }
-
         .toast-title {
             font-size: 0.75rem;
             font-weight: 600;
         }
-
         .toast-message {
             font-size: 0.7rem;
             color: #a0a0b8;
         }
-
         .toast-close {
             background: none;
             border: none;
@@ -693,7 +606,6 @@
 <body>
 
     <div class="admin-wrapper">
-        <!-- Header -->
         <header class="admin-header">
             <h1>⚙️ Admin Panel</h1>
             <div class="admin-header-actions">
@@ -702,7 +614,6 @@
             </div>
         </header>
 
-        <!-- Stats -->
         <div class="admin-stats">
             <div class="admin-stat-card">
                 <div class="label">📦 Products</div>
@@ -718,7 +629,7 @@
             </div>
         </div>
 
-        <!-- Add/Edit Product -->
+        <!-- Add Product -->
         <div class="admin-card">
             <h2>
                 <i class="fas fa-plus-circle"></i>
@@ -825,10 +736,9 @@
             </div>
         </div>
 
-        <!-- Order Management -->
+        <!-- Orders -->
         <div class="admin-card">
             <h2><i class="fas fa-truck"></i> Order Management</h2>
-
             <div class="order-stats">
                 <div class="order-stat-box">
                     <div class="stat-label">📦 Total</div>
@@ -843,7 +753,6 @@
                     <div class="stat-value cancelled" id="order-cancelled-count">0</div>
                 </div>
             </div>
-
             <div id="order-list"></div>
             <div class="empty-state" id="empty-orders">
                 <i class="fas fa-box-open"></i>
@@ -871,13 +780,12 @@
         const SUPABASE_URL = 'https://vnzipnxrasonkhlwcynq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuemlwbnhyYXNvbmtobHdjeW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjY0ODcsImV4cCI6MjA1NjUwMjQ4N30.KfgUQ-fn1L0A_Jv3pFESuC8jR1R7S_iC9RPNlWpTbJ0';
 
-        // Check if supabase is loaded
         let supabase;
         if (typeof window.supabase !== 'undefined') {
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             console.log('✅ Supabase connected!');
         } else {
-            console.error('❌ Supabase not loaded. Check CDN script.');
+            console.error('❌ Supabase not loaded!');
         }
 
         // ============================================
@@ -887,10 +795,6 @@
         let sizes = [];
         let colors = [];
         let editId = null;
-
-        // ============================================
-        // IMGBB API
-        // ============================================
         const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
 
         // ============================================
@@ -906,7 +810,172 @@
         });
 
         // ============================================
-        // CATEGORY FUNCTIONS
+        // IMAGE UPLOAD - FIXED
+        // ============================================
+        function setupImageUpload() {
+            const input = document.getElementById('p-images');
+            if (!input) return;
+
+            input.addEventListener('change', function(e) {
+                const files = e.target.files;
+                console.log('📸 Files selected:', files.length);
+                for (let file of files) {
+                    if (uploadedImages.length >= 5) {
+                        showToast('Max 5 images!', 'warning');
+                        break;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        uploadedImages.push(event.target.result);
+                        renderPreviews();
+                        console.log('✅ Image loaded:', uploadedImages.length);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                e.target.value = '';
+            });
+        }
+
+        function renderPreviews() {
+            const grid = document.getElementById('image-preview-grid');
+            if (!grid) return;
+
+            if (uploadedImages.length === 0) {
+                grid.innerHTML = '';
+                document.getElementById('p-images-data').value = '[]';
+                return;
+            }
+
+            grid.innerHTML = uploadedImages.map((img, i) => `
+                <div class="image-preview-item">
+                    <img src="${img}" alt="Image ${i+1}" />
+                    <button class="remove-img" onclick="removeImage(${i})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <span style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.6);padding:1px 6px;border-radius:4px;font-size:0.5rem;color:white;">${i+1}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('p-images-data').value = JSON.stringify(uploadedImages);
+            console.log('🖼️ Preview rendered:', uploadedImages.length);
+        }
+
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            renderPreviews();
+            console.log('🗑️ Image removed:', uploadedImages.length);
+        }
+
+        // ============================================
+        // SAVE PRODUCT - FIXED
+        // ============================================
+        async function saveProduct() {
+            console.log('🔴 saveProduct() called');
+
+            const title = document.getElementById('p-title').value.trim();
+            const price = document.getElementById('p-price').value.trim();
+            const description = document.getElementById('p-description').value.trim();
+            let category = document.getElementById('p-category').value.trim() || 'General';
+
+            if (!title || !price) {
+                showToast('Title and Price required!', 'error');
+                return;
+            }
+
+            const imagesData = document.getElementById('p-images-data');
+            const images = JSON.parse(imagesData.value || '[]');
+            console.log('📸 Images to upload:', images.length);
+
+            if (images.length === 0) {
+                showToast('Upload at least one image!', 'error');
+                return;
+            }
+
+            // Upload to IMGBB
+            let imageUrls = [];
+            showToast('📤 Uploading images...', 'info');
+
+            for (let img of images) {
+                // Check if already URL
+                if (img.startsWith('http://') || img.startsWith('https://')) {
+                    imageUrls.push(img);
+                    console.log('✅ Already URL:', img.substring(0, 50));
+                    continue;
+                }
+
+                try {
+                    console.log('📤 Uploading to IMGBB...');
+                    const response = await fetch(img);
+                    const blob = await response.blob();
+                    const formData = new FormData();
+                    formData.append('image', blob);
+
+                    const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await uploadRes.json();
+                    console.log('📤 IMGBB result:', result.success ? '✅ Success' : '❌ Failed');
+
+                    if (result.success) {
+                        imageUrls.push(result.data.url);
+                        console.log('✅ Uploaded:', result.data.url.substring(0, 50));
+                    } else {
+                        showToast('Upload failed: ' + (result.error?.message || 'Unknown'), 'error');
+                        return;
+                    }
+                } catch (e) {
+                    console.error('❌ Upload error:', e);
+                    showToast('Upload error: ' + e.message, 'error');
+                    return;
+                }
+            }
+
+            console.log('✅ All images uploaded:', imageUrls.length);
+
+            const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
+            const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
+
+            const productData = {
+                title: title,
+                price: price,
+                description: description || 'Premium product from Markaz Store',
+                category: category,
+                images: imageUrls,
+                sizes: sizes,
+                colors: colors
+            };
+
+            console.log('📦 Product data:', productData);
+
+            try {
+                let result;
+                if (editId) {
+                    result = await supabase
+                        .from('products')
+                        .update(productData)
+                        .eq('id', editId);
+                } else {
+                    result = await supabase
+                        .from('products')
+                        .insert([productData]);
+                }
+
+                if (result.error) throw result.error;
+
+                console.log('✅ Product saved to Supabase!');
+                showToast(editId ? '✅ Product updated!' : '✅ Product added!', 'success');
+                clearForm();
+                loadProducts();
+            } catch (error) {
+                console.error('❌ Save product error:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // REST FUNCTIONS (Categories, Products, Orders)
         // ============================================
         async function loadCategories() {
             try {
@@ -914,26 +983,21 @@
                     .from('categories')
                     .select('*')
                     .order('name');
-
                 if (error) throw error;
-
                 renderCategories(data || []);
                 updateStats();
             } catch (error) {
                 console.error('❌ Load categories error:', error);
-                showToast('Error loading categories: ' + error.message, 'error');
             }
         }
 
         function renderCategories(categoriesData) {
             const list = document.getElementById('categories-list');
             if (!list) return;
-
             if (!categoriesData || categoriesData.length === 0) {
                 list.innerHTML = '<span style="color:#6a6a82;font-size:0.75rem;">No categories</span>';
                 return;
             }
-
             list.innerHTML = categoriesData.map(c =>
                 `<span class="category-tag">
                     ${c.name}
@@ -945,14 +1009,9 @@
         async function addCategory() {
             const name = document.getElementById('new-cat-name').value.trim();
             if (!name) { showToast('Enter name!', 'error'); return; }
-
             try {
-                const { error } = await supabase
-                    .from('categories')
-                    .insert({ name: name });
-
+                const { error } = await supabase.from('categories').insert({ name: name });
                 if (error) throw error;
-
                 document.getElementById('new-cat-name').value = '';
                 showToast('Category added!', 'success');
                 loadCategories();
@@ -964,15 +1023,9 @@
 
         async function deleteCategory(id) {
             if (!confirm('Delete this category?')) return;
-
             try {
-                const { error } = await supabase
-                    .from('categories')
-                    .delete()
-                    .eq('id', id);
-
+                const { error } = await supabase.from('categories').delete().eq('id', id);
                 if (error) throw error;
-
                 showToast('Category deleted.', 'success');
                 loadCategories();
             } catch (error) {
@@ -981,23 +1034,17 @@
             }
         }
 
-        // ============================================
-        // PRODUCT FUNCTIONS
-        // ============================================
         async function loadProducts() {
             try {
                 const { data, error } = await supabase
                     .from('products')
                     .select('*')
                     .order('created_at', { ascending: false });
-
                 if (error) throw error;
-
                 renderProducts(data || []);
                 updateStats();
             } catch (error) {
                 console.error('❌ Load products error:', error);
-                showToast('Error loading products: ' + error.message, 'error');
             }
         }
 
@@ -1005,14 +1052,12 @@
             const list = document.getElementById('products-list');
             const empty = document.getElementById('empty-state');
             if (!list) return;
-
             if (!productsData || productsData.length === 0) {
                 list.innerHTML = '';
                 if (empty) empty.style.display = 'block';
                 return;
             }
             if (empty) empty.style.display = 'none';
-
             list.innerHTML = productsData.map((p) => `
                 <div class="product-item">
                     <div class="info">
@@ -1038,103 +1083,6 @@
             `).join('');
         }
 
-        // ============================================
-        // SAVE PRODUCT (Add/Update)
-        // ============================================
-        async function saveProduct() {
-            const title = document.getElementById('p-title').value.trim();
-            const price = document.getElementById('p-price').value.trim();
-            const description = document.getElementById('p-description').value.trim();
-            let category = document.getElementById('p-category').value.trim() || 'General';
-
-            if (!title || !price) {
-                showToast('Title and Price required!', 'error');
-                return;
-            }
-
-            const imagesData = document.getElementById('p-images-data');
-            const images = JSON.parse(imagesData.value || '[]');
-
-            if (images.length === 0) {
-                showToast('Upload at least one image!', 'error');
-                return;
-            }
-
-            // Upload images to IMGBB
-            let imageUrls = [];
-            showToast('📤 Uploading images...', 'info');
-
-            for (let img of images) {
-                if (img.startsWith('http://') || img.startsWith('https://')) {
-                    imageUrls.push(img);
-                } else {
-                    try {
-                        const response = await fetch(img);
-                        const blob = await response.blob();
-                        const formData = new FormData();
-                        formData.append('image', blob);
-
-                        const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
-                            method: 'POST',
-                            body: formData
-                        });
-
-                        const result = await uploadRes.json();
-                        if (result.success) {
-                            imageUrls.push(result.data.url);
-                        } else {
-                            showToast('Upload failed!', 'error');
-                            return;
-                        }
-                    } catch (e) {
-                        showToast('Upload error!', 'error');
-                        return;
-                    }
-                }
-            }
-
-            const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
-            const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
-
-            const productData = {
-                title: title,
-                price: price,
-                description: description || 'Premium product from Markaz Store',
-                category: category,
-                images: imageUrls,
-                sizes: sizes,
-                colors: colors
-            };
-
-            try {
-                let result;
-                if (editId) {
-                    // Update
-                    result = await supabase
-                        .from('products')
-                        .update(productData)
-                        .eq('id', editId);
-                } else {
-                    // Insert
-                    result = await supabase
-                        .from('products')
-                        .insert([productData]);
-                }
-
-                if (result.error) throw result.error;
-
-                showToast(editId ? '✅ Product updated!' : '✅ Product added!', 'success');
-                clearForm();
-                loadProducts();
-            } catch (error) {
-                console.error('❌ Save product error:', error);
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        // ============================================
-        // EDIT PRODUCT
-        // ============================================
         async function editProduct(id) {
             try {
                 const { data, error } = await supabase
@@ -1142,36 +1090,25 @@
                     .select('*')
                     .eq('id', id)
                     .single();
-
                 if (error) throw error;
-
                 const p = data;
                 editId = id;
-
                 document.getElementById('p-title').value = p.title || '';
                 document.getElementById('p-price').value = p.price || '';
                 document.getElementById('p-description').value = p.description || '';
                 document.getElementById('p-category').value = p.category || '';
-
-                // Load images
                 uploadedImages = p.images ? [...p.images] : [];
                 renderPreviews();
-
-                // Load sizes
                 sizes = p.sizes ? [...p.sizes] : [];
                 document.getElementById('p-sizes').value = JSON.stringify(sizes);
                 renderOptions('size');
-
-                // Load colors
                 colors = p.colors ? [...p.colors] : [];
                 document.getElementById('p-colors').value = JSON.stringify(colors);
                 renderOptions('color');
-
                 document.getElementById('form-title').textContent = 'Edit Product';
                 document.getElementById('edit-badge').classList.remove('hidden');
                 document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Update Product';
                 document.getElementById('cancel-btn').classList.remove('hidden');
-
                 showToast('Edit mode: ' + p.title, 'info');
             } catch (error) {
                 console.error('❌ Edit product error:', error);
@@ -1179,20 +1116,11 @@
             }
         }
 
-        // ============================================
-        // DELETE PRODUCT
-        // ============================================
         async function deleteProduct(id) {
             if (!confirm('Delete this product?')) return;
-
             try {
-                const { error } = await supabase
-                    .from('products')
-                    .delete()
-                    .eq('id', id);
-
+                const { error } = await supabase.from('products').delete().eq('id', id);
                 if (error) throw error;
-
                 showToast('Product deleted.', 'success');
                 loadProducts();
             } catch (error) {
@@ -1201,16 +1129,9 @@
             }
         }
 
-        // ============================================
-        // AUTO DETECT CATEGORY
-        // ============================================
         function autoDetectCategory() {
             const title = document.getElementById('p-title').value.trim();
-            if (!title) {
-                showToast('Enter title first!', 'warning');
-                return;
-            }
-
+            if (!title) { showToast('Enter title first!', 'warning'); return; }
             const cat = detectCategoryFromTitle(title);
             if (cat) {
                 document.getElementById('p-category').value = cat;
@@ -1241,24 +1162,18 @@
             return null;
         }
 
-        // ============================================
-        // ORDER FUNCTIONS
-        // ============================================
         async function loadOrders() {
             try {
                 const { data, error } = await supabase
                     .from('orders')
                     .select('*')
                     .order('created_at', { ascending: false });
-
                 if (error) throw error;
-
                 renderOrders(data || []);
                 updateOrderStats(data || []);
                 updateStats();
             } catch (error) {
                 console.error('❌ Load orders error:', error);
-                showToast('Error loading orders: ' + error.message, 'error');
             }
         }
 
@@ -1266,14 +1181,12 @@
             const list = document.getElementById('order-list');
             const empty = document.getElementById('empty-orders');
             if (!list) return;
-
             if (!ordersData || ordersData.length === 0) {
                 list.innerHTML = '';
                 if (empty) empty.style.display = 'block';
                 return;
             }
             if (empty) empty.style.display = 'none';
-
             list.innerHTML = ordersData.map((order) => `
                 <div class="order-item">
                     <div class="order-info">
@@ -1304,9 +1217,7 @@
                     .from('orders')
                     .update({ status: status, updated_at: new Date().toISOString() })
                     .eq('id', id);
-
                 if (error) throw error;
-
                 showToast('✅ Order status updated!', 'success');
                 loadOrders();
             } catch (error) {
@@ -1319,35 +1230,19 @@
             const total = document.getElementById('order-total-count');
             const delivered = document.getElementById('order-delivered-count');
             const cancelled = document.getElementById('order-cancelled-count');
-
             if (total) total.textContent = ordersData.length;
             if (delivered) delivered.textContent = ordersData.filter(o => o.status === 'delivered').length;
             if (cancelled) cancelled.textContent = ordersData.filter(o => o.status === 'cancelled').length;
         }
 
-        // ============================================
-        // UPDATE STATS
-        // ============================================
         async function updateStats() {
             try {
-                // Products count
-                const { count: productCount, error: pError } = await supabase
-                    .from('products')
-                    .select('*', { count: 'exact', head: true });
-
-                // Categories count
-                const { count: categoryCount, error: cError } = await supabase
-                    .from('categories')
-                    .select('*', { count: 'exact', head: true });
-
-                // Orders count
-                const { count: orderCount, error: oError } = await supabase
-                    .from('orders')
-                    .select('*', { count: 'exact', head: true });
-
-                if (!pError) document.getElementById('total-products').textContent = productCount || 0;
-                if (!cError) document.getElementById('total-categories').textContent = categoryCount || 0;
-                if (!oError) document.getElementById('total-orders').textContent = orderCount || 0;
+                const { count: productCount } = await supabase.from('products').select('*', { count: 'exact', head: true });
+                const { count: categoryCount } = await supabase.from('categories').select('*', { count: 'exact', head: true });
+                const { count: orderCount } = await supabase.from('orders').select('*', { count: 'exact', head: true });
+                document.getElementById('total-products').textContent = productCount || 0;
+                document.getElementById('total-categories').textContent = categoryCount || 0;
+                document.getElementById('total-orders').textContent = orderCount || 0;
                 document.getElementById('product-count').textContent = productCount || 0;
             } catch (error) {
                 console.error('❌ Update stats error:', error);
@@ -1355,60 +1250,7 @@
         }
 
         // ============================================
-        // IMAGE UPLOAD
-        // ============================================
-        function setupImageUpload() {
-            const input = document.getElementById('p-images');
-            if (!input) return;
-
-            input.addEventListener('change', function(e) {
-                const files = e.target.files;
-                for (let file of files) {
-                    if (uploadedImages.length >= 5) {
-                        showToast('Max 5 images!', 'warning');
-                        break;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        uploadedImages.push(event.target.result);
-                        renderPreviews();
-                    };
-                    reader.readAsDataURL(file);
-                }
-                e.target.value = '';
-            });
-        }
-
-        function renderPreviews() {
-            const grid = document.getElementById('image-preview-grid');
-            if (!grid) return;
-
-            if (uploadedImages.length === 0) {
-                grid.innerHTML = '';
-                document.getElementById('p-images-data').value = '[]';
-                return;
-            }
-
-            grid.innerHTML = uploadedImages.map((img, i) => `
-                <div class="image-preview-item">
-                    <img src="${img}" alt="Image ${i+1}" />
-                    <button class="remove-img" onclick="removeImage(${i})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <span style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.6);padding:1px 6px;border-radius:4px;font-size:0.5rem;color:white;">${i+1}</span>
-                </div>
-            `).join('');
-
-            document.getElementById('p-images-data').value = JSON.stringify(uploadedImages);
-        }
-
-        function removeImage(index) {
-            uploadedImages.splice(index, 1);
-            renderPreviews();
-        }
-
-        // ============================================
-        // OPTIONS
+        // OPTIONS (Sizes & Colors)
         // ============================================
         function loadOptions() {
             const s = document.getElementById('p-sizes');
@@ -1484,18 +1326,12 @@
             showToast('Edit cancelled', 'info');
         }
 
-        // ============================================
-        // RESET ALL
-        // ============================================
         function resetAll() {
-            if (confirm('⚠️ Delete ALL data from Supabase?')) {
-                showToast('This feature is disabled for safety.', 'warning');
+            if (confirm('⚠️ Delete ALL data?')) {
+                showToast('Feature disabled for safety.', 'warning');
             }
         }
 
-        // ============================================
-        // TOAST
-        // ============================================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             if (!toast) { alert(message); return; }

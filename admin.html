@@ -931,82 +931,61 @@
         // ============================================
         // IMAGE UPLOAD - FIXED
         // ============================================
-        function setupImageUpload() {
-            const input = document.getElementById('p-images');
-            if (!input) return;
+        // ============================================
+// OLD FUNCTION - DELETE KAREIN
+// ============================================
+function setupImageUpload() {
+    const input = document.getElementById('p-images');
+    if (!input) return;
 
-            // Remove any existing listeners
-            input.removeEventListener('change', handleImageUpload);
-            input.addEventListener('change', handleImageUpload);
+    input.addEventListener('change', function(e) {
+        // ... purana code
+    });
+}
+
+// ============================================
+// NEW FUNCTION - PASTE KAREIN
+// ============================================
+function setupImageUpload() {
+    const input = document.getElementById('p-images');
+    if (!input) return;
+
+    // Remove any existing listeners
+    input.removeEventListener('change', handleImageUpload);
+    input.addEventListener('change', handleImageUpload);
+}
+
+function handleImageUpload(e) {
+    const files = e.target.files;
+    console.log('📸 Files selected:', files.length);
+
+    if (files.length === 0) return;
+
+    for (let file of files) {
+        if (uploadedImages.length >= 5) {
+            showToast('Max 5 images!', 'warning');
+            break;
         }
 
-        function handleImageUpload(e) {
-            const files = e.target.files;
-            console.log('📸 Files selected:', files.length);
-
-            if (files.length === 0) return;
-
-            for (let file of files) {
-                if (uploadedImages.length >= 5) {
-                    showToast('Max 5 images!', 'warning');
-                    break;
-                }
-
-                // Check file size (max 2MB)
-                if (file.size > 2 * 1024 * 1024) {
-                    showToast('Image too large! Max 2MB', 'error');
-                    continue;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    uploadedImages.push(event.target.result);
-                    renderPreviews();
-                    console.log('✅ Image loaded:', uploadedImages.length);
-                    console.log('📊 Total images:', uploadedImages.length);
-                };
-                reader.onerror = function() {
-                    showToast('Error reading file!', 'error');
-                    console.error('❌ FileReader error');
-                };
-                reader.readAsDataURL(file);
-            }
-
-            // Reset input so same file can be selected again
-            e.target.value = '';
+        if (file.size > 2 * 1024 * 1024) {
+            showToast('Image too large! Max 2MB', 'error');
+            continue;
         }
 
-        function renderPreviews() {
-            const grid = document.getElementById('image-preview-grid');
-            if (!grid) return;
-
-            if (uploadedImages.length === 0) {
-                grid.innerHTML = '';
-                document.getElementById('p-images-data').value = '[]';
-                console.log('🖼️ Preview cleared');
-                return;
-            }
-
-            grid.innerHTML = uploadedImages.map((img, i) => `
-                <div class="image-preview-item">
-                    <img src="${img}" alt="Image ${i+1}" />
-                    <button class="remove-img" onclick="removeImage(${i})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <span class="img-number">${i+1}</span>
-                </div>
-            `).join('');
-
-            document.getElementById('p-images-data').value = JSON.stringify(uploadedImages);
-            console.log('🖼️ Preview rendered:', uploadedImages.length);
-        }
-
-        function removeImage(index) {
-            uploadedImages.splice(index, 1);
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            uploadedImages.push(event.target.result);
             renderPreviews();
-            console.log('🗑️ Image removed:', uploadedImages.length);
-            showToast('Image removed', 'info');
-        }
+            console.log('✅ Image loaded:', uploadedImages.length);
+        };
+        reader.onerror = function() {
+            showToast('Error reading file!', 'error');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    e.target.value = '';
+}
 
         // ============================================
         // SAVE PRODUCT

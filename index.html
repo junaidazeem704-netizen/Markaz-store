@@ -27,11 +27,26 @@
                     <a href="#contact">Contact</a>
                 </div>
             </div>
-            <div class="nav-right">
-                <button class="nav-btn" onclick="window.location.href='admin.html'">
-                    <i class="fas fa-cog"></i>
-                    <span>Admin</span>
-                </button>
+          <div class="nav-right">
+    <!-- Existing buttons -->
+    <button class="nav-btn" onclick="window.location.href='admin.html'">
+        <i class="fas fa-cog"></i>
+        <span>Admin</span>
+    </button>
+    
+    <!-- ========================================== -->
+    <!-- TRACK ORDER BUTTON - YEH ADD KAREIN -->
+    <!-- ========================================== -->
+    <button class="nav-btn" onclick="window.location.href='tracking.html'">
+        <i class="fas fa-search"></i>
+        <span>Track</span>
+    </button>
+    
+    <button class="nav-btn cart-btn" onclick="window.location.href='cart.html'">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="cart-badge" id="cart-badge">0</span>
+    </button>
+</div>
                 <button class="nav-btn cart-btn">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-badge">0</span>

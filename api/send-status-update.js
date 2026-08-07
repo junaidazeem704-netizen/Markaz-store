@@ -20,6 +20,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (!process.env.MY_GMAIL || !process.env.MY_GMAIL_APP_PASS) {
+        console.error('❌ Email credentials not set!');
         return res.status(500).json({ 
             success: false, 
             message: 'Email configuration missing.' 
@@ -27,9 +28,17 @@ module.exports = async function handler(req, res) {
     }
 
     const statusMessages = {
+        'processing': '⏳ Your order is being processed',
         'shipped': '🚚 Your order has been shipped!',
         'delivered': '📦 Your order has been delivered!',
         'cancelled': '❌ Your order has been cancelled'
+    };
+
+    const statusColors = {
+        'processing': '#f59e0b',
+        'shipped': '#6366f1',
+        'delivered': '#10b981',
+        'cancelled': '#ef4444'
     };
 
     const transporter = nodemailer.createTransport({
@@ -43,24 +52,51 @@ module.exports = async function handler(req, res) {
     const mailOptions = {
         from: `"${storeName || 'Markaz Store'}" <${process.env.MY_GMAIL}>`,
         to: email,
-        subject: `Order #${orderId} - ${statusMessages[status] || 'Status Updated'}`,
+        subject: `${statusMessages[status] || 'Order Status Update'} - #${orderId}`,
         html: `
-            <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; padding: 20px; background: #0a0a0f; color: #ffffff; border-radius: 12px;">
-                <h2 style="color: #6366f1;">Order #${orderId}</h2>
-                <p>Dear ${name || 'Customer'},</p>
-                <p><strong>${statusMessages[status] || 'Your order status has been updated'}</strong></p>
-                <p><strong>Items:</strong> ${items}</p>
-                <p><strong>Total:</strong> Rs. ${total}</p>
-                <p>Track your order: <a href="https://${req.headers.host}/tracking.html?id=${orderId}" style="color: #6366f1;">Track Order</a></p>
+            <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #0a0a0f; color: #ffffff; border-radius: 12px;">
+                <div style="text-align: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <h1 style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${storeName || 'Markaz Store'}</h1>
+                    <p style="color: #a0a0b8; font-size: 14px;">Order Status Update</p>
+                </div>
+                
+                <div style="padding: 20px 0;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span style="background: ${statusColors[status] || '#6366f1'}; color: white; padding: 8px 24px; border-radius: 100px; font-size: 14px; font-weight: 600;">
+                            ${statusMessages[status] || 'Status Updated'}
+                        </span>
+                    </div>
+                    
+                    <div style="background: #1a1a2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06);">
+                        <h2 style="font-size: 16px; font-weight: 600; color: #6366f1; margin-bottom: 12px;">🛍️ Order Details</h2>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Order ID:</strong> ${orderId}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Items:</strong> ${items}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Total:</strong> Rs. ${total}</p>
+                    </div>
+                    
+                    <div style="background: #1a1a2e; border-radius: 8px; padding: 16px; border: 1px solid rgba(255,255,255,0.06);">
+                        <h2 style="font-size: 16px; font-weight: 600; color: #6366f1; margin-bottom: 12px;">👤 Customer Details</h2>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Name:</strong> ${name}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Email:</strong> ${email}</p>
+                    </div>
+                </div>
+                
+                <div style="padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                    <p style="color: #6a6a82; font-size: 12px;">This is an automated notification from ${storeName || 'Markaz Store'}<br>${storeEmail || 'info@markazstore.com'}</p>
+                </div>
             </div>
         `
     };
 
     try {
         await transporter.sendMail(mailOptions);
-        return res.status(200).json({ success: true, message: 'Status email sent!' });
+        console.log('✅ Status update email sent!');
+        return res.status(200).json({ success: true, message: 'Status update email sent!' });
     } catch (error) {
-        console.error('Email error:', error);
-        return res.status(500).json({ success: false, message: 'Failed to send email' });
+        console.error('❌ Email error:', error);
+        return res.status(500).json({ 
+            success: false, 
+            message: 'Failed to send status email: ' + error.message 
+        });
     }
 };

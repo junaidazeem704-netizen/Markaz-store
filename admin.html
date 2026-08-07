@@ -232,10 +232,6 @@
             cursor: pointer;
             font-family: inherit;
         }
-
-        /* =============================================
-           IMAGE UPLOAD
-           ============================================= */
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
             border-radius: 8px;
@@ -335,7 +331,6 @@
             font-size: 0.45rem;
             color: white;
         }
-
         .options-group {
             display: flex;
             flex-wrap: wrap;
@@ -644,7 +639,7 @@
             <h1>⚙️ Admin Panel</h1>
             <div class="admin-header-actions">
                 <a href="index.html"><i class="fas fa-store"></i> Store</a>
-                <button class="btn-danger-sm" onclick="resetAllData()"><i class="fas fa-trash-alt"></i> Reset</button>
+                <button class="btn-danger-sm" onclick="resetAll()"><i class="fas fa-trash-alt"></i></button>
             </div>
         </header>
 
@@ -678,7 +673,6 @@
                 <small><i class="fas fa-magic"></i> Auto-detects from title</small>
             </div>
 
-            <!-- Image Upload -->
             <div class="form-group">
                 <label>Images <span class="required">*</span></label>
                 <div class="image-upload-area" id="upload-area">
@@ -740,7 +734,7 @@
 
         <!-- Orders -->
         <div class="admin-card">
-            <h2><i class="fas fa-truck"></i> Orders</h2>
+            <h2><i class="fas fa-truck"></i> Order Management</h2>
             <div class="order-stats">
                 <div class="order-stat-box"><div class="stat-label">📦 Total</div><div class="stat-value total" id="order-total-count">0</div></div>
                 <div class="order-stat-box"><div class="stat-label">✅ Delivered</div><div class="stat-value delivered" id="order-delivered-count">0</div></div>
@@ -786,7 +780,7 @@
         });
 
         // ============================================
-        // IMAGE UPLOAD - FIXED
+        // IMAGE UPLOAD
         // ============================================
         function setupImageUpload() {
             const input = document.getElementById('p-images');
@@ -794,8 +788,6 @@
 
             input.addEventListener('change', function(e) {
                 const files = e.target.files;
-                console.log('📸 Files selected:', files.length);
-
                 if (files.length === 0) return;
 
                 for (let file of files) {
@@ -803,26 +795,21 @@
                         showToast('Max 5 images allowed!', 'warning');
                         break;
                     }
-
                     if (file.size > 2 * 1024 * 1024) {
                         showToast('Image too large! Max 2MB', 'error');
                         continue;
                     }
-
                     const reader = new FileReader();
                     reader.onload = function(event) {
                         uploadedImages.push(event.target.result);
                         renderPreviews();
                         updateFileCount();
-                        console.log('✅ Image loaded:', uploadedImages.length);
                     };
                     reader.onerror = function() {
                         showToast('Error reading file!', 'error');
-                        console.error('❌ FileReader error');
                     };
                     reader.readAsDataURL(file);
                 }
-
                 e.target.value = '';
             });
         }
@@ -838,13 +825,11 @@
         function renderPreviews() {
             const grid = document.getElementById('image-preview-grid');
             if (!grid) return;
-
             if (uploadedImages.length === 0) {
                 grid.innerHTML = '';
                 document.getElementById('p-images-data').value = '[]';
                 return;
             }
-
             grid.innerHTML = uploadedImages.map((img, i) => `
                 <div class="image-preview-item">
                     <img src="${img}" alt="Image ${i+1}" />
@@ -854,9 +839,7 @@
                     <span class="img-number">${i+1}</span>
                 </div>
             `).join('');
-
             document.getElementById('p-images-data').value = JSON.stringify(uploadedImages);
-            console.log('🖼️ Preview rendered:', uploadedImages.length);
         }
 
         function removeImage(index) {
@@ -910,11 +893,9 @@
         }
 
         // ============================================
-        // SAVE PRODUCT - WITH IMGBB UPLOAD
+        // SAVE PRODUCT
         // ============================================
         async function saveProduct() {
-            console.log('🔴 saveProduct() called');
-
             const title = document.getElementById('p-title').value.trim();
             const price = document.getElementById('p-price').value.trim();
             const description = document.getElementById('p-description').value.trim();
@@ -927,63 +908,42 @@
 
             const imagesData = document.getElementById('p-images-data');
             const images = JSON.parse(imagesData.value || '[]');
-            console.log('📸 Images to upload:', images.length);
 
             if (images.length === 0) {
                 showToast('Upload at least one image!', 'error');
                 return;
             }
 
-            // ============================================
-            // UPLOAD TO IMGBB - WORKING
-            // ============================================
+            // Upload to IMGBB
             let imageUrls = [];
-            showToast('📤 Uploading images to IMGBB...', 'info');
+            showToast('📤 Uploading images...', 'info');
 
-            for (let i = 0; i < images.length; i++) {
-                const img = images[i];
-                
-                // Skip if already URL
+            for (let img of images) {
                 if (img.startsWith('http://') || img.startsWith('https://')) {
                     imageUrls.push(img);
-                    console.log('✅ Already URL');
                     continue;
                 }
-
                 try {
-                    console.log('📤 Uploading image ' + (i + 1) + ' to IMGBB...');
-                    
-                    // Convert base64 to blob
                     const response = await fetch(img);
                     const blob = await response.blob();
-                    
                     const formData = new FormData();
                     formData.append('image', blob);
-
                     const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
                         method: 'POST',
                         body: formData
                     });
-
                     const result = await uploadRes.json();
-                    console.log('📤 IMGBB result:', result);
-
                     if (result.success) {
                         imageUrls.push(result.data.url);
-                        console.log('✅ Uploaded image ' + (i + 1) + ': ' + result.data.url.substring(0, 50));
                     } else {
-                        console.error('❌ IMGBB error:', result.error);
-                        showToast('Image ' + (i + 1) + ' upload failed: ' + (result.error?.message || 'Unknown'), 'error');
+                        showToast('Upload failed!', 'error');
                         return;
                     }
                 } catch (e) {
-                    console.error('❌ Upload error:', e);
-                    showToast('Upload error: ' + e.message, 'error');
+                    showToast('Upload error!', 'error');
                     return;
                 }
             }
-
-            console.log('✅ All images uploaded:', imageUrls.length);
 
             const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
             const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
@@ -999,62 +959,17 @@
                 createdAt: new Date().toISOString()
             };
 
-            console.log('📦 Product data:', productData);
-
-            // ============================================
-            // SAVE TO LOCALSTORAGE
-            // ============================================
             if (editIndex >= 0 && editIndex < products.length) {
-                // Update existing product
                 products[editIndex] = productData;
                 showToast('✅ Product updated!', 'success');
             } else {
-                // Add new product
                 products.push(productData);
                 showToast('✅ Product added!', 'success');
             }
 
             localStorage.setItem('myProducts', JSON.stringify(products));
-            
-            console.log('✅ Product saved to LocalStorage!');
             clearForm();
             renderAll();
-        }
-
-        // ============================================
-        // AUTO DETECT CATEGORY
-        // ============================================
-        function autoDetectCategory() {
-            const title = document.getElementById('p-title').value.trim();
-            if (!title) { showToast('Enter title first!', 'warning'); return; }
-            const cat = detectCategoryFromTitle(title);
-            if (cat) {
-                document.getElementById('p-category').value = cat;
-                showToast('🔍 "' + cat + '" detected!', 'info');
-            } else {
-                showToast('⚠️ No category detected.', 'warning');
-            }
-        }
-
-        function detectCategoryFromTitle(title) {
-            const keywords = {
-                'Watches': ['watch', 'smartwatch', 'chrono'],
-                'Clothing': ['shirt', 'jeans', 'jacket', 'dress', 'hoodie', 'sweater', 'tshirt'],
-                'Electronics': ['phone', 'laptop', 'tablet', 'tv', 'speaker'],
-                'Shoes': ['shoe', 'sneaker', 'boot'],
-                'Accessories': ['bag', 'belt', 'cap', 'hat', 'sunglass'],
-                'Home': ['furniture', 'lamp', 'chair', 'table', 'bed'],
-                'Books': ['book', 'novel', 'magazine'],
-                'Toys': ['toy', 'game', 'puzzle', 'doll'],
-                'Beauty': ['cream', 'lotion', 'shampoo', 'soap', 'perfume']
-            };
-            const lower = title.toLowerCase();
-            for (const [cat, words] of Object.entries(keywords)) {
-                for (const w of words) {
-                    if (lower.includes(w)) return cat;
-                }
-            }
-            return null;
         }
 
         // ============================================
@@ -1093,31 +1008,25 @@
         function editProduct(index) {
             const p = products[index];
             if (!p) return;
-
             editIndex = index;
             document.getElementById('p-title').value = p.title || '';
             document.getElementById('p-price').value = p.price || '';
             document.getElementById('p-description').value = p.description || '';
             document.getElementById('p-category').value = p.category || '';
-            
             uploadedImages = p.images ? [...p.images] : [];
             renderPreviews();
             updateFileCount();
-            
             sizes = p.sizes ? [...p.sizes] : [];
             document.getElementById('p-sizes').value = JSON.stringify(sizes);
             renderOptions('size');
-            
             colors = p.colors ? [...p.colors] : [];
             document.getElementById('p-colors').value = JSON.stringify(colors);
             renderOptions('color');
-
             document.getElementById('form-title').textContent = 'Edit Product';
             document.getElementById('edit-badge').classList.remove('hidden');
             document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Update Product';
             document.getElementById('cancel-btn').classList.remove('hidden');
             document.getElementById('edit-index').value = index;
-            
             showToast('Edit mode: ' + p.title, 'info');
         }
 
@@ -1126,15 +1035,139 @@
             showToast('Edit cancelled', 'info');
         }
 
+        function autoDetectCategory() {
+            const title = document.getElementById('p-title').value.trim();
+            if (!title) { showToast('Enter title first!', 'warning'); return; }
+            const cat = detectCategoryFromTitle(title);
+            if (cat) {
+                document.getElementById('p-category').value = cat;
+                showToast('🔍 "' + cat + '" detected!', 'info');
+            } else {
+                showToast('⚠️ No category detected.', 'warning');
+            }
+        }
+
+        function detectCategoryFromTitle(title) {
+            const keywords = {
+                'Watches': ['watch', 'smartwatch', 'chrono'],
+                'Clothing': ['shirt', 'jeans', 'jacket', 'dress', 'hoodie', 'sweater', 'tshirt'],
+                'Electronics': ['phone', 'laptop', 'tablet', 'tv', 'speaker'],
+                'Shoes': ['shoe', 'sneaker', 'boot'],
+                'Accessories': ['bag', 'belt', 'cap', 'hat', 'sunglass'],
+                'Home': ['furniture', 'lamp', 'chair', 'table', 'bed'],
+                'Books': ['book', 'novel', 'magazine'],
+                'Toys': ['toy', 'game', 'puzzle', 'doll'],
+                'Beauty': ['cream', 'lotion', 'shampoo', 'soap', 'perfume']
+            };
+            const lower = title.toLowerCase();
+            for (const [cat, words] of Object.entries(keywords)) {
+                for (const w of words) {
+                    if (lower.includes(w)) return cat;
+                }
+            }
+            return null;
+        }
+
         // ============================================
-        // ORDERS FUNCTIONS
+        // ORDER FUNCTIONS - WITH EMAIL
         // ============================================
-        function updateOrderStatus(index, status) {
-            orders[index].status = status;
-            orders[index].updatedAt = new Date().toISOString();
+        function loadOrders() {
+            orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            renderOrders();
+            updateOrderStats();
+            updateStats();
+        }
+
+        function renderOrders() {
+            const list = document.getElementById('order-list');
+            const empty = document.getElementById('empty-orders');
+            if (!list) return;
+            if (orders.length === 0) {
+                list.innerHTML = '';
+                if (empty) empty.style.display = 'block';
+                return;
+            }
+            if (empty) empty.style.display = 'none';
+            list.innerHTML = orders.map((order, i) => `
+                <div class="order-item">
+                    <div class="order-info">
+                        <span class="order-id">#${order.orderId || 'MK-' + (i + 1)}</span>
+                        <span class="order-meta">${order.name || 'N/A'} • ${order.items || 'N/A'} • Rs. ${order.total || 0}</span>
+                        <span class="order-meta">${order.email || 'N/A'} • ${order.phone || 'N/A'}</span>
+                    </div>
+                    <div class="order-status">
+                        <span class="order-status-badge ${order.status || 'processing'}">${order.status || 'Processing'}</span>
+                        <select onchange="updateOrderStatus(${i}, this.value)">
+                            <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                            <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // UPDATE ORDER STATUS - WITH EMAIL
+        // ============================================
+        async function updateOrderStatus(index, status) {
+            const order = orders[index];
+            if (!order) {
+                showToast('Order not found!', 'error');
+                return;
+            }
+
+            // Update status
+            order.status = status;
+            order.updatedAt = new Date().toISOString();
+            orders[index] = order;
             localStorage.setItem('orders', JSON.stringify(orders));
-            renderAll();
-            showToast('✅ Order status updated!', 'success');
+
+            // ============================================
+            // SEND STATUS UPDATE EMAIL
+            // ============================================
+            const baseUrl = window.location.origin || 'https://markaz-store.vercel.app';
+            
+            try {
+                const emailResponse = await fetch(`${baseUrl}/api/send-status-update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId: order.orderId,
+                        status: status,
+                        name: order.name,
+                        email: order.email,
+                        items: order.items,
+                        total: order.total,
+                        storeName: 'Markaz Store',
+                        storeEmail: 'info@markazstore.com'
+                    })
+                });
+
+                const emailResult = await emailResponse.json();
+                
+                if (emailResult.success) {
+                    showToast('✅ Order status updated! Email sent to customer.', 'success');
+                } else {
+                    showToast('✅ Order status updated! But email failed.', 'warning');
+                }
+            } catch (error) {
+                console.error('❌ Email error:', error);
+                showToast('✅ Order status updated! But email failed.', 'warning');
+            }
+
+            // Reload orders
+            loadOrders();
+        }
+
+        function updateOrderStats() {
+            const total = document.getElementById('order-total-count');
+            const delivered = document.getElementById('order-delivered-count');
+            const cancelled = document.getElementById('order-cancelled-count');
+            if (total) total.textContent = orders.length;
+            if (delivered) delivered.textContent = orders.filter(o => o.status === 'delivered').length;
+            if (cancelled) cancelled.textContent = orders.filter(o => o.status === 'cancelled').length;
         }
 
         // ============================================
@@ -1143,7 +1176,7 @@
         function renderAll() {
             renderCategories();
             renderProducts();
-            renderOrders();
+            loadOrders();
             updateStats();
         }
 
@@ -1186,46 +1219,11 @@
             `).join('');
         }
 
-        function renderOrders() {
-            const list = document.getElementById('order-list');
-            const empty = document.getElementById('empty-orders');
-            if (!list) return;
-            if (orders.length === 0) {
-                list.innerHTML = '';
-                if (empty) empty.style.display = 'block';
-                return;
-            }
-            if (empty) empty.style.display = 'none';
-            list.innerHTML = orders.map((order, i) => `
-                <div class="order-item">
-                    <div class="order-info">
-                        <span class="order-id">#${order.orderId || 'MK-' + (i + 1)}</span>
-                        <span class="order-meta">${order.name || 'N/A'} • ${order.items || 'N/A'} • Rs. ${order.total || 0}</span>
-                        <span class="order-meta">${order.email || 'N/A'} • ${order.phone || 'N/A'}</span>
-                    </div>
-                    <div class="order-status">
-                        <span class="order-status-badge ${order.status || 'processing'}">${order.status || 'Processing'}</span>
-                        <select onchange="updateOrderStatus(${i}, this.value)">
-                            <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
-                            <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                        </select>
-                    </div>
-                </div>
-            `).join('');
-        }
-
         function updateStats() {
             document.getElementById('total-products').textContent = products.length;
             document.getElementById('total-categories').textContent = categories.length;
             document.getElementById('total-orders').textContent = orders.length;
             document.getElementById('product-count').textContent = products.length;
-            
-            // Order stats
-            document.getElementById('order-total-count').textContent = orders.length;
-            document.getElementById('order-delivered-count').textContent = orders.filter(o => o.status === 'delivered').length;
-            document.getElementById('order-cancelled-count').textContent = orders.filter(o => o.status === 'cancelled').length;
         }
 
         // ============================================
@@ -1255,10 +1253,7 @@
             updateFileCount();
         }
 
-        // ============================================
-        // RESET ALL DATA
-        // ============================================
-        function resetAllData() {
+        function resetAll() {
             if (confirm('⚠️ Delete ALL data?')) {
                 localStorage.clear();
                 products = [];
@@ -1298,9 +1293,10 @@
         window.deleteProduct = deleteProduct;
         window.editProduct = editProduct;
         window.cancelEdit = cancelEdit;
-        window.resetAllData = resetAllData;
+        window.resetAll = resetAll;
         window.clearForm = clearForm;
         window.updateOrderStatus = updateOrderStatus;
+        window.loadOrders = loadOrders;
     </script>
 </body>
 </html>

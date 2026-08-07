@@ -429,9 +429,15 @@
     <script src="script.js"></script>
     <script>
         // ============================================
-        // CHECKOUT - COMPLETE
+        // WHATSAPP CONFIG - 100% FREE (CallMeBot)
         // ============================================
-        
+        // 🔑 CallMeBot se API Key lein: +34 611 22 15 54 par
+        // "I allow callmebot to send me messages" bhejein
+        // ============================================
+        const WHATSAPP_API_KEY = ''; // 🔴 Yahan apni API Key paste karein
+        const WHATSAPP_PHONE = '923001234567'; // Admin WhatsApp number
+        // ============================================
+
         let checkoutItems = [];
         let orderTotal = 0;
 
@@ -499,7 +505,43 @@
         }
 
         // ============================================
-        // SUBMIT ORDER - WITH EMAIL
+        // SEND WHATSAPP - 100% FREE
+        // ============================================
+        async function sendWhatsApp(orderData) {
+            // Agar API key set nahi hai toh skip karein
+            if (!WHATSAPP_API_KEY || WHATSAPP_API_KEY === '') {
+                console.log('⚠️ WhatsApp API key not set. Skipping WhatsApp notification.');
+                return;
+            }
+
+            const message = `🛍️ *New Order #${orderData.orderId}*
+
+👤 Customer: ${orderData.name}
+📱 Phone: ${orderData.phone}
+📧 Email: ${orderData.email}
+📍 Address: ${orderData.address}
+
+📦 Items: ${orderData.items}
+💰 Total: Rs. ${orderData.total}
+
+🔗 Track: https://markaz-store.vercel.app/tracking.html?id=${orderData.orderId}`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const url = `https://api.callmebot.com/whatsapp.php?phone=${WHATSAPP_PHONE}&text=${encodedMessage}&apikey=${WHATSAPP_API_KEY}`;
+
+            try {
+                const response = await fetch(url);
+                const result = await response.text();
+                console.log('✅ WhatsApp notification sent!');
+                return true;
+            } catch (error) {
+                console.error('❌ WhatsApp error:', error);
+                return false;
+            }
+        }
+
+        // ============================================
+        // SUBMIT ORDER - EMAIL + WHATSAPP
         // ============================================
         async function submitOrder() {
             const name = document.getElementById('c-name').value.trim();
@@ -590,18 +632,16 @@
 
             try {
                 // ============================================
-                // SEND EMAILS
+                // 1. SEND EMAILS
                 // ============================================
                 const baseUrl = window.location.origin || 'https://markaz-store.vercel.app';
                 
-                // Send to Admin
                 const adminResponse = await fetch(`${baseUrl}/api/send-order`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(orderData)
                 });
 
-                // Send to Customer
                 const customerResponse = await fetch(`${baseUrl}/api/send-confirmation`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -609,6 +649,11 @@
                 });
 
                 const adminResult = await adminResponse.json();
+
+                // ============================================
+                // 2. SEND WHATSAPP
+                // ============================================
+                await sendWhatsApp(orderData);
 
                 if (adminResult.success) {
                     let orders = parseInt(localStorage.getItem('orderCount') || 0);
@@ -628,7 +673,7 @@
                     document.getElementById('order-address').textContent = address;
                     
                     updateCartBadge();
-                    showToast('🎉 Order placed successfully! Check your email.', 'success');
+                    showToast('🎉 Order placed! Check email & WhatsApp for confirmation.', 'success');
                 } else {
                     showToast('Order failed: ' + (adminResult.message || 'Please try again.'), 'error');
                     if (submitBtn) {
@@ -654,9 +699,6 @@
             }
         }
 
-        // ============================================
-        // TOAST
-        // ============================================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             if (!toast) { alert(message); return; }
@@ -678,10 +720,10 @@
             }
         }
 
-        // Expose functions
         window.submitOrder = submitOrder;
         window.updateCartBadge = updateCartBadge;
         window.renderFooterCategories = renderFooterCategories;
+        window.sendWhatsApp = sendWhatsApp;
     </script>
 </body>
 </html>

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /* =============================================
-           COMPLETE E-COMMERCE STYLES - FIXED GAPS
+           COMPLETE E-COMMERCE STYLES - NAVBAR FIXED
            ============================================= */
         :root {
             --bg-primary: #0a0a12;
@@ -60,7 +60,7 @@
         }
 
         /* =============================================
-           NAVBAR
+           NAVBAR - FIXED
            ============================================= */
         .navbar {
             position: fixed;
@@ -72,8 +72,8 @@
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 0 24px;
-            height: 72px;
+            padding: 0 20px;
+            height: 68px;
             display: flex;
             align-items: center;
         }
@@ -90,22 +90,23 @@
         .nav-left {
             display: flex;
             align-items: center;
-            gap: 40px;
+            gap: 30px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.4rem;
+            gap: 8px;
+            font-size: 1.3rem;
             font-weight: 800;
             cursor: pointer;
             text-decoration: none;
+            white-space: nowrap;
         }
 
         .logo i {
             color: var(--accent);
-            font-size: 1.5rem;
+            font-size: 1.3rem;
         }
 
         .logo span {
@@ -117,16 +118,17 @@
 
         .nav-links {
             display: flex;
-            gap: 32px;
+            gap: 24px;
         }
 
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.3s ease;
             position: relative;
+            white-space: nowrap;
         }
 
         .nav-links a::after {
@@ -152,24 +154,26 @@
         .nav-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex-shrink: 0;
         }
 
         .nav-btn {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
+            gap: 6px;
+            padding: 6px 14px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius-sm);
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: inherit;
             text-decoration: none;
+            white-space: nowrap;
         }
 
         .nav-btn:hover {
@@ -180,24 +184,24 @@
         }
 
         .nav-btn i {
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
         .cart-btn {
             position: relative;
-            padding: 8px 14px;
+            padding: 6px 12px;
         }
 
         .cart-badge {
             position: absolute;
-            top: -4px;
-            right: -4px;
+            top: -6px;
+            right: -6px;
             background: var(--danger);
             color: white;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 700;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -208,7 +212,7 @@
            BANNER SLIDER
            ============================================= */
         .banner-section {
-            padding: 80px 24px 16px;
+            padding: 76px 24px 16px;
         }
 
         .banner-section .container {
@@ -381,7 +385,7 @@
         }
 
         /* =============================================
-           CATEGORIES SECTION - FIXED
+           CATEGORIES SECTION
            ============================================= */
         .categories-section {
             padding: 16px 24px 8px;
@@ -468,7 +472,7 @@
         }
 
         /* =============================================
-           PRODUCTS SECTION - FIXED
+           PRODUCTS SECTION
            ============================================= */
         .products-section {
             padding: 8px 24px 60px;
@@ -857,6 +861,12 @@
             .banner-slide {
                 padding: 20px 30px;
             }
+            .nav-links {
+                gap: 16px;
+            }
+            .nav-links a {
+                font-size: 0.8rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -866,8 +876,11 @@
             .nav-btn span {
                 display: none;
             }
+            .nav-left {
+                gap: 0;
+            }
             .banner-section {
-                padding: 72px 16px 12px;
+                padding: 68px 16px 12px;
             }
             .banner-slide {
                 padding: 16px 20px;
@@ -1268,7 +1281,7 @@
         }
 
         // ============================================
-        // RENDER CATEGORIES - Only show categories with products
+        // RENDER CATEGORIES
         // ============================================
         function renderCategories() {
             const grid = document.getElementById('categories-grid');
@@ -1288,9 +1301,6 @@
                 'General': 'fa-tag'
             };
 
-            // ============================================
-            // FIXED: Only show categories that have products
-            // ============================================
             const activeCategories = categories.filter(cat => {
                 const count = products.filter(p => p.category === cat).length;
                 return count > 0;

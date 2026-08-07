@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Admin Panel - Markaz Store</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* =============================================
-           ADMIN PANEL - COMPLETE
+           ADMIN PANEL STYLES
            ============================================= */
         * {
             margin: 0;
@@ -29,7 +31,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -78,7 +79,6 @@
             font-family: inherit;
         }
 
-        /* Stats */
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -138,7 +138,6 @@
             margin-left: 6px;
         }
 
-        /* Form */
         .form-group {
             margin-bottom: 12px;
         }
@@ -155,7 +154,8 @@
             color: #ef4444;
         }
 
-        .form-group input {
+        .form-group input,
+        .form-group textarea {
             width: 100%;
             padding: 12px 16px;
             background: rgba(255, 255, 255, 0.04);
@@ -164,14 +164,22 @@
             color: #ffffff;
             font-size: 0.95rem;
             outline: none;
+            font-family: inherit;
         }
 
-        .form-group input:focus {
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        .form-group input::placeholder {
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
             color: #6a6a82;
         }
 
@@ -199,7 +207,6 @@
             margin-top: 8px;
         }
 
-        /* Buttons */
         .btn-primary {
             width: 100%;
             padding: 14px;
@@ -215,10 +222,6 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
         }
 
         .btn-secondary {
@@ -266,11 +269,6 @@
             font-family: inherit;
         }
 
-        .btn-edit:hover {
-            background: rgba(99, 102, 241, 0.2);
-        }
-
-        /* Image Upload */
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
             border-radius: 10px;
@@ -353,18 +351,6 @@
             background: #ef4444;
         }
 
-        .image-preview-item .img-number {
-            position: absolute;
-            bottom: 3px;
-            right: 3px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 1px 6px;
-            border-radius: 4px;
-            font-size: 0.5rem;
-            color: white;
-        }
-
-        /* Options */
         .options-group {
             display: flex;
             flex-wrap: wrap;
@@ -409,11 +395,6 @@
             outline: none;
         }
 
-        .option-input-row input:focus {
-            border-color: #6366f1;
-        }
-
-        /* Categories */
         .category-tags {
             display: flex;
             flex-wrap: wrap;
@@ -457,11 +438,6 @@
             outline: none;
         }
 
-        .category-input-row input:focus {
-            border-color: #6366f1;
-        }
-
-        /* Product List */
         .product-list {
             display: flex;
             flex-direction: column;
@@ -510,11 +486,6 @@
             gap: 4px;
         }
 
-        .product-item .actions .btn-danger-sm {
-            padding: 4px 10px;
-            font-size: 0.65rem;
-        }
-
         .empty-state {
             text-align: center;
             padding: 30px 20px;
@@ -528,85 +499,27 @@
             margin-bottom: 8px;
         }
 
-        .product-count {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
-            padding: 2px 10px;
-            border-radius: 100px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            margin-left: 6px;
-        }
-
-        /* Order Management */
-        .order-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .order-stat-box {
-            background: rgba(255, 255, 255, 0.04);
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .order-stat-box .stat-label {
-            font-size: 0.65rem;
-            color: #a0a0b8;
-        }
-
-        .order-stat-box .stat-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .order-stat-box .stat-value.delivered {
-            color: #10b981;
-        }
-        .order-stat-box .stat-value.cancelled {
-            color: #ef4444;
-        }
-        .order-stat-box .stat-value.total {
-            color: #6366f1;
-        }
-
         .order-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 14px;
+            padding: 10px 14px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .order-item .order-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
+            gap: 6px;
         }
 
         .order-item .order-info .order-id {
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .order-item .order-info .order-meta {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #a0a0b8;
-        }
-
-        .order-item .order-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
         }
 
         .order-item .order-status select {
@@ -615,19 +528,15 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 6px;
             color: #ffffff;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-family: inherit;
             outline: none;
-        }
-
-        .order-item .order-status select:focus {
-            border-color: #6366f1;
         }
 
         .order-status-badge {
             padding: 2px 10px;
             border-radius: 100px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
         }
 
@@ -648,7 +557,40 @@
             color: #ef4444;
         }
 
-        /* Edit Mode */
+        .order-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .order-stat-box {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .order-stat-box .stat-label {
+            font-size: 0.6rem;
+            color: #a0a0b8;
+        }
+
+        .order-stat-box .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .order-stat-box .stat-value.delivered {
+            color: #10b981;
+        }
+        .order-stat-box .stat-value.cancelled {
+            color: #ef4444;
+        }
+        .order-stat-box .stat-value.total {
+            color: #6366f1;
+        }
+
         .edit-mode-badge {
             background: #f59e0b;
             color: white;
@@ -662,7 +604,6 @@
             display: none !important;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -731,7 +672,6 @@
             font-size: 1rem;
         }
 
-        /* Responsive */
         @media (max-width: 480px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -747,37 +687,22 @@
                 grid-template-columns: 1fr 1fr 1fr;
                 gap: 6px;
             }
-            .product-item .actions {
-                flex-wrap: wrap;
-                justify-content: flex-end;
-            }
-            .order-item {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .order-item .order-status {
-                justify-content: flex-end;
-            }
         }
     </style>
 </head>
 <body>
 
     <div class="admin-wrapper">
-        <!-- ========================================== -->
-        <!-- HEADER -->
-        <!-- ========================================== -->
+        <!-- Header -->
         <header class="admin-header">
             <h1>⚙️ Admin Panel</h1>
             <div class="admin-header-actions">
                 <a href="index.html"><i class="fas fa-store"></i></a>
-                <button class="btn-danger-sm" onclick="resetStorage()"><i class="fas fa-trash-alt"></i></button>
+                <button class="btn-danger-sm" onclick="resetAll()"><i class="fas fa-trash-alt"></i></button>
             </div>
         </header>
 
-        <!-- ========================================== -->
-        <!-- STATS -->
-        <!-- ========================================== -->
+        <!-- Stats -->
         <div class="admin-stats">
             <div class="admin-stat-card">
                 <div class="label">📦 Products</div>
@@ -793,9 +718,7 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- ADD/EDIT PRODUCT -->
-        <!-- ========================================== -->
+        <!-- Add/Edit Product -->
         <div class="admin-card">
             <h2>
                 <i class="fas fa-plus-circle"></i>
@@ -803,7 +726,7 @@
                 <span class="edit-mode-badge hidden" id="edit-badge">Editing</span>
             </h2>
 
-            <input type="hidden" id="edit-index" value="-1" />
+            <input type="hidden" id="edit-id" value="" />
 
             <div class="form-group">
                 <label>Title <span class="required">*</span></label>
@@ -813,6 +736,11 @@
             <div class="form-group">
                 <label>Price (PKR) <span class="required">*</span></label>
                 <input type="number" id="p-price" placeholder="1500" />
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="p-description" placeholder="Detailed product description..."></textarea>
             </div>
 
             <div class="form-group">
@@ -866,15 +794,13 @@
                 <button class="btn-secondary hidden" id="cancel-btn" onclick="cancelEdit()">
                     <i class="fas fa-times"></i> Cancel
                 </button>
-                <button class="btn-secondary" onclick="addProductSmart()">
+                <button class="btn-secondary" onclick="autoDetectCategory()">
                     <i class="fas fa-magic"></i> Auto
                 </button>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- CATEGORIES -->
-        <!-- ========================================== -->
+        <!-- Categories -->
         <div class="admin-card">
             <h2><i class="fas fa-tags"></i> Categories</h2>
             <div class="category-input-row">
@@ -886,9 +812,7 @@
             <div class="category-tags" id="categories-list"></div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- PRODUCTS LIST -->
-        <!-- ========================================== -->
+        <!-- Products List -->
         <div class="admin-card">
             <h2>
                 <i class="fas fa-box"></i> Products
@@ -901,15 +825,13 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- ORDER MANAGEMENT -->
-        <!-- ========================================== -->
+        <!-- Order Management -->
         <div class="admin-card">
             <h2><i class="fas fa-truck"></i> Order Management</h2>
 
             <div class="order-stats">
                 <div class="order-stat-box">
-                    <div class="stat-label">📦 Total Orders</div>
+                    <div class="stat-label">📦 Total</div>
                     <div class="stat-value total" id="order-total-count">0</div>
                 </div>
                 <div class="order-stat-box">
@@ -930,9 +852,7 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- TOAST -->
-    <!-- ========================================== -->
+    <!-- Toast -->
     <div class="toast" id="toast">
         <div class="toast-icon"><i class="fas fa-check-circle"></i></div>
         <div class="toast-content">
@@ -944,36 +864,495 @@
         </button>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SCRIPTS -->
-    <!-- ========================================== -->
     <script>
         // ============================================
-        // CONFIG
+        // SUPABASE SETUP
         // ============================================
-        const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
+        const SUPABASE_URL = 'https://vnzipnxrasonkhlwcynq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuemlwbnhyYXNvbmtobHdjeW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjY0ODcsImV4cCI6MjA1NjUwMjQ4N30.KfgUQ-fn1L0A_Jv3pFESuC8jR1R7S_iC9RPNlWpTbJ0';
+
+        // Check if supabase is loaded
+        let supabase;
+        if (typeof window.supabase !== 'undefined') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('✅ Supabase connected!');
+        } else {
+            console.error('❌ Supabase not loaded. Check CDN script.');
+        }
 
         // ============================================
         // STATE
         // ============================================
-        let categories = JSON.parse(localStorage.getItem('myCategories')) || ['Watches', 'Clothing', 'Electronics'];
-        let products = JSON.parse(localStorage.getItem('myProducts')) || [];
-        let orders = JSON.parse(localStorage.getItem('orders')) || [];
         let uploadedImages = [];
         let sizes = [];
         let colors = [];
-        let editIndex = -1;
+        let editId = null;
+
+        // ============================================
+        // IMGBB API
+        // ============================================
+        const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
 
         // ============================================
         // DOM READY
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            renderAll();
-            renderOrders();
+            loadCategories();
+            loadProducts();
+            loadOrders();
             setupImageUpload();
             loadOptions();
             document.getElementById('cancel-btn').classList.add('hidden');
         });
+
+        // ============================================
+        // CATEGORY FUNCTIONS
+        // ============================================
+        async function loadCategories() {
+            try {
+                const { data, error } = await supabase
+                    .from('categories')
+                    .select('*')
+                    .order('name');
+
+                if (error) throw error;
+
+                renderCategories(data || []);
+                updateStats();
+            } catch (error) {
+                console.error('❌ Load categories error:', error);
+                showToast('Error loading categories: ' + error.message, 'error');
+            }
+        }
+
+        function renderCategories(categoriesData) {
+            const list = document.getElementById('categories-list');
+            if (!list) return;
+
+            if (!categoriesData || categoriesData.length === 0) {
+                list.innerHTML = '<span style="color:#6a6a82;font-size:0.75rem;">No categories</span>';
+                return;
+            }
+
+            list.innerHTML = categoriesData.map(c =>
+                `<span class="category-tag">
+                    ${c.name}
+                    <button class="remove" onclick="deleteCategory('${c.id}')">×</button>
+                </span>`
+            ).join('');
+        }
+
+        async function addCategory() {
+            const name = document.getElementById('new-cat-name').value.trim();
+            if (!name) { showToast('Enter name!', 'error'); return; }
+
+            try {
+                const { error } = await supabase
+                    .from('categories')
+                    .insert({ name: name });
+
+                if (error) throw error;
+
+                document.getElementById('new-cat-name').value = '';
+                showToast('Category added!', 'success');
+                loadCategories();
+            } catch (error) {
+                console.error('❌ Add category error:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteCategory(id) {
+            if (!confirm('Delete this category?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('categories')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast('Category deleted.', 'success');
+                loadCategories();
+            } catch (error) {
+                console.error('❌ Delete category error:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // PRODUCT FUNCTIONS
+        // ============================================
+        async function loadProducts() {
+            try {
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                renderProducts(data || []);
+                updateStats();
+            } catch (error) {
+                console.error('❌ Load products error:', error);
+                showToast('Error loading products: ' + error.message, 'error');
+            }
+        }
+
+        function renderProducts(productsData) {
+            const list = document.getElementById('products-list');
+            const empty = document.getElementById('empty-state');
+            if (!list) return;
+
+            if (!productsData || productsData.length === 0) {
+                list.innerHTML = '';
+                if (empty) empty.style.display = 'block';
+                return;
+            }
+            if (empty) empty.style.display = 'none';
+
+            list.innerHTML = productsData.map((p) => `
+                <div class="product-item">
+                    <div class="info">
+                        <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/40'}" alt="${p.title}" />
+                        <div>
+                            <div class="title">${p.title}</div>
+                            <div class="meta">
+                                ${p.category || 'General'} • Rs. ${p.price}
+                                ${p.colors && p.colors.length > 0 ? ' • Colors: ' + p.colors.join(', ') : ''}
+                                ${p.sizes && p.sizes.length > 0 ? ' • Sizes: ' + p.sizes.join(', ') : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit" onclick="editProduct('${p.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-danger-sm" onclick="deleteProduct('${p.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // SAVE PRODUCT (Add/Update)
+        // ============================================
+        async function saveProduct() {
+            const title = document.getElementById('p-title').value.trim();
+            const price = document.getElementById('p-price').value.trim();
+            const description = document.getElementById('p-description').value.trim();
+            let category = document.getElementById('p-category').value.trim() || 'General';
+
+            if (!title || !price) {
+                showToast('Title and Price required!', 'error');
+                return;
+            }
+
+            const imagesData = document.getElementById('p-images-data');
+            const images = JSON.parse(imagesData.value || '[]');
+
+            if (images.length === 0) {
+                showToast('Upload at least one image!', 'error');
+                return;
+            }
+
+            // Upload images to IMGBB
+            let imageUrls = [];
+            showToast('📤 Uploading images...', 'info');
+
+            for (let img of images) {
+                if (img.startsWith('http://') || img.startsWith('https://')) {
+                    imageUrls.push(img);
+                } else {
+                    try {
+                        const response = await fetch(img);
+                        const blob = await response.blob();
+                        const formData = new FormData();
+                        formData.append('image', blob);
+
+                        const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const result = await uploadRes.json();
+                        if (result.success) {
+                            imageUrls.push(result.data.url);
+                        } else {
+                            showToast('Upload failed!', 'error');
+                            return;
+                        }
+                    } catch (e) {
+                        showToast('Upload error!', 'error');
+                        return;
+                    }
+                }
+            }
+
+            const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
+            const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
+
+            const productData = {
+                title: title,
+                price: price,
+                description: description || 'Premium product from Markaz Store',
+                category: category,
+                images: imageUrls,
+                sizes: sizes,
+                colors: colors
+            };
+
+            try {
+                let result;
+                if (editId) {
+                    // Update
+                    result = await supabase
+                        .from('products')
+                        .update(productData)
+                        .eq('id', editId);
+                } else {
+                    // Insert
+                    result = await supabase
+                        .from('products')
+                        .insert([productData]);
+                }
+
+                if (result.error) throw result.error;
+
+                showToast(editId ? '✅ Product updated!' : '✅ Product added!', 'success');
+                clearForm();
+                loadProducts();
+            } catch (error) {
+                console.error('❌ Save product error:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // EDIT PRODUCT
+        // ============================================
+        async function editProduct(id) {
+            try {
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+
+                const p = data;
+                editId = id;
+
+                document.getElementById('p-title').value = p.title || '';
+                document.getElementById('p-price').value = p.price || '';
+                document.getElementById('p-description').value = p.description || '';
+                document.getElementById('p-category').value = p.category || '';
+
+                // Load images
+                uploadedImages = p.images ? [...p.images] : [];
+                renderPreviews();
+
+                // Load sizes
+                sizes = p.sizes ? [...p.sizes] : [];
+                document.getElementById('p-sizes').value = JSON.stringify(sizes);
+                renderOptions('size');
+
+                // Load colors
+                colors = p.colors ? [...p.colors] : [];
+                document.getElementById('p-colors').value = JSON.stringify(colors);
+                renderOptions('color');
+
+                document.getElementById('form-title').textContent = 'Edit Product';
+                document.getElementById('edit-badge').classList.remove('hidden');
+                document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Update Product';
+                document.getElementById('cancel-btn').classList.remove('hidden');
+
+                showToast('Edit mode: ' + p.title, 'info');
+            } catch (error) {
+                console.error('❌ Edit product error:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // DELETE PRODUCT
+        // ============================================
+        async function deleteProduct(id) {
+            if (!confirm('Delete this product?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('products')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast('Product deleted.', 'success');
+                loadProducts();
+            } catch (error) {
+                console.error('❌ Delete product error:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // AUTO DETECT CATEGORY
+        // ============================================
+        function autoDetectCategory() {
+            const title = document.getElementById('p-title').value.trim();
+            if (!title) {
+                showToast('Enter title first!', 'warning');
+                return;
+            }
+
+            const cat = detectCategoryFromTitle(title);
+            if (cat) {
+                document.getElementById('p-category').value = cat;
+                showToast('🔍 "' + cat + '" detected!', 'info');
+            } else {
+                showToast('⚠️ No category detected.', 'warning');
+            }
+        }
+
+        function detectCategoryFromTitle(title) {
+            const keywords = {
+                'Watches': ['watch', 'smartwatch', 'chrono'],
+                'Clothing': ['shirt', 'jeans', 'jacket', 'dress', 'hoodie', 'sweater', 'tshirt'],
+                'Electronics': ['phone', 'laptop', 'tablet', 'tv', 'speaker'],
+                'Shoes': ['shoe', 'sneaker', 'boot'],
+                'Accessories': ['bag', 'belt', 'cap', 'hat', 'sunglass'],
+                'Home': ['furniture', 'lamp', 'chair', 'table', 'bed'],
+                'Books': ['book', 'novel', 'magazine'],
+                'Toys': ['toy', 'game', 'puzzle', 'doll'],
+                'Beauty': ['cream', 'lotion', 'shampoo', 'soap', 'perfume']
+            };
+            const lower = title.toLowerCase();
+            for (const [cat, words] of Object.entries(keywords)) {
+                for (const w of words) {
+                    if (lower.includes(w)) return cat;
+                }
+            }
+            return null;
+        }
+
+        // ============================================
+        // ORDER FUNCTIONS
+        // ============================================
+        async function loadOrders() {
+            try {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                renderOrders(data || []);
+                updateOrderStats(data || []);
+                updateStats();
+            } catch (error) {
+                console.error('❌ Load orders error:', error);
+                showToast('Error loading orders: ' + error.message, 'error');
+            }
+        }
+
+        function renderOrders(ordersData) {
+            const list = document.getElementById('order-list');
+            const empty = document.getElementById('empty-orders');
+            if (!list) return;
+
+            if (!ordersData || ordersData.length === 0) {
+                list.innerHTML = '';
+                if (empty) empty.style.display = 'block';
+                return;
+            }
+            if (empty) empty.style.display = 'none';
+
+            list.innerHTML = ordersData.map((order) => `
+                <div class="order-item">
+                    <div class="order-info">
+                        <span class="order-id">#${order.order_id}</span>
+                        <span class="order-meta">
+                            ${order.name || 'N/A'} • ${order.items || 'N/A'} • Rs. ${order.total || 0}
+                        </span>
+                        <span class="order-meta">${order.email || 'N/A'} • ${order.phone || 'N/A'}</span>
+                    </div>
+                    <div class="order-status">
+                        <span class="order-status-badge ${order.status || 'processing'}">
+                            ${order.status || 'Processing'}
+                        </span>
+                        <select onchange="updateOrderStatus('${order.id}', this.value)">
+                            <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                            <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function updateOrderStatus(id, status) {
+            try {
+                const { error } = await supabase
+                    .from('orders')
+                    .update({ status: status, updated_at: new Date().toISOString() })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast('✅ Order status updated!', 'success');
+                loadOrders();
+            } catch (error) {
+                console.error('❌ Update order error:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        function updateOrderStats(ordersData) {
+            const total = document.getElementById('order-total-count');
+            const delivered = document.getElementById('order-delivered-count');
+            const cancelled = document.getElementById('order-cancelled-count');
+
+            if (total) total.textContent = ordersData.length;
+            if (delivered) delivered.textContent = ordersData.filter(o => o.status === 'delivered').length;
+            if (cancelled) cancelled.textContent = ordersData.filter(o => o.status === 'cancelled').length;
+        }
+
+        // ============================================
+        // UPDATE STATS
+        // ============================================
+        async function updateStats() {
+            try {
+                // Products count
+                const { count: productCount, error: pError } = await supabase
+                    .from('products')
+                    .select('*', { count: 'exact', head: true });
+
+                // Categories count
+                const { count: categoryCount, error: cError } = await supabase
+                    .from('categories')
+                    .select('*', { count: 'exact', head: true });
+
+                // Orders count
+                const { count: orderCount, error: oError } = await supabase
+                    .from('orders')
+                    .select('*', { count: 'exact', head: true });
+
+                if (!pError) document.getElementById('total-products').textContent = productCount || 0;
+                if (!cError) document.getElementById('total-categories').textContent = categoryCount || 0;
+                if (!oError) document.getElementById('total-orders').textContent = orderCount || 0;
+                document.getElementById('product-count').textContent = productCount || 0;
+            } catch (error) {
+                console.error('❌ Update stats error:', error);
+            }
+        }
 
         // ============================================
         // IMAGE UPLOAD
@@ -1016,7 +1395,7 @@
                     <button class="remove-img" onclick="removeImage(${i})">
                         <i class="fas fa-times"></i>
                     </button>
-                    <span class="img-number">${i+1}</span>
+                    <span style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.6);padding:1px 6px;border-radius:4px;font-size:0.5rem;color:white;">${i+1}</span>
                 </div>
             `).join('');
 
@@ -1080,12 +1459,13 @@
         function clearForm() {
             document.getElementById('p-title').value = '';
             document.getElementById('p-price').value = '';
+            document.getElementById('p-description').value = '';
             document.getElementById('p-category').value = '';
             document.getElementById('p-images').value = '';
             document.getElementById('p-images-data').value = '[]';
             document.getElementById('p-sizes').value = '[]';
             document.getElementById('p-colors').value = '[]';
-            document.getElementById('edit-index').value = '-1';
+            document.getElementById('edit-id').value = '';
             document.getElementById('form-title').textContent = 'Add Product';
             document.getElementById('edit-badge').classList.add('hidden');
             document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> Add Product';
@@ -1093,381 +1473,24 @@
             uploadedImages = [];
             sizes = [];
             colors = [];
-            editIndex = -1;
+            editId = null;
             renderPreviews();
             renderOptions('size');
             renderOptions('color');
         }
 
-        // ============================================
-        // CANCEL EDIT
-        // ============================================
         function cancelEdit() {
             clearForm();
             showToast('Edit cancelled', 'info');
         }
 
         // ============================================
-        // EDIT PRODUCT
+        // RESET ALL
         // ============================================
-        function editProduct(index) {
-            const product = products[index];
-            if (!product) return;
-
-            editIndex = index;
-            document.getElementById('edit-index').value = index;
-            document.getElementById('form-title').textContent = 'Edit Product';
-            document.getElementById('edit-badge').classList.remove('hidden');
-            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Update Product';
-            document.getElementById('cancel-btn').classList.remove('hidden');
-
-            document.getElementById('p-title').value = product.title || '';
-            document.getElementById('p-price').value = product.price || '';
-            document.getElementById('p-category').value = product.category || '';
-
-            if (product.images && product.images.length > 0) {
-                uploadedImages = [...product.images];
-                renderPreviews();
+        function resetAll() {
+            if (confirm('⚠️ Delete ALL data from Supabase?')) {
+                showToast('This feature is disabled for safety.', 'warning');
             }
-
-            sizes = product.sizes ? [...product.sizes] : [];
-            document.getElementById('p-sizes').value = JSON.stringify(sizes);
-            renderOptions('size');
-
-            colors = product.colors ? [...product.colors] : [];
-            document.getElementById('p-colors').value = JSON.stringify(colors);
-            renderOptions('color');
-
-            showToast('Edit mode: ' + product.title, 'info');
-        }
-
-        // ============================================
-        // SAVE PRODUCT
-        // ============================================
-        async function saveProduct() {
-            const title = document.getElementById('p-title').value.trim();
-            const price = document.getElementById('p-price').value.trim();
-            let category = document.getElementById('p-category').value.trim() || 'General';
-            const editIndex = parseInt(document.getElementById('edit-index').value);
-
-            if (!title || !price) {
-                showToast('Title and Price required!', 'error');
-                return;
-            }
-
-            category = ensureCategory(category);
-
-            const imagesData = document.getElementById('p-images-data');
-            const images = JSON.parse(imagesData.value || '[]');
-
-            if (images.length === 0) {
-                showToast('Upload at least one image!', 'error');
-                return;
-            }
-
-            let imageUrls = [];
-
-            for (let img of images) {
-                if (img.startsWith('http://') || img.startsWith('https://')) {
-                    imageUrls.push(img);
-                } else {
-                    try {
-                        const response = await fetch(img);
-                        const blob = await response.blob();
-                        const formData = new FormData();
-                        formData.append('image', blob);
-
-                        const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
-                            method: 'POST',
-                            body: formData
-                        });
-
-                        const result = await uploadRes.json();
-                        if (result.success) {
-                            imageUrls.push(result.data.url);
-                        } else {
-                            showToast('Upload failed!', 'error');
-                            return;
-                        }
-                    } catch (e) {
-                        showToast('Upload error!', 'error');
-                        return;
-                    }
-                }
-            }
-
-            const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
-            const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
-
-            const product = {
-                title: title,
-                price: price,
-                category: category,
-                images: imageUrls,
-                sizes: sizes,
-                colors: colors,
-                updatedAt: new Date().toISOString()
-            };
-
-            if (editIndex >= 0 && editIndex < products.length) {
-                product.createdAt = products[editIndex].createdAt || new Date().toISOString();
-                products[editIndex] = product;
-                showToast('✅ "' + title + '" updated!', 'success');
-            } else {
-                product.createdAt = new Date().toISOString();
-                products.push(product);
-                showToast('✅ "' + title + '" added!', 'success');
-            }
-
-            localStorage.setItem('myProducts', JSON.stringify(products));
-
-            clearForm();
-            renderAll();
-        }
-
-        // ============================================
-        // ADD PRODUCT WITH AUTO-DETECT
-        // ============================================
-        async function addProductSmart() {
-            const title = document.getElementById('p-title').value.trim();
-            const price = document.getElementById('p-price').value.trim();
-
-            if (!title || !price) {
-                showToast('Title and Price required!', 'error');
-                return;
-            }
-
-            const cat = detectCategory(title);
-            if (cat) {
-                document.getElementById('p-category').value = cat;
-                showToast('🔍 "' + cat + '" detected!', 'info');
-            }
-
-            await saveProduct();
-        }
-
-        // ============================================
-        // CATEGORY HELPERS
-        // ============================================
-        function ensureCategory(name) {
-            if (!name) return 'General';
-            const trimmed = name.trim();
-            const existing = categories.find(c => c.toLowerCase() === trimmed.toLowerCase());
-            if (existing) return existing;
-            categories.push(trimmed);
-            localStorage.setItem('myCategories', JSON.stringify(categories));
-            renderAll();
-            showToast('🏷️ "' + trimmed + '" created', 'success');
-            return trimmed;
-        }
-
-        function detectCategory(title) {
-            const keywords = {
-                'Watches': ['watch', 'smartwatch', 'chrono'],
-                'Clothing': ['shirt', 'jeans', 'jacket', 'dress', 'hoodie', 'sweater', 'tshirt'],
-                'Electronics': ['phone', 'laptop', 'tablet', 'tv', 'speaker'],
-                'Shoes': ['shoe', 'sneaker', 'boot'],
-                'Accessories': ['bag', 'belt', 'cap', 'hat', 'sunglass'],
-                'Home': ['furniture', 'lamp', 'chair', 'table', 'bed'],
-                'Books': ['book', 'novel', 'magazine'],
-                'Toys': ['toy', 'game', 'puzzle', 'doll'],
-                'Beauty': ['cream', 'lotion', 'shampoo', 'soap', 'perfume']
-            };
-            const lower = title.toLowerCase();
-            for (const [cat, words] of Object.entries(keywords)) {
-                for (const w of words) {
-                    if (lower.includes(w)) return cat;
-                }
-            }
-            return null;
-        }
-
-        function addCategory() {
-            const name = document.getElementById('new-cat-name').value.trim();
-            if (!name) { showToast('Enter name!', 'error'); return; }
-            if (categories.includes(name)) { showToast('Already exists!', 'warning'); return; }
-            categories.push(name);
-            localStorage.setItem('myCategories', JSON.stringify(categories));
-            document.getElementById('new-cat-name').value = '';
-            renderAll();
-            showToast('Category added!', 'success');
-        }
-
-        function deleteCategory(index) {
-            if (!confirm('Delete?')) return;
-            categories.splice(index, 1);
-            localStorage.setItem('myCategories', JSON.stringify(categories));
-            renderAll();
-            showToast('Category deleted.', 'success');
-        }
-
-        function deleteProduct(index) {
-            if (!confirm('Delete this product?')) return;
-            products.splice(index, 1);
-            localStorage.setItem('myProducts', JSON.stringify(products));
-            renderAll();
-            showToast('Product deleted.', 'success');
-        }
-
-        // ============================================
-        // RENDER
-        // ============================================
-        function renderAll() {
-            renderCategories();
-            renderProducts();
-            updateStats();
-        }
-
-        function renderCategories() {
-            const list = document.getElementById('categories-list');
-            if (!list) return;
-            if (categories.length === 0) {
-                list.innerHTML = '<span style="color:#6a6a82;font-size:0.75rem;">No categories</span>';
-                return;
-            }
-            list.innerHTML = categories.map((c, i) => `
-                <span class="category-tag">
-                    ${c}
-                    <button class="remove" onclick="deleteCategory(${i})">×</button>
-                </span>
-            `).join('');
-        }
-
-        function renderProducts() {
-            const list = document.getElementById('products-list');
-            const empty = document.getElementById('empty-state');
-            if (!list) return;
-
-            if (products.length === 0) {
-                list.innerHTML = '';
-                if (empty) empty.style.display = 'block';
-                return;
-            }
-            if (empty) empty.style.display = 'none';
-
-            list.innerHTML = products.map((p, i) => `
-                <div class="product-item">
-                    <div class="info">
-                        <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/40'}" alt="${p.title}" />
-                        <div>
-                            <div class="title">${p.title}</div>
-                            <div class="meta">
-                                ${p.category || 'General'} • Rs. ${p.price}
-                                ${p.colors && p.colors.length > 0 ? ' • Colors: ' + p.colors.join(', ') : ''}
-                                ${p.sizes && p.sizes.length > 0 ? ' • Sizes: ' + p.sizes.join(', ') : ''}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <button class="btn-edit" onclick="editProduct(${i})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn-danger-sm" onclick="deleteProduct(${i})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateStats() {
-            document.getElementById('total-products').textContent = products.length;
-            document.getElementById('total-categories').textContent = categories.length;
-            document.getElementById('total-orders').textContent = orders.length;
-            document.getElementById('product-count').textContent = products.length;
-        }
-
-        // ============================================
-        // ORDER MANAGEMENT
-        // ============================================
-        function renderOrders() {
-            orders = JSON.parse(localStorage.getItem('orders') || '[]');
-            const list = document.getElementById('order-list');
-            const empty = document.getElementById('empty-orders');
-
-            if (!list) return;
-
-            if (orders.length === 0) {
-                list.innerHTML = '';
-                if (empty) empty.style.display = 'block';
-                return;
-            }
-            if (empty) empty.style.display = 'none';
-
-            list.innerHTML = orders.map((order, i) => `
-                <div class="order-item">
-                    <div class="order-info">
-                        <span class="order-id">#${order.orderId}</span>
-                        <span class="order-meta">
-                            ${order.name || 'N/A'} • ${order.items || 'N/A'} • Rs. ${order.total || 0}
-                        </span>
-                        <span class="order-meta">${order.email || 'N/A'} • ${order.phone || 'N/A'}</span>
-                        ${order.colors ? `<span class="order-meta">🎨 Colors: ${order.colors}</span>` : ''}
-                        ${order.sizes ? `<span class="order-meta">📏 Sizes: ${order.sizes}</span>` : ''}
-                    </div>
-                    <div class="order-status">
-                        <span class="order-status-badge ${order.status || 'processing'}">
-                            ${order.status || 'Processing'}
-                        </span>
-                        <select onchange="updateOrderStatus(${i}, this.value)">
-                            <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
-                            <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                        </select>
-                    </div>
-                </div>
-            `).join('');
-
-            updateOrderStats();
-        }
-
-        function updateOrderStatus(index, status) {
-            orders = JSON.parse(localStorage.getItem('orders') || '[]');
-            const order = orders[index];
-            if (!order) return;
-
-            order.status = status;
-            order.updatedAt = new Date().toISOString();
-            orders[index] = order;
-            localStorage.setItem('orders', JSON.stringify(orders));
-
-            sendStatusUpdateEmail(order, status);
-            renderOrders();
-            updateStats();
-            showToast('✅ Order #' + order.orderId + ' updated to ' + status, 'success');
-        }
-
-        async function sendStatusUpdateEmail(order, status) {
-            try {
-                await fetch('/api/send-status-update', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        orderId: order.orderId,
-                        status: status,
-                        name: order.name,
-                        email: order.email,
-                        items: order.items,
-                        total: order.total,
-                        storeName: 'Markaz Store',
-                        storeEmail: 'info@markazstore.com'
-                    })
-                });
-            } catch (e) {
-                console.error('Status email error:', e);
-            }
-        }
-
-        function updateOrderStats() {
-            orders = JSON.parse(localStorage.getItem('orders') || '[]');
-            const totalEl = document.getElementById('order-total-count');
-            const deliveredEl = document.getElementById('order-delivered-count');
-            const cancelledEl = document.getElementById('order-cancelled-count');
-
-            if (totalEl) totalEl.textContent = orders.length;
-            if (deliveredEl) deliveredEl.textContent = orders.filter(o => o.status === 'delivered').length;
-            if (cancelledEl) cancelledEl.textContent = orders.filter(o => o.status === 'cancelled').length;
         }
 
         // ============================================
@@ -1487,34 +1510,21 @@
         }
 
         // ============================================
-        // RESET
-        // ============================================
-        function resetStorage() {
-            if (confirm('⚠️ Delete ALL data?')) {
-                localStorage.clear();
-                showToast('Cleared! Refreshing...', 'warning');
-                setTimeout(() => location.reload(), 1000);
-            }
-        }
-
-        // ============================================
         // EXPOSE
         // ============================================
         window.addOption = addOption;
         window.removeOption = removeOption;
         window.removeImage = removeImage;
         window.saveProduct = saveProduct;
-        window.addProductSmart = addProductSmart;
+        window.autoDetectCategory = autoDetectCategory;
         window.addCategory = addCategory;
         window.deleteCategory = deleteCategory;
         window.deleteProduct = deleteProduct;
         window.editProduct = editProduct;
         window.cancelEdit = cancelEdit;
-        window.resetStorage = resetStorage;
+        window.resetAll = resetAll;
         window.clearForm = clearForm;
         window.updateOrderStatus = updateOrderStatus;
-        window.renderOrders = renderOrders;
-        window.renderAll = renderAll;
     </script>
 </body>
 </html>

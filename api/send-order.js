@@ -46,7 +46,12 @@ module.exports = async function handler(req, res) {
     });
 
     // ============================================
-    // ADMIN EMAIL
+    // TRACKING LINK
+    // ============================================
+    const trackingLink = `https://${req.headers.host || 'markaz-store.vercel.app'}/tracking.html?id=${orderId}`;
+
+    // ============================================
+    // ADMIN EMAIL WITH TRACKING
     // ============================================
     const adminMailOptions = {
         from: `"${storeName || 'Markaz Store'}" <${process.env.MY_GMAIL}>`,
@@ -81,6 +86,17 @@ module.exports = async function handler(req, res) {
                         <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Address:</strong> ${address}</p>
                         ${notes && notes !== 'N/A' && notes !== '' ? `<p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Notes:</strong> ${notes}</p>` : ''}
                     </div>
+
+                    <!-- ========================================== -->
+                    <!-- TRACKING LINK FOR ADMIN -->
+                    <!-- ========================================== -->
+                    <div style="background: linear-gradient(135deg, #1a1a2e, #2a2a4e); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: center; border: 1px solid rgba(99,102,241,0.2);">
+                        <h2 style="font-size: 16px; font-weight: 600; color: #6366f1; margin-bottom: 8px;">🔍 Track Order</h2>
+                        <a href="${trackingLink}" style="display: inline-block; padding: 10px 28px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                            📦 Track Order
+                        </a>
+                        <p style="color: #6a6a82; font-size: 11px; margin-top: 8px;">Order ID: ${orderId}</p>
+                    </div>
                 </div>
                 
                 <div style="padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
@@ -92,8 +108,8 @@ module.exports = async function handler(req, res) {
 
     try {
         await transporter.sendMail(adminMailOptions);
-        console.log('✅ Admin email sent!');
-        return res.status(200).json({ success: true, message: 'Order email sent to admin!' });
+        console.log('✅ Admin email sent with tracking link!');
+        return res.status(200).json({ success: true, message: 'Order email sent to admin with tracking!' });
     } catch (error) {
         console.error('❌ Email error:', error);
         return res.status(500).json({ 

@@ -6,7 +6,6 @@
     <title>Admin Panel - Markaz Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -233,8 +232,9 @@
             cursor: pointer;
             font-family: inherit;
         }
+
         /* =============================================
-           IMAGE UPLOAD - FIXED
+           IMAGE UPLOAD
            ============================================= */
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
@@ -335,6 +335,7 @@
             font-size: 0.45rem;
             color: white;
         }
+
         .options-group {
             display: flex;
             flex-wrap: wrap;
@@ -643,8 +644,7 @@
             <h1>⚙️ Admin Panel</h1>
             <div class="admin-header-actions">
                 <a href="index.html"><i class="fas fa-store"></i> Store</a>
-                <button class="btn-danger-sm" onclick="migrateOldData()"><i class="fas fa-upload"></i> Migrate</button>
-                <button class="btn-danger-sm" onclick="resetAll()"><i class="fas fa-trash-alt"></i></button>
+                <button class="btn-danger-sm" onclick="resetAllData()"><i class="fas fa-trash-alt"></i> Reset</button>
             </div>
         </header>
 
@@ -658,7 +658,7 @@
         <div class="admin-card">
             <h2><i class="fas fa-plus-circle"></i> <span id="form-title">Add Product</span>
             <span class="edit-mode-badge hidden" id="edit-badge">Editing</span></h2>
-            <input type="hidden" id="edit-id" value="" />
+            <input type="hidden" id="edit-index" value="-1" />
 
             <div class="form-group">
                 <label>Title <span class="required">*</span></label>
@@ -678,15 +678,13 @@
                 <small><i class="fas fa-magic"></i> Auto-detects from title</small>
             </div>
 
-            <!-- ========================================== -->
-            <!-- IMAGE UPLOAD - FIXED -->
-            <!-- ========================================== -->
+            <!-- Image Upload -->
             <div class="form-group">
                 <label>Images <span class="required">*</span></label>
                 <div class="image-upload-area" id="upload-area">
                     <i class="fas fa-cloud-upload-alt"></i>
                     <p>Tap to upload images</p>
-                    <span class="sub">PNG, JPG, WEBP (Max 5 images)</span>
+                    <span class="sub">PNG, JPG (Max 5 images)</span>
                     <span class="file-count" id="file-count">0 images selected</span>
                     <input type="file" id="p-images" accept="image/*" multiple />
                 </div>
@@ -765,35 +763,22 @@
 
     <script>
         // ============================================
-        // SUPABASE SETUP
+        // STATE - LocalStorage Only
         // ============================================
-        const SUPABASE_URL = 'https://vnzipnxrasonkhlwcynq.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuemlwbnhyYXNvbmtobHdjeW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjY0ODcsImV4cCI6MjA1NjUwMjQ4N30.KfgUQ-fn1L0A_Jv3pFESuC8jR1R7S_iC9RPNlWpTbJ0';
-
-        let supabase;
-        if (typeof window.supabase !== 'undefined') {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('✅ Supabase connected!');
-        } else {
-            console.error('❌ Supabase not loaded!');
-        }
-
-        // ============================================
-        // STATE
-        // ============================================
+        let products = JSON.parse(localStorage.getItem('myProducts')) || [];
+        let categories = JSON.parse(localStorage.getItem('myCategories')) || ['Watches', 'Clothing', 'Electronics'];
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
         let uploadedImages = [];
         let sizes = [];
         let colors = [];
-        let editId = null;
+        let editIndex = -1;
         const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
 
         // ============================================
         // DOM READY
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            loadCategories();
-            loadProducts();
-            loadOrders();
+            renderAll();
             setupImageUpload();
             loadOptions();
             document.getElementById('cancel-btn').classList.add('hidden');
@@ -801,13 +786,12 @@
         });
 
         // ============================================
-        // IMAGE UPLOAD - COMPLETE WORKING
+        // IMAGE UPLOAD - FIXED
         // ============================================
         function setupImageUpload() {
             const input = document.getElementById('p-images');
             if (!input) return;
 
-            // Direct event listener
             input.addEventListener('change', function(e) {
                 const files = e.target.files;
                 console.log('📸 Files selected:', files.length);
@@ -831,7 +815,6 @@
                         renderPreviews();
                         updateFileCount();
                         console.log('✅ Image loaded:', uploadedImages.length);
-                        showToast('✅ Image ' + uploadedImages.length + ' loaded', 'success');
                     };
                     reader.onerror = function() {
                         showToast('Error reading file!', 'error');
@@ -840,7 +823,6 @@
                     reader.readAsDataURL(file);
                 }
 
-                // Reset input so same file can be selected again
                 e.target.value = '';
             });
         }
@@ -881,12 +863,54 @@
             uploadedImages.splice(index, 1);
             renderPreviews();
             updateFileCount();
-            console.log('🗑️ Image removed:', uploadedImages.length);
             showToast('Image removed', 'info');
         }
 
         // ============================================
-        // SAVE PRODUCT - FIXED
+        // OPTIONS
+        // ============================================
+        function loadOptions() {
+            const s = document.getElementById('p-sizes');
+            const c = document.getElementById('p-colors');
+            if (s && s.value) { sizes = JSON.parse(s.value);
+                renderOptions('size'); }
+            if (c && c.value) { colors = JSON.parse(c.value);
+                renderOptions('color'); }
+        }
+
+        function addOption(type) {
+            const input = document.getElementById(type === 'size' ? 'size-input' : 'color-input');
+            const arr = type === 'size' ? sizes : colors;
+            const hidden = type === 'size' ? 'p-sizes' : 'p-colors';
+            const val = input.value.trim();
+            if (!val) { showToast('Enter value!', 'error'); return; }
+            if (arr.includes(val)) { showToast('Already exists!', 'warning'); return; }
+            arr.push(val);
+            document.getElementById(hidden).value = JSON.stringify(arr);
+            input.value = '';
+            renderOptions(type);
+        }
+
+        function removeOption(type, index) {
+            const arr = type === 'size' ? sizes : colors;
+            const hidden = type === 'size' ? 'p-sizes' : 'p-colors';
+            arr.splice(index, 1);
+            document.getElementById(hidden).value = JSON.stringify(arr);
+            renderOptions(type);
+        }
+
+        function renderOptions(type) {
+            const container = document.getElementById(type === 'size' ? 'sizes-container' : 'colors-container');
+            const arr = type === 'size' ? sizes : colors;
+            if (!container) return;
+            if (arr.length === 0) { container.innerHTML = ''; return; }
+            container.innerHTML = arr.map((item, i) => `
+                <span class="option-tag">${item}<button class="remove" onclick="removeOption('${type}', ${i})">×</button></span>
+            `).join('');
+        }
+
+        // ============================================
+        // SAVE PRODUCT - WITH IMGBB UPLOAD
         // ============================================
         async function saveProduct() {
             console.log('🔴 saveProduct() called');
@@ -911,7 +935,7 @@
             }
 
             // ============================================
-            // UPLOAD TO IMGBB - WITH ERROR HANDLING
+            // UPLOAD TO IMGBB - WORKING
             // ============================================
             let imageUrls = [];
             showToast('📤 Uploading images to IMGBB...', 'info');
@@ -971,229 +995,35 @@
                 category: category,
                 images: imageUrls,
                 sizes: sizes,
-                colors: colors
+                colors: colors,
+                createdAt: new Date().toISOString()
             };
 
             console.log('📦 Product data:', productData);
 
-            try {
-                let result;
-                if (editId) {
-                    // Update
-                    result = await supabase
-                        .from('products')
-                        .update(productData)
-                        .eq('id', editId);
-                } else {
-                    // Insert
-                    result = await supabase
-                        .from('products')
-                        .insert([productData]);
-                }
-
-                if (result.error) {
-                    console.error('❌ Supabase error:', result.error);
-                    showToast('Supabase error: ' + result.error.message, 'error');
-                    return;
-                }
-
-                console.log('✅ Product saved to Supabase!');
-                showToast(editId ? '✅ Product updated!' : '✅ Product added!', 'success');
-                clearForm();
-                loadProducts();
-                updateStats();
-            } catch (error) {
-                console.error('❌ Save product error:', error);
-                showToast('Error: ' + error.message, 'error');
+            // ============================================
+            // SAVE TO LOCALSTORAGE
+            // ============================================
+            if (editIndex >= 0 && editIndex < products.length) {
+                // Update existing product
+                products[editIndex] = productData;
+                showToast('✅ Product updated!', 'success');
+            } else {
+                // Add new product
+                products.push(productData);
+                showToast('✅ Product added!', 'success');
             }
+
+            localStorage.setItem('myProducts', JSON.stringify(products));
+            
+            console.log('✅ Product saved to LocalStorage!');
+            clearForm();
+            renderAll();
         }
 
         // ============================================
-        // MIGRATE OLD DATA
+        // AUTO DETECT CATEGORY
         // ============================================
-        async function migrateOldData() {
-            if (!confirm('⚠️ Old data (localStorage) ko Supabase mein migrate karein?')) return;
-            showToast('📤 Migrating data...', 'info');
-            try {
-                const oldProducts = JSON.parse(localStorage.getItem('myProducts') || '[]');
-                const oldCategories = JSON.parse(localStorage.getItem('myCategories') || '[]');
-                const oldOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-                let migrated = 0;
-
-                for (let cat of oldCategories) {
-                    try { const { error } = await supabase.from('categories').insert({ name: cat });
-                        if (!error) migrated++; } catch (e) {}
-                }
-                for (let p of oldProducts) {
-                    try {
-                        const { error } = await supabase.from('products').insert({
-                            title: p.title || 'Product',
-                            price: p.price || '0',
-                            description: p.description || '',
-                            category: p.category || 'General',
-                            images: p.images || [],
-                            sizes: p.sizes || [],
-                            colors: p.colors || []
-                        });
-                        if (!error) migrated++;
-                    } catch (e) {}
-                }
-                for (let o of oldOrders) {
-                    try {
-                        const { error } = await supabase.from('orders').insert({
-                            order_id: o.orderId || o.order_id || 'MK-' + Date.now(),
-                            items: o.items || 'N/A',
-                            total: o.total || '0',
-                            name: o.name || 'N/A',
-                            email: o.email || 'N/A',
-                            phone: o.phone || 'N/A',
-                            address: o.address || 'N/A',
-                            notes: o.notes || 'N/A',
-                            colors: o.colors || '',
-                            sizes: o.sizes || '',
-                            images: o.images || [],
-                            status: o.status || 'processing'
-                        });
-                        if (!error) migrated++;
-                    } catch (e) {}
-                }
-                showToast('✅ ' + migrated + ' items migrated!', 'success');
-                loadCategories();
-                loadProducts();
-                loadOrders();
-            } catch (error) {
-                console.error('❌ Migration error:', error);
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        // ============================================
-        // REST FUNCTIONS
-        // ============================================
-        async function loadCategories() {
-            try {
-                const { data, error } = await supabase.from('categories').select('*').order('name');
-                if (error) throw error;
-                renderCategories(data || []);
-                updateStats();
-            } catch (error) {}
-        }
-
-        function renderCategories(categoriesData) {
-            const list = document.getElementById('categories-list');
-            if (!list) return;
-            if (!categoriesData || categoriesData.length === 0) {
-                list.innerHTML = '<span style="color:#6a6a82;font-size:0.7rem;">No categories</span>';
-                return;
-            }
-            list.innerHTML = categoriesData.map(c =>
-                `<span class="category-tag">${c.name}<button class="remove" onclick="deleteCategory('${c.id}')">×</button></span>`
-            ).join('');
-        }
-
-        async function addCategory() {
-            const name = document.getElementById('new-cat-name').value.trim();
-            if (!name) { showToast('Enter name!', 'error'); return; }
-            try {
-                const { error } = await supabase.from('categories').insert({ name: name });
-                if (error) throw error;
-                document.getElementById('new-cat-name').value = '';
-                showToast('Category added!', 'success');
-                loadCategories();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function deleteCategory(id) {
-            if (!confirm('Delete this category?')) return;
-            try {
-                const { error } = await supabase.from('categories').delete().eq('id', id);
-                if (error) throw error;
-                showToast('Category deleted.', 'success');
-                loadCategories();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function loadProducts() {
-            try {
-                const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                renderProducts(data || []);
-                updateStats();
-            } catch (error) {}
-        }
-
-        function renderProducts(productsData) {
-            const list = document.getElementById('products-list');
-            const empty = document.getElementById('empty-state');
-            if (!list) return;
-            if (!productsData || productsData.length === 0) {
-                list.innerHTML = '';
-                if (empty) empty.style.display = 'block';
-                return;
-            }
-            if (empty) empty.style.display = 'none';
-            list.innerHTML = productsData.map((p) => `
-                <div class="product-item">
-                    <div class="info">
-                        <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/40'}" alt="${p.title}" />
-                        <div>
-                            <div class="title">${p.title}</div>
-                            <div class="meta">${p.category || 'General'} • Rs. ${p.price}${p.colors && p.colors.length > 0 ? ' • Colors: ' + p.colors.join(', ') : ''}${p.sizes && p.sizes.length > 0 ? ' • Sizes: ' + p.sizes.join(', ') : ''}</div>
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <button class="btn-edit" onclick="editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="btn-danger-sm" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function editProduct(id) {
-            try {
-                const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
-                if (error) throw error;
-                const p = data;
-                editId = id;
-                document.getElementById('p-title').value = p.title || '';
-                document.getElementById('p-price').value = p.price || '';
-                document.getElementById('p-description').value = p.description || '';
-                document.getElementById('p-category').value = p.category || '';
-                uploadedImages = p.images ? [...p.images] : [];
-                renderPreviews();
-                updateFileCount();
-                sizes = p.sizes ? [...p.sizes] : [];
-                document.getElementById('p-sizes').value = JSON.stringify(sizes);
-                renderOptions('size');
-                colors = p.colors ? [...p.colors] : [];
-                document.getElementById('p-colors').value = JSON.stringify(colors);
-                renderOptions('color');
-                document.getElementById('form-title').textContent = 'Edit Product';
-                document.getElementById('edit-badge').classList.remove('hidden');
-                document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Update Product';
-                document.getElementById('cancel-btn').classList.remove('hidden');
-                showToast('Edit mode: ' + p.title, 'info');
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function deleteProduct(id) {
-            if (!confirm('Delete this product?')) return;
-            try {
-                const { error } = await supabase.from('products').delete().eq('id', id);
-                if (error) throw error;
-                showToast('Product deleted.', 'success');
-                loadProducts();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
         function autoDetectCategory() {
             const title = document.getElementById('p-title').value.trim();
             if (!title) { showToast('Enter title first!', 'warning'); return; }
@@ -1227,36 +1057,155 @@
             return null;
         }
 
-        async function loadOrders() {
-            try {
-                const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                renderOrders(data || []);
-                updateOrderStats(data || []);
-                updateStats();
-            } catch (error) {}
+        // ============================================
+        // CATEGORY FUNCTIONS
+        // ============================================
+        function addCategory() {
+            const name = document.getElementById('new-cat-name').value.trim();
+            if (!name) { showToast('Enter name!', 'error'); return; }
+            if (categories.includes(name)) { showToast('Already exists!', 'warning'); return; }
+            categories.push(name);
+            localStorage.setItem('myCategories', JSON.stringify(categories));
+            document.getElementById('new-cat-name').value = '';
+            renderAll();
+            showToast('Category added!', 'success');
         }
 
-        function renderOrders(ordersData) {
-            const list = document.getElementById('order-list');
-            const empty = document.getElementById('empty-orders');
+        function deleteCategory(index) {
+            if (!confirm('Delete this category?')) return;
+            categories.splice(index, 1);
+            localStorage.setItem('myCategories', JSON.stringify(categories));
+            renderAll();
+            showToast('Category deleted.', 'success');
+        }
+
+        // ============================================
+        // PRODUCT FUNCTIONS
+        // ============================================
+        function deleteProduct(index) {
+            if (!confirm('Delete this product?')) return;
+            products.splice(index, 1);
+            localStorage.setItem('myProducts', JSON.stringify(products));
+            renderAll();
+            showToast('Product deleted.', 'success');
+        }
+
+        function editProduct(index) {
+            const p = products[index];
+            if (!p) return;
+
+            editIndex = index;
+            document.getElementById('p-title').value = p.title || '';
+            document.getElementById('p-price').value = p.price || '';
+            document.getElementById('p-description').value = p.description || '';
+            document.getElementById('p-category').value = p.category || '';
+            
+            uploadedImages = p.images ? [...p.images] : [];
+            renderPreviews();
+            updateFileCount();
+            
+            sizes = p.sizes ? [...p.sizes] : [];
+            document.getElementById('p-sizes').value = JSON.stringify(sizes);
+            renderOptions('size');
+            
+            colors = p.colors ? [...p.colors] : [];
+            document.getElementById('p-colors').value = JSON.stringify(colors);
+            renderOptions('color');
+
+            document.getElementById('form-title').textContent = 'Edit Product';
+            document.getElementById('edit-badge').classList.remove('hidden');
+            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Update Product';
+            document.getElementById('cancel-btn').classList.remove('hidden');
+            document.getElementById('edit-index').value = index;
+            
+            showToast('Edit mode: ' + p.title, 'info');
+        }
+
+        function cancelEdit() {
+            clearForm();
+            showToast('Edit cancelled', 'info');
+        }
+
+        // ============================================
+        // ORDERS FUNCTIONS
+        // ============================================
+        function updateOrderStatus(index, status) {
+            orders[index].status = status;
+            orders[index].updatedAt = new Date().toISOString();
+            localStorage.setItem('orders', JSON.stringify(orders));
+            renderAll();
+            showToast('✅ Order status updated!', 'success');
+        }
+
+        // ============================================
+        // RENDER FUNCTIONS
+        // ============================================
+        function renderAll() {
+            renderCategories();
+            renderProducts();
+            renderOrders();
+            updateStats();
+        }
+
+        function renderCategories() {
+            const list = document.getElementById('categories-list');
             if (!list) return;
-            if (!ordersData || ordersData.length === 0) {
+            if (categories.length === 0) {
+                list.innerHTML = '<span style="color:#6a6a82;font-size:0.7rem;">No categories</span>';
+                return;
+            }
+            list.innerHTML = categories.map((c, i) => `
+                <span class="category-tag">${c}<button class="remove" onclick="deleteCategory(${i})">×</button></span>
+            `).join('');
+        }
+
+        function renderProducts() {
+            const list = document.getElementById('products-list');
+            const empty = document.getElementById('empty-state');
+            if (!list) return;
+            if (products.length === 0) {
                 list.innerHTML = '';
                 if (empty) empty.style.display = 'block';
                 return;
             }
             if (empty) empty.style.display = 'none';
-            list.innerHTML = ordersData.map((order) => `
+            list.innerHTML = products.map((p, i) => `
+                <div class="product-item">
+                    <div class="info">
+                        <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/40'}" alt="${p.title}" />
+                        <div>
+                            <div class="title">${p.title}</div>
+                            <div class="meta">${p.category || 'General'} • Rs. ${p.price}${p.colors && p.colors.length > 0 ? ' • Colors: ' + p.colors.join(', ') : ''}${p.sizes && p.sizes.length > 0 ? ' • Sizes: ' + p.sizes.join(', ') : ''}</div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit" onclick="editProduct(${i})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-danger-sm" onclick="deleteProduct(${i})"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderOrders() {
+            const list = document.getElementById('order-list');
+            const empty = document.getElementById('empty-orders');
+            if (!list) return;
+            if (orders.length === 0) {
+                list.innerHTML = '';
+                if (empty) empty.style.display = 'block';
+                return;
+            }
+            if (empty) empty.style.display = 'none';
+            list.innerHTML = orders.map((order, i) => `
                 <div class="order-item">
                     <div class="order-info">
-                        <span class="order-id">#${order.order_id}</span>
+                        <span class="order-id">#${order.orderId || 'MK-' + (i + 1)}</span>
                         <span class="order-meta">${order.name || 'N/A'} • ${order.items || 'N/A'} • Rs. ${order.total || 0}</span>
                         <span class="order-meta">${order.email || 'N/A'} • ${order.phone || 'N/A'}</span>
                     </div>
                     <div class="order-status">
                         <span class="order-status-badge ${order.status || 'processing'}">${order.status || 'Processing'}</span>
-                        <select onchange="updateOrderStatus('${order.id}', this.value)">
+                        <select onchange="updateOrderStatus(${i}, this.value)">
                             <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
                             <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
                             <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
@@ -1267,79 +1216,16 @@
             `).join('');
         }
 
-        async function updateOrderStatus(id, status) {
-            try {
-                const { error } = await supabase.from('orders').update({ status: status, updated_at: new Date().toISOString() }).eq('id', id);
-                if (error) throw error;
-                showToast('✅ Order status updated!', 'success');
-                loadOrders();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        function updateOrderStats(ordersData) {
-            const total = document.getElementById('order-total-count');
-            const delivered = document.getElementById('order-delivered-count');
-            const cancelled = document.getElementById('order-cancelled-count');
-            if (total) total.textContent = ordersData.length;
-            if (delivered) delivered.textContent = ordersData.filter(o => o.status === 'delivered').length;
-            if (cancelled) cancelled.textContent = ordersData.filter(o => o.status === 'cancelled').length;
-        }
-
-        async function updateStats() {
-            try {
-                const { count: productCount } = await supabase.from('products').select('*', { count: 'exact', head: true });
-                const { count: categoryCount } = await supabase.from('categories').select('*', { count: 'exact', head: true });
-                const { count: orderCount } = await supabase.from('orders').select('*', { count: 'exact', head: true });
-                document.getElementById('total-products').textContent = productCount || 0;
-                document.getElementById('total-categories').textContent = categoryCount || 0;
-                document.getElementById('total-orders').textContent = orderCount || 0;
-                document.getElementById('product-count').textContent = productCount || 0;
-            } catch (error) {}
-        }
-
-        // ============================================
-        // OPTIONS
-        // ============================================
-        function loadOptions() {
-            const s = document.getElementById('p-sizes');
-            const c = document.getElementById('p-colors');
-            if (s && s.value) { sizes = JSON.parse(s.value);
-                renderOptions('size'); }
-            if (c && c.value) { colors = JSON.parse(c.value);
-                renderOptions('color'); }
-        }
-
-        function addOption(type) {
-            const input = document.getElementById(type === 'size' ? 'size-input' : 'color-input');
-            const arr = type === 'size' ? sizes : colors;
-            const hidden = type === 'size' ? 'p-sizes' : 'p-colors';
-            const val = input.value.trim();
-            if (!val) { showToast('Enter value!', 'error'); return; }
-            if (arr.includes(val)) { showToast('Already exists!', 'warning'); return; }
-            arr.push(val);
-            document.getElementById(hidden).value = JSON.stringify(arr);
-            input.value = '';
-            renderOptions(type);
-        }
-
-        function removeOption(type, index) {
-            const arr = type === 'size' ? sizes : colors;
-            const hidden = type === 'size' ? 'p-sizes' : 'p-colors';
-            arr.splice(index, 1);
-            document.getElementById(hidden).value = JSON.stringify(arr);
-            renderOptions(type);
-        }
-
-        function renderOptions(type) {
-            const container = document.getElementById(type === 'size' ? 'sizes-container' : 'colors-container');
-            const arr = type === 'size' ? sizes : colors;
-            if (!container) return;
-            if (arr.length === 0) { container.innerHTML = ''; return; }
-            container.innerHTML = arr.map((item, i) => `
-                <span class="option-tag">${item}<button class="remove" onclick="removeOption('${type}', ${i})">×</button></span>
-            `).join('');
+        function updateStats() {
+            document.getElementById('total-products').textContent = products.length;
+            document.getElementById('total-categories').textContent = categories.length;
+            document.getElementById('total-orders').textContent = orders.length;
+            document.getElementById('product-count').textContent = products.length;
+            
+            // Order stats
+            document.getElementById('order-total-count').textContent = orders.length;
+            document.getElementById('order-delivered-count').textContent = orders.filter(o => o.status === 'delivered').length;
+            document.getElementById('order-cancelled-count').textContent = orders.filter(o => o.status === 'cancelled').length;
         }
 
         // ============================================
@@ -1354,7 +1240,7 @@
             document.getElementById('p-images-data').value = '[]';
             document.getElementById('p-sizes').value = '[]';
             document.getElementById('p-colors').value = '[]';
-            document.getElementById('edit-id').value = '';
+            document.getElementById('edit-index').value = '-1';
             document.getElementById('form-title').textContent = 'Add Product';
             document.getElementById('edit-badge').classList.add('hidden');
             document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> Add Product';
@@ -1362,21 +1248,24 @@
             uploadedImages = [];
             sizes = [];
             colors = [];
-            editId = null;
+            editIndex = -1;
             renderPreviews();
             renderOptions('size');
             renderOptions('color');
             updateFileCount();
         }
 
-        function cancelEdit() {
-            clearForm();
-            showToast('Edit cancelled', 'info');
-        }
-
-        function resetAll() {
-            if (confirm('⚠️ Delete ALL data from Supabase?')) {
-                showToast('Feature disabled for safety.', 'warning');
+        // ============================================
+        // RESET ALL DATA
+        // ============================================
+        function resetAllData() {
+            if (confirm('⚠️ Delete ALL data?')) {
+                localStorage.clear();
+                products = [];
+                categories = ['Watches', 'Clothing', 'Electronics'];
+                orders = [];
+                showToast('All data cleared!', 'warning');
+                setTimeout(() => location.reload(), 500);
             }
         }
 
@@ -1409,10 +1298,9 @@
         window.deleteProduct = deleteProduct;
         window.editProduct = editProduct;
         window.cancelEdit = cancelEdit;
-        window.resetAll = resetAll;
+        window.resetAllData = resetAllData;
         window.clearForm = clearForm;
         window.updateOrderStatus = updateOrderStatus;
-        window.migrateOldData = migrateOldData;
     </script>
 </body>
 </html>

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /* =============================================
-           FRONTEND - SAME SIZE AS CONTACT PAGE
+           COMPLETE E-COMMERCE STYLES
            ============================================= */
         :root {
             --bg-primary: #0a0a12;
@@ -387,7 +387,7 @@
         }
 
         /* =============================================
-           CATEGORIES SECTION - CONTACT PAGE SIZE
+           CATEGORIES SECTION
            ============================================= */
         .categories-section {
             padding: 8px 0 4px;
@@ -469,7 +469,7 @@
         }
 
         /* =============================================
-           PRODUCTS SECTION - CONTACT PAGE SIZE
+           PRODUCTS SECTION
            ============================================= */
         .products-section {
             padding: 4px 0 40px;
@@ -616,7 +616,7 @@
         }
 
         /* =============================================
-           FOOTER - CONTACT PAGE SIZE
+           FOOTER
            ============================================= */
         .footer {
             background: var(--bg-secondary);
@@ -1214,7 +1214,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- CATEGORIES SECTION -->
+    <!-- CATEGORIES SECTION - ALL CATEGORIES INCLUDED -->
     <!-- ========================================== -->
     <section class="categories-section" id="categories">
         <div class="container">
@@ -1315,7 +1315,7 @@
     <!-- ========================================== -->
     <script>
         // ============================================
-        // STATE
+        // STATE - From LocalStorage
         // ============================================
         let products = JSON.parse(localStorage.getItem('myProducts')) || [];
         let categories = JSON.parse(localStorage.getItem('myCategories')) || ['Watches', 'Clothing', 'Electronics'];
@@ -1325,19 +1325,17 @@
         // ============================================
         // DOM READY
         // ============================================
-        // ============================================
-// DOM READY - REPLACE WITH THIS
-// ============================================
-document.addEventListener('DOMContentLoaded', function() {
-    // Load from Supabase first
-    loadProductsFromSupabase();
-    
-    // Then start slider
-    startSlider();
-    
-    // Update cart badge
-    updateCartBadge();
-});
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCategories();
+            renderProducts();
+            updateCartBadge();
+            renderFooterCategories();
+            startSlider();
+            
+            console.log('📦 Products loaded:', products.length);
+            console.log('🏷️ Categories:', categories);
+        });
+
         // ============================================
         // BANNER SLIDER
         // ============================================
@@ -1387,7 +1385,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // ============================================
-        // RENDER CATEGORIES
+        // RENDER CATEGORIES - ALL CATEGORIES
         // ============================================
         function renderCategories() {
             const grid = document.getElementById('categories-grid');
@@ -1407,45 +1405,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 'General': 'fa-tag'
             };
 
-            const activeCategories = categories.filter(cat => {
-                const count = products.filter(p => p.category === cat).length;
-                return count > 0;
-            });
-
-            if (activeCategories.length === 0) {
+            // ============================================
+            // SHOW ALL CATEGORIES (including empty ones)
+            // ============================================
+            if (categories.length === 0) {
                 grid.innerHTML = `
                     <div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--text-muted);font-size:0.8rem;">
-                        <p>No categories with products</p>
+                        <p>No categories available</p>
                     </div>
                 `;
                 return;
             }
 
-            grid.innerHTML = activeCategories.map(cat => {
+            grid.innerHTML = categories.map(cat => {
                 const count = products.filter(p => p.category === cat).length;
                 const icon = categoryIcons[cat] || 'fa-tag';
                 return `
                     <a href="products.html" class="category-card" onclick="localStorage.setItem('filterCategory','${cat}')">
                         <span class="cat-icon"><i class="fas ${icon}"></i></span>
                         <span class="cat-name">${cat}</span>
-                        <span class="cat-count">${count} Products</span>
+                        <span class="cat-count">${count} ${count === 1 ? 'Product' : 'Products'}</span>
                     </a>
                 `;
             }).join('');
         }
 
         // ============================================
-        // RENDER PRODUCTS
+        // RENDER PRODUCTS - FIXED
         // ============================================
         function renderProducts() {
             const grid = document.getElementById('products-grid');
             if (!grid) return;
+
+            console.log('🎨 Rendering products, count:', products.length);
 
             if (products.length === 0) {
                 grid.innerHTML = `
                     <div style="grid-column:1/-1;text-align:center;padding:30px 16px;color:var(--text-muted);">
                         <i class="fas fa-box-open" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
                         <p style="font-size:0.85rem;">No products available</p>
+                        <p style="font-size:0.75rem;margin-top:4px;">Add products from the admin panel</p>
                     </div>
                 `;
                 return;
@@ -1555,6 +1554,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const badge = document.getElementById('cart-badge');
             if (badge) {
                 badge.textContent = cart.length;
+                console.log('🛒 Cart badge updated:', cart.length);
             }
         }
 

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /* =============================================
-           COMPLETE E-COMMERCE - BIGGER & PROFESSIONAL
+           FRONTEND - PRODUCT DETAIL SIZE
            ============================================= */
         :root {
             --bg-primary: #0a0a12;
@@ -51,7 +51,7 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
         ::-webkit-scrollbar {
@@ -67,7 +67,7 @@
         }
 
         /* =============================================
-           NAVBAR - BIGGER
+           NAVBAR
            ============================================= */
         .navbar {
             position: fixed;
@@ -79,7 +79,7 @@
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 0 20px;
+            padding: 0 24px;
             height: 72px;
             display: flex;
             align-items: center;
@@ -97,7 +97,7 @@
         .nav-left {
             display: flex;
             align-items: center;
-            gap: 32px;
+            gap: 40px;
         }
 
         .logo {
@@ -125,7 +125,7 @@
 
         .nav-links {
             display: flex;
-            gap: 28px;
+            gap: 32px;
         }
 
         .nav-links a {
@@ -161,7 +161,7 @@
         .nav-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             flex-shrink: 0;
         }
 
@@ -219,7 +219,7 @@
            BANNER SLIDER - BIGGER
            ============================================= */
         .banner-section {
-            padding: 80px 0 16px;
+            padding: 80px 0 20px;
         }
 
         .banner-slider {
@@ -244,7 +244,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 30px 50px;
+            padding: 40px 60px;
             position: relative;
             background: linear-gradient(135deg, #1a1a2e, #2a2a4e);
         }
@@ -254,7 +254,7 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            gap: 30px;
+            gap: 40px;
         }
 
         .banner-slide .banner-text {
@@ -274,7 +274,7 @@
         }
 
         .banner-slide .banner-text h2 {
-            font-size: 2.4rem;
+            font-size: 2.6rem;
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 8px;
@@ -387,23 +387,23 @@
         }
 
         /* =============================================
-           CATEGORIES SECTION - BIGGER
+           CATEGORIES SECTION
            ============================================= */
         .categories-section {
-            padding: 16px 0 8px;
+            padding: 20px 0 10px;
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             flex-wrap: wrap;
             gap: 8px;
         }
 
         .section-header h2 {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
         }
 
@@ -427,14 +427,14 @@
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 14px;
+            gap: 16px;
         }
 
         .category-card {
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius);
-            padding: 20px 14px;
+            padding: 20px 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -469,24 +469,24 @@
         }
 
         /* =============================================
-           PRODUCTS SECTION - BIGGER
+           PRODUCTS SECTION
            ============================================= */
         .products-section {
-            padding: 8px 0 60px;
+            padding: 10px 0 60px;
         }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
         }
 
-        /* Product Card - BIGGER */
+        /* Product Card */
         .product-card {
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius-lg);
-            padding: 16px;
+            padding: 18px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             position: relative;
@@ -616,7 +616,7 @@
         }
 
         /* =============================================
-           FOOTER - BIGGER
+           FOOTER
            ============================================= */
         .footer {
             background: var(--bg-secondary);
@@ -628,7 +628,7 @@
         .footer-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
         .footer-top {
@@ -836,7 +836,7 @@
            ============================================= */
         @media (max-width: 1024px) {
             .banner-slide .banner-text h2 {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
             .banner-slide .banner-image {
                 flex: 0 0 150px;
@@ -845,6 +845,9 @@
             .footer-top {
                 grid-template-columns: 1fr 1fr;
                 gap: 30px;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             }
         }
 
@@ -865,104 +868,97 @@
                 font-size: 1.2rem;
             }
             .container {
-                padding: 0 12px;
+                padding: 0 16px;
             }
             .banner-section {
-                padding: 72px 0 12px;
+                padding: 76px 0 16px;
             }
             .banner-slider {
-                min-height: 180px;
+                min-height: 200px;
             }
             .banner-slide {
-                padding: 16px 20px;
+                padding: 24px 30px;
             }
             .banner-slide .banner-text h2 {
-                font-size: 1.2rem;
+                font-size: 1.4rem;
             }
             .banner-slide .banner-text p {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
             }
             .banner-slide .banner-text .btn-shop {
-                padding: 8px 20px;
-                font-size: 0.8rem;
+                padding: 10px 24px;
+                font-size: 0.85rem;
             }
             .banner-slide .banner-image {
-                flex: 0 0 80px;
-                height: 80px;
+                flex: 0 0 100px;
+                height: 100px;
             }
             .banner-arrow {
-                width: 32px;
-                height: 32px;
-                font-size: 0.9rem;
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
             }
             .banner-arrow.prev {
-                left: 8px;
+                left: 10px;
             }
             .banner-arrow.next {
-                right: 8px;
-            }
-            .banner-dots .dot {
-                width: 8px;
-                height: 8px;
-            }
-            .banner-dots .dot.active {
-                width: 24px;
+                right: 10px;
             }
             
             .categories-section {
-                padding: 12px 0 6px;
+                padding: 16px 0 8px;
             }
             .categories-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 10px;
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                gap: 12px;
             }
             .category-card {
-                padding: 14px 10px;
+                padding: 16px 12px;
             }
             .category-card .cat-icon {
-                font-size: 1.4rem;
+                font-size: 1.6rem;
             }
             .category-card .cat-name {
-                font-size: 0.75rem;
+                font-size: 0.8rem;
             }
             
             .products-section {
-                padding: 6px 0 40px;
+                padding: 8px 0 40px;
             }
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-                gap: 14px;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 16px;
             }
             .product-card {
-                padding: 12px;
+                padding: 14px;
             }
             .product-card .product-title {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
             }
             .product-card .product-price {
-                font-size: 0.9rem;
+                font-size: 0.95rem;
             }
             .product-card .btn-add {
                 padding: 8px;
-                font-size: 0.75rem;
-            }
-            
-            .section-header h2 {
-                font-size: 1.1rem;
-            }
-            .section-header .view-all {
                 font-size: 0.8rem;
             }
             
+            .section-header h2 {
+                font-size: 1.2rem;
+            }
+            .section-header .view-all {
+                font-size: 0.85rem;
+            }
+            
             .footer {
-                padding: 30px 0 16px;
+                padding: 32px 0 16px;
             }
             .footer-container {
-                padding: 0 12px;
+                padding: 0 16px;
             }
             .footer-top {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 24px;
             }
             .footer-brand p {
                 max-width: 100%;
@@ -981,63 +977,63 @@
 
         @media (max-width: 480px) {
             .banner-slider {
-                min-height: 140px;
+                min-height: 150px;
             }
             .banner-slide .banner-text h2 {
-                font-size: 0.95rem;
+                font-size: 1.1rem;
             }
             .banner-slide .banner-text p {
-                font-size: 0.7rem;
+                font-size: 0.75rem;
             }
             .banner-slide .banner-text .btn-shop {
-                padding: 6px 14px;
-                font-size: 0.7rem;
+                padding: 8px 18px;
+                font-size: 0.75rem;
             }
             .banner-slide .banner-image {
-                flex: 0 0 55px;
-                height: 55px;
+                flex: 0 0 70px;
+                height: 70px;
             }
             .banner-arrow {
                 display: none;
             }
             
             .categories-grid {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 6px;
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                gap: 8px;
             }
             .category-card {
-                padding: 10px 6px;
+                padding: 12px 8px;
             }
             .category-card .cat-icon {
-                font-size: 1.1rem;
+                font-size: 1.3rem;
             }
             .category-card .cat-name {
-                font-size: 0.6rem;
+                font-size: 0.7rem;
             }
             
             .products-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 10px;
+                gap: 12px;
             }
             .product-card {
-                padding: 8px;
+                padding: 10px;
             }
             .product-card .product-title {
-                font-size: 0.65rem;
+                font-size: 0.7rem;
             }
             .product-card .product-price {
-                font-size: 0.75rem;
+                font-size: 0.8rem;
             }
             .product-card .btn-add {
-                font-size: 0.6rem;
+                font-size: 0.65rem;
                 padding: 6px;
             }
             
             .section-header h2 {
-                font-size: 0.9rem;
+                font-size: 1rem;
             }
             .section-header .view-all {
-                font-size: 0.65rem;
+                font-size: 0.7rem;
             }
         }
     </style>

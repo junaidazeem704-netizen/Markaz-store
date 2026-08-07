@@ -1325,14 +1325,19 @@
         // ============================================
         // DOM READY
         // ============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            renderCategories();
-            renderProducts();
-            updateCartBadge();
-            renderFooterCategories();
-            startSlider();
-        });
-
+        // ============================================
+// DOM READY - REPLACE WITH THIS
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Load from Supabase first
+    loadProductsFromSupabase();
+    
+    // Then start slider
+    startSlider();
+    
+    // Update cart badge
+    updateCartBadge();
+});
         // ============================================
         // BANNER SLIDER
         // ============================================

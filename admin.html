@@ -8,15 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* =============================================
-           ADMIN PANEL STYLES
-           ============================================= */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a12;
@@ -24,12 +20,10 @@
             padding: 12px;
             min-height: 100vh;
         }
-
         .admin-wrapper {
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
         }
-
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -42,7 +36,6 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-
         .admin-header h1 {
             font-size: 1.1rem;
             font-weight: 800;
@@ -50,13 +43,11 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .admin-header-actions {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
         }
-
         .admin-header-actions a {
             padding: 5px 12px;
             background: rgba(255, 255, 255, 0.05);
@@ -66,7 +57,6 @@
             text-decoration: none;
             font-size: 0.7rem;
         }
-
         .btn-danger-sm {
             padding: 5px 12px;
             background: rgba(239, 68, 68, 0.12);
@@ -77,14 +67,12 @@
             cursor: pointer;
             font-family: inherit;
         }
-
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-bottom: 16px;
         }
-
         .admin-stat-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -92,13 +80,11 @@
             padding: 12px 14px;
             text-align: center;
         }
-
         .admin-stat-card .label {
             font-size: 0.6rem;
             color: #a0a0b8;
             text-transform: uppercase;
         }
-
         .admin-stat-card .value {
             font-size: 1.3rem;
             font-weight: 700;
@@ -106,7 +92,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .admin-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -114,7 +99,6 @@
             padding: 16px 18px;
             margin-bottom: 14px;
         }
-
         .admin-card h2 {
             font-size: 0.95rem;
             font-weight: 700;
@@ -123,11 +107,9 @@
             align-items: center;
             gap: 8px;
         }
-
         .admin-card h2 i {
             color: #6366f1;
         }
-
         .admin-card .badge {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
@@ -136,11 +118,9 @@
             border-radius: 100px;
             margin-left: 6px;
         }
-
         .form-group {
             margin-bottom: 10px;
         }
-
         .form-group label {
             font-size: 0.75rem;
             font-weight: 500;
@@ -148,11 +128,9 @@
             display: block;
             margin-bottom: 3px;
         }
-
         .form-group label .required {
             color: #ef4444;
         }
-
         .form-group input,
         .form-group textarea {
             width: 100%;
@@ -165,47 +143,39 @@
             outline: none;
             font-family: inherit;
         }
-
         .form-group textarea {
             resize: vertical;
             min-height: 60px;
         }
-
         .form-group input:focus,
         .form-group textarea:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
-
         .form-group input::placeholder,
         .form-group textarea::placeholder {
             color: #6a6a82;
         }
-
         .form-group small {
             font-size: 0.65rem;
             color: #6a6a82;
             display: block;
             margin-top: 3px;
         }
-
         .form-group small i {
             color: #6366f1;
         }
-
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-
         .form-actions {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin-top: 6px;
         }
-
         .btn-primary {
             width: 100%;
             padding: 12px;
@@ -222,7 +192,6 @@
             justify-content: center;
             gap: 6px;
         }
-
         .btn-secondary {
             width: 100%;
             padding: 12px;
@@ -239,7 +208,6 @@
             justify-content: center;
             gap: 6px;
         }
-
         .btn-sm {
             padding: 5px 12px;
             font-size: 0.7rem;
@@ -252,11 +220,9 @@
             cursor: pointer;
             font-family: inherit;
         }
-
         .btn-sm:hover {
             background: rgba(255, 255, 255, 0.1);
         }
-
         .btn-edit {
             padding: 3px 8px;
             font-size: 0.6rem;
@@ -269,24 +235,27 @@
         }
 
         /* =============================================
-           IMAGE UPLOAD - FIXED
+           IMAGE UPLOAD - WORKING
            ============================================= */
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
             border-radius: 8px;
-            padding: 16px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             position: relative;
             background: rgba(255, 255, 255, 0.02);
             transition: all 0.3s ease;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-
         .image-upload-area:hover {
             border-color: #6366f1;
             background: rgba(99, 102, 241, 0.04);
         }
-
         .image-upload-area input[type="file"] {
             position: absolute;
             top: 0;
@@ -296,32 +265,34 @@
             opacity: 0;
             cursor: pointer;
             z-index: 10;
+            width: 100%;
+            height: 100%;
         }
-
         .image-upload-area i {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             color: #6366f1;
             display: block;
             margin-bottom: 4px;
         }
-
         .image-upload-area p {
             color: #a0a0b8;
             font-size: 0.8rem;
         }
-
         .image-upload-area .sub {
             color: #6a6a82;
             font-size: 0.65rem;
         }
-
+        .image-upload-area .file-count {
+            margin-top: 4px;
+            font-size: 0.7rem;
+            color: #6366f1;
+        }
         .image-preview-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
             gap: 8px;
             margin-top: 10px;
         }
-
         .image-preview-item {
             position: relative;
             border-radius: 6px;
@@ -330,21 +301,19 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
-
         .image-preview-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         .image-preview-item .remove-img {
             position: absolute;
             top: 3px;
             right: 3px;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             border: none;
             color: white;
             cursor: pointer;
@@ -353,11 +322,9 @@
             align-items: center;
             justify-content: center;
         }
-
         .image-preview-item .remove-img:hover {
             background: #ef4444;
         }
-
         .image-preview-item .img-number {
             position: absolute;
             bottom: 3px;
@@ -376,7 +343,6 @@
             margin-top: 3px;
             min-height: 24px;
         }
-
         .option-tag {
             display: flex;
             align-items: center;
@@ -387,7 +353,6 @@
             border-radius: 100px;
             font-size: 0.7rem;
         }
-
         .option-tag .remove {
             cursor: pointer;
             color: #ef4444;
@@ -395,13 +360,11 @@
             border: none;
             font-size: 0.7rem;
         }
-
         .option-input-row {
             display: flex;
             gap: 5px;
             margin-top: 5px;
         }
-
         .option-input-row input {
             flex: 1;
             padding: 5px 10px;
@@ -412,14 +375,12 @@
             font-size: 0.8rem;
             outline: none;
         }
-
         .category-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
             margin-top: 3px;
         }
-
         .category-tag {
             display: flex;
             align-items: center;
@@ -430,7 +391,6 @@
             border-radius: 100px;
             font-size: 0.7rem;
         }
-
         .category-tag .remove {
             cursor: pointer;
             color: #ef4444;
@@ -438,13 +398,11 @@
             border: none;
             font-size: 0.7rem;
         }
-
         .category-input-row {
             display: flex;
             gap: 6px;
             margin-bottom: 10px;
         }
-
         .category-input-row input {
             flex: 1;
             padding: 6px 12px;
@@ -455,7 +413,6 @@
             font-size: 0.8rem;
             outline: none;
         }
-
         .product-list {
             display: flex;
             flex-direction: column;
@@ -463,7 +420,6 @@
             max-height: 300px;
             overflow-y: auto;
         }
-
         .product-item {
             display: flex;
             justify-content: space-between;
@@ -475,48 +431,40 @@
             flex-wrap: wrap;
             gap: 4px;
         }
-
         .product-item .info {
             display: flex;
             align-items: center;
             gap: 8px;
         }
-
         .product-item .info img {
             width: 32px;
             height: 32px;
             object-fit: cover;
             border-radius: 5px;
         }
-
         .product-item .info .title {
             font-weight: 500;
             font-size: 0.8rem;
         }
-
         .product-item .info .meta {
             font-size: 0.6rem;
             color: #a0a0b8;
         }
-
         .product-item .actions {
             display: flex;
             gap: 3px;
         }
-
         .empty-state {
             text-align: center;
             padding: 24px 16px;
             color: #6a6a82;
             display: none;
         }
-
         .empty-state i {
             font-size: 1.6rem;
             display: block;
             margin-bottom: 6px;
         }
-
         .order-item {
             display: flex;
             justify-content: space-between;
@@ -529,17 +477,14 @@
             flex-wrap: wrap;
             gap: 4px;
         }
-
         .order-item .order-info .order-id {
             font-weight: 600;
             font-size: 0.75rem;
         }
-
         .order-item .order-info .order-meta {
             font-size: 0.6rem;
             color: #a0a0b8;
         }
-
         .order-item .order-status select {
             padding: 3px 6px;
             background: rgba(255, 255, 255, 0.04);
@@ -550,14 +495,12 @@
             font-family: inherit;
             outline: none;
         }
-
         .order-status-badge {
             padding: 2px 8px;
             border-radius: 100px;
             font-size: 0.55rem;
             font-weight: 600;
         }
-
         .order-status-badge.processing {
             background: rgba(245, 158, 11, 0.15);
             color: #f59e0b;
@@ -574,31 +517,26 @@
             background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
         }
-
         .order-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin-bottom: 12px;
         }
-
         .order-stat-box {
             background: rgba(255, 255, 255, 0.04);
             padding: 8px;
             border-radius: 6px;
             text-align: center;
         }
-
         .order-stat-box .stat-label {
             font-size: 0.55rem;
             color: #a0a0b8;
         }
-
         .order-stat-box .stat-value {
             font-size: 1rem;
             font-weight: 700;
         }
-
         .order-stat-box .stat-value.delivered {
             color: #10b981;
         }
@@ -608,7 +546,6 @@
         .order-stat-box .stat-value.total {
             color: #6366f1;
         }
-
         .edit-mode-badge {
             background: #f59e0b;
             color: white;
@@ -617,11 +554,9 @@
             border-radius: 100px;
             margin-left: 6px;
         }
-
         .hidden {
             display: none !important;
         }
-
         .toast {
             position: fixed;
             bottom: 16px;
@@ -639,12 +574,10 @@
             opacity: 0;
             transition: all 0.4s ease;
         }
-
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
-
         .toast-icon {
             width: 24px;
             height: 24px;
@@ -655,33 +588,27 @@
             justify-content: center;
             flex-shrink: 0;
         }
-
         .toast-icon i {
             color: #10b981;
             font-size: 0.8rem;
         }
-
         .toast.error .toast-icon {
             background: rgba(239, 68, 68, 0.12);
         }
         .toast.error .toast-icon i {
             color: #ef4444;
         }
-
         .toast-content {
             flex: 1;
         }
-
         .toast-title {
             font-size: 0.7rem;
             font-weight: 600;
         }
-
         .toast-message {
             font-size: 0.65rem;
             color: #a0a0b8;
         }
-
         .toast-close {
             background: none;
             border: none;
@@ -689,7 +616,6 @@
             cursor: pointer;
             font-size: 0.9rem;
         }
-
         @media (max-width: 480px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -705,9 +631,6 @@
                 grid-template-columns: 1fr 1fr 1fr;
                 gap: 4px;
             }
-            .admin-wrapper {
-                padding: 0 4px;
-            }
             .image-preview-grid {
                 grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
             }
@@ -717,59 +640,39 @@
 <body>
 
     <div class="admin-wrapper">
-        <!-- Header -->
         <header class="admin-header">
             <h1>⚙️ Admin Panel</h1>
             <div class="admin-header-actions">
                 <a href="index.html"><i class="fas fa-store"></i> Store</a>
-                <button class="btn-danger-sm" onclick="migrateOldData()">
-                    <i class="fas fa-upload"></i> Migrate
-                </button>
+                <button class="btn-danger-sm" onclick="migrateOldData()"><i class="fas fa-upload"></i> Migrate</button>
                 <button class="btn-danger-sm" onclick="resetAll()"><i class="fas fa-trash-alt"></i></button>
             </div>
         </header>
 
-        <!-- Stats -->
         <div class="admin-stats">
-            <div class="admin-stat-card">
-                <div class="label">📦 Products</div>
-                <div class="value" id="total-products">0</div>
-            </div>
-            <div class="admin-stat-card">
-                <div class="label">🏷️ Categories</div>
-                <div class="value" id="total-categories">0</div>
-            </div>
-            <div class="admin-stat-card">
-                <div class="label">📊 Orders</div>
-                <div class="value" id="total-orders">0</div>
-            </div>
+            <div class="admin-stat-card"><div class="label">📦 Products</div><div class="value" id="total-products">0</div></div>
+            <div class="admin-stat-card"><div class="label">🏷️ Categories</div><div class="value" id="total-categories">0</div></div>
+            <div class="admin-stat-card"><div class="label">📊 Orders</div><div class="value" id="total-orders">0</div></div>
         </div>
 
         <!-- Add Product -->
         <div class="admin-card">
-            <h2>
-                <i class="fas fa-plus-circle"></i>
-                <span id="form-title">Add Product</span>
-                <span class="edit-mode-badge hidden" id="edit-badge">Editing</span>
-            </h2>
-
+            <h2><i class="fas fa-plus-circle"></i> <span id="form-title">Add Product</span>
+            <span class="edit-mode-badge hidden" id="edit-badge">Editing</span></h2>
             <input type="hidden" id="edit-id" value="" />
 
             <div class="form-group">
                 <label>Title <span class="required">*</span></label>
                 <input type="text" id="p-title" placeholder="e.g. Red T-Shirt" />
             </div>
-
             <div class="form-group">
                 <label>Price (PKR) <span class="required">*</span></label>
                 <input type="number" id="p-price" placeholder="1500" />
             </div>
-
             <div class="form-group">
                 <label>Description</label>
                 <textarea id="p-description" placeholder="Detailed product description..."></textarea>
             </div>
-
             <div class="form-group">
                 <label>Category</label>
                 <input type="text" id="p-category" placeholder="Clothing, Watches, etc." />
@@ -777,14 +680,15 @@
             </div>
 
             <!-- ========================================== -->
-            <!-- IMAGE UPLOAD - FIXED -->
+            <!-- IMAGE UPLOAD - WORKING -->
             <!-- ========================================== -->
             <div class="form-group">
                 <label>Images <span class="required">*</span></label>
                 <div class="image-upload-area" id="upload-area">
                     <i class="fas fa-cloud-upload-alt"></i>
                     <p>Tap to upload images</p>
-                    <span class="sub">Max 5 images</span>
+                    <span class="sub">PNG, JPG, WEBP (Max 5 images)</span>
+                    <span class="file-count" id="file-count">0 images selected</span>
                     <input type="file" id="p-images" accept="image/*" multiple />
                 </div>
                 <div class="image-preview-grid" id="image-preview-grid"></div>
@@ -797,9 +701,7 @@
                     <div class="options-group" id="sizes-container"></div>
                     <div class="option-input-row">
                         <input type="text" id="size-input" placeholder="S, M, L" />
-                        <button class="btn-sm" onclick="addOption('size')">
-                            <i class="fas fa-plus"></i> Add
-                        </button>
+                        <button class="btn-sm" onclick="addOption('size')"><i class="fas fa-plus"></i> Add</button>
                     </div>
                     <input type="hidden" id="p-sizes" value="[]" />
                 </div>
@@ -808,9 +710,7 @@
                     <div class="options-group" id="colors-container"></div>
                     <div class="option-input-row">
                         <input type="text" id="color-input" placeholder="e.g. Red, Black" />
-                        <button class="btn-sm" onclick="addOption('color')">
-                            <i class="fas fa-plus"></i> Add
-                        </button>
+                        <button class="btn-sm" onclick="addOption('color')"><i class="fas fa-plus"></i> Add</button>
                     </div>
                     <input type="hidden" id="p-colors" value="[]" />
                     <small><i class="fas fa-info-circle"></i> Colors se product preview mein image change hogi</small>
@@ -818,15 +718,9 @@
             </div>
 
             <div class="form-actions">
-                <button class="btn-primary" id="submit-btn" onclick="saveProduct()">
-                    <i class="fas fa-plus"></i> Add Product
-                </button>
-                <button class="btn-secondary hidden" id="cancel-btn" onclick="cancelEdit()">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-                <button class="btn-secondary" onclick="autoDetectCategory()">
-                    <i class="fas fa-magic"></i> Auto
-                </button>
+                <button class="btn-primary" id="submit-btn" onclick="saveProduct()"><i class="fas fa-plus"></i> Add Product</button>
+                <button class="btn-secondary hidden" id="cancel-btn" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancel</button>
+                <button class="btn-secondary" onclick="autoDetectCategory()"><i class="fas fa-magic"></i> Auto</button>
             </div>
         </div>
 
@@ -835,48 +729,28 @@
             <h2><i class="fas fa-tags"></i> Categories</h2>
             <div class="category-input-row">
                 <input type="text" id="new-cat-name" placeholder="New category..." />
-                <button class="btn-sm" onclick="addCategory()">
-                    <i class="fas fa-plus"></i> Add
-                </button>
+                <button class="btn-sm" onclick="addCategory()"><i class="fas fa-plus"></i> Add</button>
             </div>
             <div class="category-tags" id="categories-list"></div>
         </div>
 
         <!-- Products List -->
         <div class="admin-card">
-            <h2>
-                <i class="fas fa-box"></i> Products
-                <span class="badge" id="product-count">0</span>
-            </h2>
+            <h2><i class="fas fa-box"></i> Products <span class="badge" id="product-count">0</span></h2>
             <div class="product-list" id="products-list"></div>
-            <div class="empty-state" id="empty-state">
-                <i class="fas fa-box-open"></i>
-                No products
-            </div>
+            <div class="empty-state" id="empty-state"><i class="fas fa-box-open"></i> No products</div>
         </div>
 
         <!-- Orders -->
         <div class="admin-card">
             <h2><i class="fas fa-truck"></i> Orders</h2>
             <div class="order-stats">
-                <div class="order-stat-box">
-                    <div class="stat-label">📦 Total</div>
-                    <div class="stat-value total" id="order-total-count">0</div>
-                </div>
-                <div class="order-stat-box">
-                    <div class="stat-label">✅ Delivered</div>
-                    <div class="stat-value delivered" id="order-delivered-count">0</div>
-                </div>
-                <div class="order-stat-box">
-                    <div class="stat-label">❌ Cancelled</div>
-                    <div class="stat-value cancelled" id="order-cancelled-count">0</div>
-                </div>
+                <div class="order-stat-box"><div class="stat-label">📦 Total</div><div class="stat-value total" id="order-total-count">0</div></div>
+                <div class="order-stat-box"><div class="stat-label">✅ Delivered</div><div class="stat-value delivered" id="order-delivered-count">0</div></div>
+                <div class="order-stat-box"><div class="stat-label">❌ Cancelled</div><div class="stat-value cancelled" id="order-cancelled-count">0</div></div>
             </div>
             <div id="order-list"></div>
-            <div class="empty-state" id="empty-orders">
-                <i class="fas fa-box-open"></i>
-                No orders
-            </div>
+            <div class="empty-state" id="empty-orders"><i class="fas fa-box-open"></i> No orders</div>
         </div>
     </div>
 
@@ -887,9 +761,7 @@
             <span class="toast-title">Success!</span>
             <span class="toast-message" id="toast-msg">Done</span>
         </div>
-        <button class="toast-close" onclick="this.parentElement.classList.remove('show')">
-            <i class="fas fa-times"></i>
-        </button>
+        <button class="toast-close" onclick="this.parentElement.classList.remove('show')"><i class="fas fa-times"></i></button>
     </div>
 
     <script>
@@ -920,72 +792,98 @@
         // DOM READY
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-    loadCategories();
-    loadProducts();
-    loadOrders();
-    setupImageUpload(); // ← YEH PEHLE SE HAI
-    loadOptions();
-    document.getElementById('cancel-btn').classList.add('hidden');
-});
+            loadCategories();
+            loadProducts();
+            loadOrders();
+            setupImageUpload();
+            loadOptions();
+            document.getElementById('cancel-btn').classList.add('hidden');
+            updateFileCount();
+        });
 
         // ============================================
-        // IMAGE UPLOAD - FIXED
+        // IMAGE UPLOAD - COMPLETE WORKING
         // ============================================
-        // ============================================
-// OLD FUNCTION - DELETE KAREIN
-// ============================================
-function setupImageUpload() {
-    const input = document.getElementById('p-images');
-    if (!input) return;
+        function setupImageUpload() {
+            const input = document.getElementById('p-images');
+            if (!input) return;
 
-    input.addEventListener('change', function(e) {
-        // ... purana code
-    });
-}
+            // Direct event listener
+            input.addEventListener('change', function(e) {
+                const files = e.target.files;
+                console.log('📸 Files selected:', files.length);
 
-// ============================================
-// NEW FUNCTION - PASTE KAREIN
-// ============================================
-function setupImageUpload() {
-    const input = document.getElementById('p-images');
-    if (!input) return;
+                if (files.length === 0) return;
 
-    // Remove any existing listeners
-    input.removeEventListener('change', handleImageUpload);
-    input.addEventListener('change', handleImageUpload);
-}
+                for (let file of files) {
+                    if (uploadedImages.length >= 5) {
+                        showToast('Max 5 images!', 'warning');
+                        break;
+                    }
 
-function handleImageUpload(e) {
-    const files = e.target.files;
-    console.log('📸 Files selected:', files.length);
+                    if (file.size > 2 * 1024 * 1024) {
+                        showToast('Image too large! Max 2MB', 'error');
+                        continue;
+                    }
 
-    if (files.length === 0) return;
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        uploadedImages.push(event.target.result);
+                        renderPreviews();
+                        updateFileCount();
+                        console.log('✅ Image loaded:', uploadedImages.length);
+                    };
+                    reader.onerror = function() {
+                        showToast('Error reading file!', 'error');
+                        console.error('❌ FileReader error');
+                    };
+                    reader.readAsDataURL(file);
+                }
 
-    for (let file of files) {
-        if (uploadedImages.length >= 5) {
-            showToast('Max 5 images!', 'warning');
-            break;
+                // Reset input so same file can be selected again
+                e.target.value = '';
+            });
         }
 
-        if (file.size > 2 * 1024 * 1024) {
-            showToast('Image too large! Max 2MB', 'error');
-            continue;
+        function updateFileCount() {
+            const count = document.getElementById('file-count');
+            if (count) {
+                count.textContent = uploadedImages.length + ' / 5 images selected';
+                count.style.color = uploadedImages.length > 0 ? '#10b981' : '#6366f1';
+            }
         }
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            uploadedImages.push(event.target.result);
+        function renderPreviews() {
+            const grid = document.getElementById('image-preview-grid');
+            if (!grid) return;
+
+            if (uploadedImages.length === 0) {
+                grid.innerHTML = '';
+                document.getElementById('p-images-data').value = '[]';
+                return;
+            }
+
+            grid.innerHTML = uploadedImages.map((img, i) => `
+                <div class="image-preview-item">
+                    <img src="${img}" alt="Image ${i+1}" />
+                    <button class="remove-img" onclick="removeImage(${i})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <span class="img-number">${i+1}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('p-images-data').value = JSON.stringify(uploadedImages);
+            console.log('🖼️ Preview rendered:', uploadedImages.length);
+        }
+
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
             renderPreviews();
-            console.log('✅ Image loaded:', uploadedImages.length);
-        };
-        reader.onerror = function() {
-            showToast('Error reading file!', 'error');
-        };
-        reader.readAsDataURL(file);
-    }
-
-    e.target.value = '';
-}
+            updateFileCount();
+            console.log('🗑️ Image removed:', uploadedImages.length);
+            showToast('Image removed', 'info');
+        }
 
         // ============================================
         // SAVE PRODUCT
@@ -1017,7 +915,6 @@ function handleImageUpload(e) {
             showToast('📤 Uploading images...', 'info');
 
             for (let img of images) {
-                // Skip if already URL
                 if (img.startsWith('http://') || img.startsWith('https://')) {
                     imageUrls.push(img);
                     console.log('✅ Already URL');
@@ -1026,16 +923,11 @@ function handleImageUpload(e) {
 
                 try {
                     console.log('📤 Uploading to IMGBB...');
-
-                    // Convert base64 to blob
                     const response = await fetch(img);
                     const blob = await response.blob();
-
-                    // Create form data
                     const formData = new FormData();
                     formData.append('image', blob);
 
-                    // Upload to IMGBB
                     const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
                         method: 'POST',
                         body: formData
@@ -1106,73 +998,54 @@ function handleImageUpload(e) {
         // ============================================
         async function migrateOldData() {
             if (!confirm('⚠️ Old data (localStorage) ko Supabase mein migrate karein?')) return;
-
             showToast('📤 Migrating data...', 'info');
-
             try {
                 const oldProducts = JSON.parse(localStorage.getItem('myProducts') || '[]');
                 const oldCategories = JSON.parse(localStorage.getItem('myCategories') || '[]');
                 const oldOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-
-                console.log('📦 Old Products:', oldProducts.length);
-                console.log('🏷️ Old Categories:', oldCategories.length);
-                console.log('📊 Old Orders:', oldOrders.length);
-
                 let migrated = 0;
 
                 for (let cat of oldCategories) {
-                    try {
-                        const { error } = await supabase
-                            .from('categories')
-                            .insert({ name: cat });
-                        if (!error) migrated++;
-                    } catch (e) {}
+                    try { const { error } = await supabase.from('categories').insert({ name: cat });
+                        if (!error) migrated++; } catch (e) {}
                 }
-
                 for (let p of oldProducts) {
                     try {
-                        const { error } = await supabase
-                            .from('products')
-                            .insert({
-                                title: p.title || 'Product',
-                                price: p.price || '0',
-                                description: p.description || '',
-                                category: p.category || 'General',
-                                images: p.images || [],
-                                sizes: p.sizes || [],
-                                colors: p.colors || []
-                            });
+                        const { error } = await supabase.from('products').insert({
+                            title: p.title || 'Product',
+                            price: p.price || '0',
+                            description: p.description || '',
+                            category: p.category || 'General',
+                            images: p.images || [],
+                            sizes: p.sizes || [],
+                            colors: p.colors || []
+                        });
                         if (!error) migrated++;
                     } catch (e) {}
                 }
-
                 for (let o of oldOrders) {
                     try {
-                        const { error } = await supabase
-                            .from('orders')
-                            .insert({
-                                order_id: o.orderId || o.order_id || 'MK-' + Date.now(),
-                                items: o.items || 'N/A',
-                                total: o.total || '0',
-                                name: o.name || 'N/A',
-                                email: o.email || 'N/A',
-                                phone: o.phone || 'N/A',
-                                address: o.address || 'N/A',
-                                notes: o.notes || 'N/A',
-                                colors: o.colors || '',
-                                sizes: o.sizes || '',
-                                images: o.images || [],
-                                status: o.status || 'processing'
-                            });
+                        const { error } = await supabase.from('orders').insert({
+                            order_id: o.orderId || o.order_id || 'MK-' + Date.now(),
+                            items: o.items || 'N/A',
+                            total: o.total || '0',
+                            name: o.name || 'N/A',
+                            email: o.email || 'N/A',
+                            phone: o.phone || 'N/A',
+                            address: o.address || 'N/A',
+                            notes: o.notes || 'N/A',
+                            colors: o.colors || '',
+                            sizes: o.sizes || '',
+                            images: o.images || [],
+                            status: o.status || 'processing'
+                        });
                         if (!error) migrated++;
                     } catch (e) {}
                 }
-
                 showToast('✅ ' + migrated + ' items migrated!', 'success');
                 loadCategories();
                 loadProducts();
                 loadOrders();
-
             } catch (error) {
                 console.error('❌ Migration error:', error);
                 showToast('Error: ' + error.message, 'error');
@@ -1184,10 +1057,7 @@ function handleImageUpload(e) {
         // ============================================
         async function loadCategories() {
             try {
-                const { data, error } = await supabase
-                    .from('categories')
-                    .select('*')
-                    .order('name');
+                const { data, error } = await supabase.from('categories').select('*').order('name');
                 if (error) throw error;
                 renderCategories(data || []);
                 updateStats();
@@ -1202,10 +1072,7 @@ function handleImageUpload(e) {
                 return;
             }
             list.innerHTML = categoriesData.map(c =>
-                `<span class="category-tag">
-                    ${c.name}
-                    <button class="remove" onclick="deleteCategory('${c.id}')">×</button>
-                </span>`
+                `<span class="category-tag">${c.name}<button class="remove" onclick="deleteCategory('${c.id}')">×</button></span>`
             ).join('');
         }
 
@@ -1237,10 +1104,7 @@ function handleImageUpload(e) {
 
         async function loadProducts() {
             try {
-                const { data, error } = await supabase
-                    .from('products')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
                 renderProducts(data || []);
                 updateStats();
@@ -1263,20 +1127,12 @@ function handleImageUpload(e) {
                         <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/40'}" alt="${p.title}" />
                         <div>
                             <div class="title">${p.title}</div>
-                            <div class="meta">
-                                ${p.category || 'General'} • Rs. ${p.price}
-                                ${p.colors && p.colors.length > 0 ? ' • Colors: ' + p.colors.join(', ') : ''}
-                                ${p.sizes && p.sizes.length > 0 ? ' • Sizes: ' + p.sizes.join(', ') : ''}
-                            </div>
+                            <div class="meta">${p.category || 'General'} • Rs. ${p.price}${p.colors && p.colors.length > 0 ? ' • Colors: ' + p.colors.join(', ') : ''}${p.sizes && p.sizes.length > 0 ? ' • Sizes: ' + p.sizes.join(', ') : ''}</div>
                         </div>
                     </div>
                     <div class="actions">
-                        <button class="btn-edit" onclick="editProduct('${p.id}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn-danger-sm" onclick="deleteProduct('${p.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <button class="btn-edit" onclick="editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-danger-sm" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
             `).join('');
@@ -1284,11 +1140,7 @@ function handleImageUpload(e) {
 
         async function editProduct(id) {
             try {
-                const { data, error } = await supabase
-                    .from('products')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
+                const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
                 if (error) throw error;
                 const p = data;
                 editId = id;
@@ -1298,6 +1150,7 @@ function handleImageUpload(e) {
                 document.getElementById('p-category').value = p.category || '';
                 uploadedImages = p.images ? [...p.images] : [];
                 renderPreviews();
+                updateFileCount();
                 sizes = p.sizes ? [...p.sizes] : [];
                 document.getElementById('p-sizes').value = JSON.stringify(sizes);
                 renderOptions('size');
@@ -1361,10 +1214,7 @@ function handleImageUpload(e) {
 
         async function loadOrders() {
             try {
-                const { data, error } = await supabase
-                    .from('orders')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
                 renderOrders(data || []);
                 updateOrderStats(data || []);
@@ -1386,15 +1236,11 @@ function handleImageUpload(e) {
                 <div class="order-item">
                     <div class="order-info">
                         <span class="order-id">#${order.order_id}</span>
-                        <span class="order-meta">
-                            ${order.name || 'N/A'} • ${order.items || 'N/A'} • Rs. ${order.total || 0}
-                        </span>
+                        <span class="order-meta">${order.name || 'N/A'} • ${order.items || 'N/A'} • Rs. ${order.total || 0}</span>
                         <span class="order-meta">${order.email || 'N/A'} • ${order.phone || 'N/A'}</span>
                     </div>
                     <div class="order-status">
-                        <span class="order-status-badge ${order.status || 'processing'}">
-                            ${order.status || 'Processing'}
-                        </span>
+                        <span class="order-status-badge ${order.status || 'processing'}">${order.status || 'Processing'}</span>
                         <select onchange="updateOrderStatus('${order.id}', this.value)">
                             <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
                             <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
@@ -1408,10 +1254,7 @@ function handleImageUpload(e) {
 
         async function updateOrderStatus(id, status) {
             try {
-                const { error } = await supabase
-                    .from('orders')
-                    .update({ status: status, updated_at: new Date().toISOString() })
-                    .eq('id', id);
+                const { error } = await supabase.from('orders').update({ status: status, updated_at: new Date().toISOString() }).eq('id', id);
                 if (error) throw error;
                 showToast('✅ Order status updated!', 'success');
                 loadOrders();
@@ -1480,10 +1323,7 @@ function handleImageUpload(e) {
             if (!container) return;
             if (arr.length === 0) { container.innerHTML = ''; return; }
             container.innerHTML = arr.map((item, i) => `
-                <span class="option-tag">
-                    ${item}
-                    <button class="remove" onclick="removeOption('${type}', ${i})">×</button>
-                </span>
+                <span class="option-tag">${item}<button class="remove" onclick="removeOption('${type}', ${i})">×</button></span>
             `).join('');
         }
 
@@ -1511,6 +1351,7 @@ function handleImageUpload(e) {
             renderPreviews();
             renderOptions('size');
             renderOptions('color');
+            updateFileCount();
         }
 
         function cancelEdit() {

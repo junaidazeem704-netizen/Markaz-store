@@ -13,239 +13,273 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a12;
             color: #ffffff;
-            padding: 16px;
+            padding: 12px;
             min-height: 100vh;
         }
+
         .admin-wrapper {
-            max-width: 700px;
+            max-width: 600px;
             margin: 0 auto;
         }
+
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            padding: 14px 18px;
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            margin-bottom: 20px;
+            border-radius: 14px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
+
         .admin-header h1 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 800;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .admin-header-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
+
         .admin-header-actions a {
-            padding: 6px 14px;
+            padding: 5px 12px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 8px;
             color: #a0a0b8;
             text-decoration: none;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
+
         .btn-danger-sm {
-            padding: 6px 14px;
+            padding: 5px 12px;
             background: rgba(239, 68, 68, 0.12);
             border: 1px solid rgba(239, 68, 68, 0.2);
             border-radius: 8px;
             color: #ef4444;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             cursor: pointer;
             font-family: inherit;
         }
+
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
+
         .admin-stat-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 14px 18px;
+            border-radius: 10px;
+            padding: 12px 14px;
             text-align: center;
         }
+
         .admin-stat-card .label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #a0a0b8;
             text-transform: uppercase;
         }
+
         .admin-stat-card .value {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .admin-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
         }
+
         .admin-card h2 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
+
         .admin-card h2 i {
             color: #6366f1;
         }
+
         .admin-card .badge {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
-            font-size: 0.65rem;
-            padding: 2px 10px;
+            font-size: 0.6rem;
+            padding: 2px 8px;
             border-radius: 100px;
             margin-left: 6px;
         }
+
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
+
         .form-group label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 500;
             color: #a0a0b8;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
+
         .form-group label .required {
             color: #ef4444;
         }
+
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
+            border-radius: 8px;
             color: #ffffff;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             outline: none;
             font-family: inherit;
         }
+
         .form-group textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 60px;
         }
+
         .form-group input:focus,
         .form-group textarea:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
+
         .form-group input::placeholder,
         .form-group textarea::placeholder {
             color: #6a6a82;
         }
+
         .form-group small {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #6a6a82;
             display: block;
-            margin-top: 4px;
+            margin-top: 3px;
         }
+
         .form-group small i {
             color: #6366f1;
         }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 10px;
         }
+
         .form-actions {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-top: 8px;
+            gap: 8px;
+            margin-top: 6px;
         }
+
         .btn-primary {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             color: white;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             font-family: inherit;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
+
         .btn-secondary {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
+            border-radius: 8px;
             color: #a0a0b8;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
             font-family: inherit;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
+
         .btn-sm {
-            padding: 6px 14px;
-            font-size: 0.75rem;
+            padding: 5px 12px;
+            font-size: 0.7rem;
             width: auto;
             display: inline-flex;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
+            border-radius: 6px;
             color: #a0a0b8;
             cursor: pointer;
             font-family: inherit;
         }
+
         .btn-sm:hover {
             background: rgba(255, 255, 255, 0.1);
         }
+
         .btn-edit {
-            padding: 4px 10px;
-            font-size: 0.65rem;
+            padding: 3px 8px;
+            font-size: 0.6rem;
             background: rgba(99, 102, 241, 0.12);
             border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 6px;
+            border-radius: 5px;
             color: #6366f1;
             cursor: pointer;
             font-family: inherit;
         }
+
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 16px;
             text-align: center;
             cursor: pointer;
             position: relative;
             background: rgba(255, 255, 255, 0.02);
         }
+
         .image-upload-area:hover {
             border-color: #6366f1;
             background: rgba(99, 102, 241, 0.04);
         }
+
         .image-upload-area input[type="file"] {
             position: absolute;
             top: 0;
@@ -255,220 +289,253 @@
             opacity: 0;
             cursor: pointer;
         }
+
         .image-upload-area i {
-            font-size: 2rem;
+            font-size: 1.6rem;
             color: #6366f1;
             display: block;
             margin-bottom: 4px;
         }
+
         .image-upload-area p {
             color: #a0a0b8;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
+
         .image-upload-area .sub {
             color: #6a6a82;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
         }
+
         .image-preview-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 10px;
-            margin-top: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
         }
+
         .image-preview-item {
             position: relative;
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
             aspect-ratio: 1;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
+
         .image-preview-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .image-preview-item .remove-img {
             position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 22px;
-            height: 22px;
+            top: 3px;
+            right: 3px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.7);
             border: none;
             color: white;
             cursor: pointer;
-            font-size: 0.6rem;
+            font-size: 0.5rem;
         }
+
         .image-preview-item .remove-img:hover {
             background: #ef4444;
         }
+
         .options-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 4px;
-            min-height: 28px;
+            gap: 5px;
+            margin-top: 3px;
+            min-height: 24px;
         }
+
         .option-tag {
             display: flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 10px 4px 12px;
+            gap: 3px;
+            padding: 3px 8px 3px 10px;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 100px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
+
         .option-tag .remove {
             cursor: pointer;
             color: #ef4444;
             background: none;
             border: none;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
+
         .option-input-row {
             display: flex;
-            gap: 6px;
-            margin-top: 6px;
+            gap: 5px;
+            margin-top: 5px;
         }
+
         .option-input-row input {
             flex: 1;
-            padding: 6px 12px;
+            padding: 5px 10px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
+            border-radius: 6px;
             color: #ffffff;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             outline: none;
         }
+
         .category-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 4px;
+            gap: 5px;
+            margin-top: 3px;
         }
+
         .category-tag {
             display: flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 10px 4px 12px;
+            gap: 3px;
+            padding: 3px 8px 3px 10px;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 100px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
+
         .category-tag .remove {
             cursor: pointer;
             color: #ef4444;
             background: none;
             border: none;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
+
         .category-input-row {
             display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 10px;
         }
+
         .category-input-row input {
             flex: 1;
-            padding: 8px 14px;
+            padding: 6px 12px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
+            border-radius: 6px;
             color: #ffffff;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             outline: none;
         }
+
         .product-list {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            max-height: 350px;
+            gap: 5px;
+            max-height: 300px;
             overflow-y: auto;
         }
+
         .product-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 14px;
+            padding: 8px 12px;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.06);
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 4px;
         }
+
         .product-item .info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
+
         .product-item .info img {
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 5px;
         }
+
         .product-item .info .title {
             font-weight: 500;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
+
         .product-item .info .meta {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #a0a0b8;
         }
+
         .product-item .actions {
             display: flex;
-            gap: 4px;
+            gap: 3px;
         }
+
         .empty-state {
             text-align: center;
-            padding: 30px 20px;
+            padding: 24px 16px;
             color: #6a6a82;
             display: none;
         }
+
         .empty-state i {
-            font-size: 2rem;
+            font-size: 1.6rem;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
+
         .order-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 14px;
+            padding: 8px 12px;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 4px;
         }
+
         .order-item .order-info .order-id {
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
+
         .order-item .order-info .order-meta {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #a0a0b8;
         }
+
         .order-item .order-status select {
-            padding: 4px 8px;
+            padding: 3px 6px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 6px;
+            border-radius: 5px;
             color: #ffffff;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-family: inherit;
             outline: none;
         }
+
         .order-status-badge {
-            padding: 2px 10px;
+            padding: 2px 8px;
             border-radius: 100px;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 600;
         }
+
         .order-status-badge.processing {
             background: rgba(245, 158, 11, 0.15);
             color: #f59e0b;
@@ -485,26 +552,31 @@
             background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
         }
+
         .order-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
+
         .order-stat-box {
             background: rgba(255, 255, 255, 0.04);
-            padding: 10px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 6px;
             text-align: center;
         }
+
         .order-stat-box .stat-label {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #a0a0b8;
         }
+
         .order-stat-box .stat-value {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
         }
+
         .order-stat-box .stat-value.delivered {
             color: #10b981;
         }
@@ -514,41 +586,46 @@
         .order-stat-box .stat-value.total {
             color: #6366f1;
         }
+
         .edit-mode-badge {
             background: #f59e0b;
             color: white;
-            font-size: 0.6rem;
-            padding: 2px 8px;
+            font-size: 0.55rem;
+            padding: 2px 6px;
             border-radius: 100px;
-            margin-left: 8px;
+            margin-left: 6px;
         }
+
         .hidden {
             display: none !important;
         }
+
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 16px;
             left: 16px;
             right: 16px;
             background: rgba(26, 26, 46, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 12px 16px;
+            border-radius: 10px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             z-index: 9999;
             transform: translateY(120px);
             opacity: 0;
             transition: all 0.4s ease;
         }
+
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
+
         .toast-icon {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             background: rgba(16, 185, 129, 0.12);
             display: flex;
@@ -556,33 +633,39 @@
             justify-content: center;
             flex-shrink: 0;
         }
+
         .toast-icon i {
             color: #10b981;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
+
         .toast.error .toast-icon {
             background: rgba(239, 68, 68, 0.12);
         }
         .toast.error .toast-icon i {
             color: #ef4444;
         }
+
         .toast-content {
             flex: 1;
         }
+
         .toast-title {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
+
         .toast-message {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #a0a0b8;
         }
+
         .toast-close {
             background: none;
             border: none;
             color: #6a6a82;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 480px) {
@@ -594,11 +677,14 @@
             }
             .admin-stats {
                 grid-template-columns: 1fr 1fr;
-                gap: 8px;
+                gap: 6px;
             }
             .order-stats {
                 grid-template-columns: 1fr 1fr 1fr;
-                gap: 6px;
+                gap: 4px;
+            }
+            .admin-wrapper {
+                max-width: 100%;
             }
         }
     </style>
@@ -606,14 +692,19 @@
 <body>
 
     <div class="admin-wrapper">
+        <!-- Header -->
         <header class="admin-header">
-            <h1>⚙️ Admin Panel</h1>
+            <h1>⚙️ Admin</h1>
             <div class="admin-header-actions">
                 <a href="index.html"><i class="fas fa-store"></i></a>
+                <button class="btn-danger-sm" onclick="migrateOldData()">
+                    <i class="fas fa-upload"></i> Migrate
+                </button>
                 <button class="btn-danger-sm" onclick="resetAll()"><i class="fas fa-trash-alt"></i></button>
             </div>
         </header>
 
+        <!-- Stats -->
         <div class="admin-stats">
             <div class="admin-stat-card">
                 <div class="label">📦 Products</div>
@@ -661,11 +752,11 @@
             </div>
 
             <div class="form-group">
-                <label>Multiple Images <span class="required">*</span></label>
+                <label>Images <span class="required">*</span></label>
                 <div class="image-upload-area">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Tap to upload multiple images</p>
-                    <span class="sub">PNG, JPG, WEBP (Max 5 images)</span>
+                    <p>Tap to upload</p>
+                    <span class="sub">Max 5 images</span>
                     <input type="file" id="p-images" accept="image/*" multiple />
                 </div>
                 <div class="image-preview-grid" id="image-preview-grid"></div>
@@ -688,19 +779,19 @@
                     <label><i class="fas fa-palette"></i> Colors <span class="required">*</span></label>
                     <div class="options-group" id="colors-container"></div>
                     <div class="option-input-row">
-                        <input type="text" id="color-input" placeholder="e.g. Red, Black, Blue" />
+                        <input type="text" id="color-input" placeholder="e.g. Red, Black" />
                         <button class="btn-sm" onclick="addOption('color')">
                             <i class="fas fa-plus"></i> Add
                         </button>
                     </div>
                     <input type="hidden" id="p-colors" value="[]" />
-                    <small><i class="fas fa-info-circle"></i> Colors se product preview mein image change hogi</small>
+                    <small><i class="fas fa-info-circle"></i> Colors se image change hogi</small>
                 </div>
             </div>
 
             <div class="form-actions">
                 <button class="btn-primary" id="submit-btn" onclick="saveProduct()">
-                    <i class="fas fa-plus"></i> Add Product
+                    <i class="fas fa-plus"></i> Add
                 </button>
                 <button class="btn-secondary hidden" id="cancel-btn" onclick="cancelEdit()">
                     <i class="fas fa-times"></i> Cancel
@@ -738,7 +829,7 @@
 
         <!-- Orders -->
         <div class="admin-card">
-            <h2><i class="fas fa-truck"></i> Order Management</h2>
+            <h2><i class="fas fa-truck"></i> Orders</h2>
             <div class="order-stats">
                 <div class="order-stat-box">
                     <div class="stat-label">📦 Total</div>
@@ -756,7 +847,7 @@
             <div id="order-list"></div>
             <div class="empty-state" id="empty-orders">
                 <i class="fas fa-box-open"></i>
-                No orders yet
+                No orders
             </div>
         </div>
     </div>
@@ -810,7 +901,7 @@
         });
 
         // ============================================
-        // IMAGE UPLOAD - FIXED
+        // IMAGE UPLOAD - FIXED FOR MOBILE
         // ============================================
         function setupImageUpload() {
             const input = document.getElementById('p-images');
@@ -819,16 +910,27 @@
             input.addEventListener('change', function(e) {
                 const files = e.target.files;
                 console.log('📸 Files selected:', files.length);
+
                 for (let file of files) {
                     if (uploadedImages.length >= 5) {
                         showToast('Max 5 images!', 'warning');
                         break;
                     }
+
+                    // Check file size (max 2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        showToast('Image too large! Max 2MB', 'error');
+                        continue;
+                    }
+
                     const reader = new FileReader();
                     reader.onload = function(event) {
                         uploadedImages.push(event.target.result);
                         renderPreviews();
                         console.log('✅ Image loaded:', uploadedImages.length);
+                    };
+                    reader.onerror = function() {
+                        showToast('Error reading file!', 'error');
                     };
                     reader.readAsDataURL(file);
                 }
@@ -852,7 +954,7 @@
                     <button class="remove-img" onclick="removeImage(${i})">
                         <i class="fas fa-times"></i>
                     </button>
-                    <span style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.6);padding:1px 6px;border-radius:4px;font-size:0.5rem;color:white;">${i+1}</span>
+                    <span style="position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,0.6);padding:1px 5px;border-radius:3px;font-size:0.45rem;color:white;">${i+1}</span>
                 </div>
             `).join('');
 
@@ -896,20 +998,24 @@
             showToast('📤 Uploading images...', 'info');
 
             for (let img of images) {
-                // Check if already URL
                 if (img.startsWith('http://') || img.startsWith('https://')) {
                     imageUrls.push(img);
-                    console.log('✅ Already URL:', img.substring(0, 50));
+                    console.log('✅ Already URL');
                     continue;
                 }
 
                 try {
                     console.log('📤 Uploading to IMGBB...');
+
+                    // Convert base64 to blob
                     const response = await fetch(img);
                     const blob = await response.blob();
+
+                    // Create form data
                     const formData = new FormData();
                     formData.append('image', blob);
 
+                    // Upload to IMGBB
                     const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
                         method: 'POST',
                         body: formData
@@ -920,7 +1026,7 @@
 
                     if (result.success) {
                         imageUrls.push(result.data.url);
-                        console.log('✅ Uploaded:', result.data.url.substring(0, 50));
+                        console.log('✅ Uploaded:', result.data.url.substring(0, 40) + '...');
                     } else {
                         showToast('Upload failed: ' + (result.error?.message || 'Unknown'), 'error');
                         return;
@@ -968,6 +1074,7 @@
                 showToast(editId ? '✅ Product updated!' : '✅ Product added!', 'success');
                 clearForm();
                 loadProducts();
+                updateStats();
             } catch (error) {
                 console.error('❌ Save product error:', error);
                 showToast('Error: ' + error.message, 'error');
@@ -975,7 +1082,89 @@
         }
 
         // ============================================
-        // REST FUNCTIONS (Categories, Products, Orders)
+        // MIGRATE OLD DATA TO SUPABASE
+        // ============================================
+        async function migrateOldData() {
+            if (!confirm('⚠️ Old data (from localStorage) ko Supabase mein migrate karein?')) return;
+
+            showToast('📤 Migrating data...', 'info');
+
+            try {
+                // Get old data from localStorage
+                const oldProducts = JSON.parse(localStorage.getItem('myProducts') || '[]');
+                const oldCategories = JSON.parse(localStorage.getItem('myCategories') || '[]');
+                const oldOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+
+                console.log('📦 Old Products:', oldProducts.length);
+                console.log('🏷️ Old Categories:', oldCategories.length);
+                console.log('📊 Old Orders:', oldOrders.length);
+
+                let migrated = 0;
+
+                // 1. Migrate Categories
+                for (let cat of oldCategories) {
+                    try {
+                        const { error } = await supabase
+                            .from('categories')
+                            .insert({ name: cat });
+                        if (!error) migrated++;
+                    } catch (e) { console.log('Category already exists:', cat); }
+                }
+
+                // 2. Migrate Products
+                for (let p of oldProducts) {
+                    try {
+                        const { error } = await supabase
+                            .from('products')
+                            .insert({
+                                title: p.title || 'Product',
+                                price: p.price || '0',
+                                description: p.description || '',
+                                category: p.category || 'General',
+                                images: p.images || [],
+                                sizes: p.sizes || [],
+                                colors: p.colors || []
+                            });
+                        if (!error) migrated++;
+                    } catch (e) { console.error('Product migrate error:', e); }
+                }
+
+                // 3. Migrate Orders
+                for (let o of oldOrders) {
+                    try {
+                        const { error } = await supabase
+                            .from('orders')
+                            .insert({
+                                order_id: o.orderId || o.order_id || 'MK-' + Date.now(),
+                                items: o.items || 'N/A',
+                                total: o.total || '0',
+                                name: o.name || 'N/A',
+                                email: o.email || 'N/A',
+                                phone: o.phone || 'N/A',
+                                address: o.address || 'N/A',
+                                notes: o.notes || 'N/A',
+                                colors: o.colors || '',
+                                sizes: o.sizes || '',
+                                images: o.images || [],
+                                status: o.status || 'processing'
+                            });
+                        if (!error) migrated++;
+                    } catch (e) { console.error('Order migrate error:', e); }
+                }
+
+                showToast('✅ ' + migrated + ' items migrated to Supabase!', 'success');
+                loadCategories();
+                loadProducts();
+                loadOrders();
+
+            } catch (error) {
+                console.error('❌ Migration error:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // REST FUNCTIONS
         // ============================================
         async function loadCategories() {
             try {
@@ -995,7 +1184,7 @@
             const list = document.getElementById('categories-list');
             if (!list) return;
             if (!categoriesData || categoriesData.length === 0) {
-                list.innerHTML = '<span style="color:#6a6a82;font-size:0.75rem;">No categories</span>';
+                list.innerHTML = '<span style="color:#6a6a82;font-size:0.7rem;">No categories</span>';
                 return;
             }
             list.innerHTML = categoriesData.map(c =>
@@ -1250,7 +1439,7 @@
         }
 
         // ============================================
-        // OPTIONS (Sizes & Colors)
+        // OPTIONS
         // ============================================
         function loadOptions() {
             const s = document.getElementById('p-sizes');
@@ -1327,11 +1516,14 @@
         }
 
         function resetAll() {
-            if (confirm('⚠️ Delete ALL data?')) {
+            if (confirm('⚠️ Delete ALL data from Supabase?')) {
                 showToast('Feature disabled for safety.', 'warning');
             }
         }
 
+        // ============================================
+        // TOAST
+        // ============================================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             if (!toast) { alert(message); return; }
@@ -1361,6 +1553,7 @@
         window.resetAll = resetAll;
         window.clearForm = clearForm;
         window.updateOrderStatus = updateOrderStatus;
+        window.migrateOldData = migrateOldData;
     </script>
 </body>
 </html>

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /* =============================================
-           TRACKING PAGE
+           TRACKING PAGE STYLES
            ============================================= */
         * {
             margin: 0;
@@ -23,7 +23,6 @@
             min-height: 100vh;
         }
 
-        /* Navbar */
         .navbar {
             position: fixed;
             top: 0;
@@ -61,6 +60,7 @@
             font-size: 1.3rem;
             font-weight: 800;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .logo i {
@@ -111,6 +111,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: inherit;
+            text-decoration: none;
         }
 
         .nav-btn:hover {
@@ -127,7 +128,6 @@
             border-radius: 50%;
         }
 
-        /* Tracking Page */
         .tracking-page {
             padding: 100px 24px 60px;
             min-height: 100vh;
@@ -209,7 +209,6 @@
             box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
         }
 
-        /* Order Details */
         .order-details {
             margin-top: 24px;
             background: rgba(255, 255, 255, 0.03);
@@ -278,7 +277,6 @@
             text-align: right;
         }
 
-        /* Timeline */
         .timeline {
             margin-top: 16px;
             padding-top: 16px;
@@ -312,6 +310,11 @@
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
         }
 
+        .timeline .step .dot.cancelled-dot {
+            background: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+
         .timeline .step .step-content {
             flex: 1;
         }
@@ -325,7 +328,6 @@
             color: #a0a0b8;
         }
 
-        /* Error Message */
         .error-message {
             color: #ef4444;
             margin-top: 12px;
@@ -336,7 +338,6 @@
             border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
-        /* Footer */
         .footer {
             background: rgba(26, 26, 46, 0.85);
             border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -405,7 +406,6 @@
             font-size: 0.8rem;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -474,7 +474,6 @@
             font-size: 1rem;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -523,10 +522,10 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-left">
-                <div class="logo">
+                <a href="index.html" class="logo">
                     <i class="fas fa-store-alt"></i>
                     <span>Markaz</span>
-                </div>
+                </a>
                 <div class="nav-links">
                     <a href="index.html">Home</a>
                     <a href="products.html">Products</a>
@@ -610,7 +609,7 @@
                     <!-- Timeline -->
                     <div class="timeline" id="track-timeline">
                         <div class="step">
-                            <div class="dot active" id="step1-dot"></div>
+                            <div class="dot" id="step1-dot"></div>
                             <div class="step-content">
                                 <div class="step-title">Order Placed</div>
                                 <div class="step-desc" id="step1-desc">Your order has been confirmed</div>
@@ -650,10 +649,10 @@
         <div class="footer-container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="logo">
+                    <a href="index.html" class="logo">
                         <i class="fas fa-store-alt"></i>
                         <span>Markaz</span>
-                    </div>
+                    </a>
                     <p>Your trusted destination for premium products in Pakistan.</p>
                 </div>
                 <div class="footer-links">
@@ -700,7 +699,7 @@
     <!-- ========================================== -->
     <script>
         // ============================================
-        // TRACK ORDER - COMPLETE
+        // TRACK ORDER - FIXED
         // ============================================
 
         function trackOrder() {
@@ -719,10 +718,13 @@
             }
 
             // ============================================
-            // CHECK FROM LOCAL STORAGE (For Demo)
+            // FIXED: FETCH FROM LOCAL STORAGE
             // ============================================
             const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            console.log('📦 All orders:', orders);
+            
             const order = orders.find(o => o.orderId === orderId);
+            console.log('🔍 Found order:', order);
 
             if (order) {
                 displayOrderDetails(order);
@@ -739,8 +741,8 @@
             // Order ID & Status
             document.getElementById('track-order-id').textContent = order.orderId;
 
-            const statusBadge = document.getElementById('track-status');
             const status = order.status || 'processing';
+            const statusBadge = document.getElementById('track-status');
             statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
             statusBadge.className = 'order-status-badge ' + status;
 
@@ -753,7 +755,7 @@
             document.getElementById('track-size').textContent = order.sizes || 'N/A';
 
             // ============================================
-            // UPDATE TIMELINE
+            // FIXED: UPDATE TIMELINE
             // ============================================
             const statusMap = {
                 'processing': 1,
@@ -762,53 +764,49 @@
                 'cancelled': 0
             };
 
-            const stepMap = {
-                0: { dot: 'step1-dot', desc: 'step1-desc' },
-                1: { dot: 'step2-dot', desc: 'step2-desc' },
-                2: { dot: 'step3-dot', desc: 'step3-desc' },
-                3: { dot: 'step4-dot', desc: 'step4-desc' }
-            };
-
             const statusIndex = statusMap[status] || 1;
 
             // Reset all dots
             for (let i = 1; i <= 4; i++) {
                 const dot = document.getElementById(`step${i}-dot`);
                 dot.className = 'dot';
+                const desc = document.getElementById(`step${i}-desc`);
+                
+                // Reset descriptions
+                if (i === 1) desc.textContent = 'Your order has been confirmed';
+                if (i === 2) desc.textContent = 'Your order is being prepared';
+                if (i === 3) desc.textContent = 'Your order has been shipped';
+                if (i === 4) desc.textContent = 'Your order has been delivered';
             }
 
-            // Set active/completed dots
-            const statusMessages = {
-                'processing': 'Order is being processed',
-                'shipped': 'Order has been shipped',
-                'delivered': 'Order has been delivered',
-                'cancelled': 'Order has been cancelled'
-            };
-
-            for (let i = 1; i <= 4; i++) {
-                const dot = document.getElementById(`step${i}-dot`);
-                const desc = document.getElementById(`step${i}-desc`);
-
-                if (i <= statusIndex) {
-                    if (status === 'cancelled') {
+            // ============================================
+            // FIXED: Set dots based on status
+            // ============================================
+            if (status === 'cancelled') {
+                // Cancelled - all dots grey except first
+                for (let i = 1; i <= 4; i++) {
+                    const dot = document.getElementById(`step${i}-dot`);
+                    if (i === 1) {
+                        dot.className = 'dot active';
+                    } else {
                         dot.className = 'dot';
-                        desc.textContent = 'Order cancelled';
+                    }
+                    const desc = document.getElementById(`step${i}-desc`);
+                    if (i === 1) desc.textContent = 'Order was placed';
+                    if (i > 1) desc.textContent = 'Order was cancelled';
+                }
+                document.getElementById('step1-dot').className = 'dot completed';
+            } else {
+                // Normal flow - mark completed up to statusIndex
+                for (let i = 1; i <= 4; i++) {
+                    const dot = document.getElementById(`step${i}-dot`);
+                    if (i < statusIndex) {
+                        dot.className = 'dot completed';
                     } else if (i === statusIndex) {
                         dot.className = 'dot active';
                     } else {
-                        dot.className = 'dot completed';
+                        dot.className = 'dot';
                     }
-                }
-
-                // Update descriptions
-                if (i === 1) desc.textContent = 'Your order has been confirmed';
-                if (i === 2) desc.textContent = statusIndex >= 2 ? 'Order is being prepared' : 'Pending';
-                if (i === 3) desc.textContent = statusIndex >= 3 ? 'Order has been shipped' : 'Pending';
-                if (i === 4) desc.textContent = statusIndex >= 4 ? 'Order has been delivered' : 'Pending';
-
-                if (status === 'cancelled') {
-                    if (i === 1) desc.textContent = 'Order was placed';
-                    if (i > 1) desc.textContent = 'Order cancelled';
                 }
             }
         }
@@ -860,7 +858,6 @@
             toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Make function global
         window.trackOrder = trackOrder;
     </script>
 </body>

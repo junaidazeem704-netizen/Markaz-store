@@ -49,6 +49,11 @@ module.exports = async function handler(req, res) {
         }
     });
 
+    // ============================================
+    // TRACKING LINK
+    // ============================================
+    const trackingLink = `https://${req.headers.host || 'markaz-store.vercel.app'}/tracking.html?id=${orderId}`;
+
     const mailOptions = {
         from: `"${storeName || 'Markaz Store'}" <${process.env.MY_GMAIL}>`,
         to: email,
@@ -69,20 +74,34 @@ module.exports = async function handler(req, res) {
                     
                     <div style="background: #1a1a2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06);">
                         <h2 style="font-size: 16px; font-weight: 600; color: #6366f1; margin-bottom: 12px;">🛍️ Order Details</h2>
-                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Order ID:</strong> ${orderId}</p>
-                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Items:</strong> ${items}</p>
-                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Total:</strong> Rs. ${total}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Order ID:</strong> ${orderId}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Items:</strong> ${items}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Total:</strong> Rs. ${total}</p>
                     </div>
                     
-                    <div style="background: #1a1a2e; border-radius: 8px; padding: 16px; border: 1px solid rgba(255,255,255,0.06);">
+                    <div style="background: #1a1a2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06);">
                         <h2 style="font-size: 16px; font-weight: 600; color: #6366f1; margin-bottom: 12px;">👤 Customer Details</h2>
-                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Name:</strong> ${name}</p>
-                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style: #fff;">Email:</strong> ${email}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Name:</strong> ${name}</p>
+                        <p style="margin: 4px 0; color: #a0a0b8;"><strong style="color: #fff;">Email:</strong> ${email}</p>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TRACKING LINK -->
+                    <!-- ========================================== -->
+                    <div style="background: linear-gradient(135deg, #1a1a2e, #2a2a4e); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: center; border: 1px solid rgba(99,102,241,0.2);">
+                        <h2 style="font-size: 16px; font-weight: 600; color: #6366f1; margin-bottom: 8px;">🔍 Track Your Order</h2>
+                        <a href="${trackingLink}" style="display: inline-block; padding: 10px 28px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                            📦 Track Order
+                        </a>
+                        <p style="color: #6a6a82; font-size: 11px; margin-top: 8px;">Order ID: ${orderId}</p>
                     </div>
                 </div>
                 
                 <div style="padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-                    <p style="color: #6a6a82; font-size: 12px;">This is an automated notification from ${storeName || 'Markaz Store'}<br>${storeEmail || 'info@markazstore.com'}</p>
+                    <p style="color: #6a6a82; font-size: 12px;">
+                        This is an automated notification from ${storeName || 'Markaz Store'}<br>
+                        ${storeEmail || 'info@markazstore.com'}
+                    </p>
                 </div>
             </div>
         `
@@ -90,8 +109,8 @@ module.exports = async function handler(req, res) {
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log('✅ Status update email sent!');
-        return res.status(200).json({ success: true, message: 'Status update email sent!' });
+        console.log('✅ Status update email sent with tracking link!');
+        return res.status(200).json({ success: true, message: 'Status update email sent with tracking!' });
     } catch (error) {
         console.error('❌ Email error:', error);
         return res.status(500).json({ 

@@ -4,154 +4,493 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Track Order - Markaz Store</title>
-    <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* =============================================
+           TRACKING PAGE
+           ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a12;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 0 24px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .logo i {
+            color: #6366f1;
+            font-size: 1.4rem;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: #a0a0b8;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: #a0a0b8;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .cart-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 50%;
+        }
+
+        /* Tracking Page */
         .tracking-page {
             padding: 100px 24px 60px;
             min-height: 100vh;
         }
+
         .tracking-page .container {
             max-width: 600px;
             margin: 0 auto;
         }
+
         .tracking-card {
-            background: var(--bg-card);
-            border: var(--border);
-            border-radius: var(--radius-lg);
+            background: rgba(26, 26, 46, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
             padding: 40px;
             text-align: center;
         }
+
         .tracking-card .icon {
             font-size: 3rem;
-            color: var(--accent);
+            color: #6366f1;
             margin-bottom: 16px;
         }
+
         .tracking-card h1 {
             font-size: 1.8rem;
             font-weight: 800;
             margin-bottom: 8px;
         }
+
         .tracking-card p {
-            color: var(--text-secondary);
+            color: #a0a0b8;
             margin-bottom: 24px;
         }
+
         .tracking-input-group {
             display: flex;
             gap: 12px;
         }
+
         .tracking-input-group input {
             flex: 1;
             padding: 14px 18px;
-            background: var(--bg-primary);
-            border: var(--border);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: #ffffff;
             font-size: 1rem;
             outline: none;
             font-family: inherit;
         }
+
         .tracking-input-group input:focus {
-            border-color: var(--accent);
+            border-color: #6366f1;
         }
-        .tracking-input-group button {
+
+        .tracking-input-group input::placeholder {
+            color: #6a6a82;
+        }
+
+        .btn-primary {
             padding: 14px 28px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
         }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
+        }
+
+        /* Order Details */
         .order-details {
             margin-top: 24px;
-            background: var(--bg-primary);
-            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
             padding: 20px;
-            border: var(--border);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             text-align: left;
             display: none;
         }
-        .order-details .status-badge {
-            display: inline-block;
+
+        .order-details .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .order-details .order-header .order-id {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .order-status-badge {
             padding: 4px 16px;
             border-radius: 100px;
             font-size: 0.75rem;
             font-weight: 600;
         }
-        .order-details .status-badge.processing {
+
+        .order-status-badge.processing {
             background: rgba(245, 158, 11, 0.15);
             color: #f59e0b;
         }
-        .order-details .status-badge.shipped {
+        .order-status-badge.shipped {
             background: rgba(99, 102, 241, 0.15);
             color: #6366f1;
         }
-        .order-details .status-badge.delivered {
+        .order-status-badge.delivered {
             background: rgba(16, 185, 129, 0.15);
             color: #10b981;
         }
-        .order-details .status-badge.cancelled {
+        .order-status-badge.cancelled {
             background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
         }
+
         .order-details .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .order-details .detail-row:last-child {
             border-bottom: none;
         }
+
         .order-details .detail-row .label {
-            color: var(--text-secondary);
+            color: #a0a0b8;
         }
+
         .order-details .detail-row .value {
             font-weight: 500;
             text-align: right;
         }
-        .order-details .timeline {
+
+        /* Timeline */
+        .timeline {
             margin-top: 16px;
             padding-top: 16px;
-            border-top: var(--border);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .order-details .timeline .step {
+
+        .timeline .step {
             display: flex;
             gap: 12px;
             padding: 8px 0;
-            align-items: center;
+            align-items: flex-start;
         }
-        .order-details .timeline .step .dot {
-            width: 12px;
-            height: 12px;
+
+        .timeline .step .dot {
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            background: var(--text-muted);
+            background: rgba(255, 255, 255, 0.1);
             flex-shrink: 0;
+            margin-top: 2px;
+            transition: all 0.3s ease;
         }
-        .order-details .timeline .step .dot.active {
-            background: var(--accent);
-            box-shadow: 0 0 20px rgba(99,102,241,0.3);
+
+        .timeline .step .dot.active {
+            background: #6366f1;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
         }
-        .order-details .timeline .step .dot.completed {
-            background: var(--success);
+
+        .timeline .step .dot.completed {
+            background: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
         }
-        .order-details .timeline .step .step-content {
+
+        .timeline .step .step-content {
             flex: 1;
         }
-        .order-details .timeline .step .step-content .step-title {
+
+        .timeline .step .step-content .step-title {
             font-weight: 500;
         }
-        .order-details .timeline .step .step-content .step-desc {
+
+        .timeline .step .step-content .step-desc {
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: #a0a0b8;
         }
+
+        /* Error Message */
         .error-message {
-            color: var(--danger);
+            color: #ef4444;
             margin-top: 12px;
             display: none;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.08);
+            border-radius: 8px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
-        @media (max-width: 480px) {
-            .tracking-input-group {
-                flex-direction: column;
+
+        /* Footer */
+        .footer {
+            background: rgba(26, 26, 46, 0.85);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 40px 24px 24px;
+            margin-top: 40px;
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-brand p {
+            color: #a0a0b8;
+            font-size: 0.85rem;
+            max-width: 300px;
+            line-height: 1.8;
+        }
+
+        .footer-links h4,
+        .footer-contact h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            display: block;
+            color: #a0a0b8;
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+
+        .footer-contact p {
+            color: #a0a0b8;
+            font-size: 0.8rem;
+            margin: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-contact p i {
+            width: 20px;
+            color: #6366f1;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 20px;
+            text-align: center;
+            color: #6a6a82;
+            font-size: 0.8rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            background: rgba(26, 26, 46, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toast-icon i {
+            color: #10b981;
+            font-size: 0.9rem;
+        }
+
+        .toast.error .toast-icon {
+            background: rgba(239, 68, 68, 0.12);
+        }
+        .toast.error .toast-icon i {
+            color: #ef4444;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .toast-message {
+            font-size: 0.7rem;
+            color: #a0a0b8;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #6a6a82;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
             }
             .tracking-card {
                 padding: 24px;
+            }
+            .tracking-input-group {
+                flex-direction: column;
+            }
+            .btn-primary {
+                justify-content: center;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
             .order-details .detail-row {
                 flex-direction: column;
@@ -160,11 +499,27 @@
             .order-details .detail-row .value {
                 text-align: center;
             }
+            .order-details .order-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tracking-card {
+                padding: 16px;
+            }
+            .tracking-card h1 {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- ========================================== -->
+    <!-- NAVBAR -->
+    <!-- ========================================== -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-left">
@@ -184,6 +539,10 @@
                     <i class="fas fa-cog"></i>
                     <span>Admin</span>
                 </button>
+                <button class="nav-btn" onclick="window.location.href='tracking.html'">
+                    <i class="fas fa-search"></i>
+                    <span>Track</span>
+                </button>
                 <button class="nav-btn" onclick="window.location.href='cart.html'">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-badge" id="cart-badge">0</span>
@@ -192,6 +551,9 @@
         </div>
     </nav>
 
+    <!-- ========================================== -->
+    <!-- TRACKING PAGE -->
+    <!-- ========================================== -->
     <section class="tracking-page">
         <div class="container">
             <div class="tracking-card">
@@ -213,10 +575,11 @@
                     <span id="error-text">Order not found</span>
                 </div>
 
+                <!-- Order Details -->
                 <div class="order-details" id="order-details">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-                        <span style="font-weight:600;">Order #<span id="track-order-id">-</span></span>
-                        <span class="status-badge" id="track-status">Processing</span>
+                    <div class="order-header">
+                        <span class="order-id">Order #<span id="track-order-id">-</span></span>
+                        <span class="order-status-badge" id="track-status">Processing</span>
                     </div>
 
                     <div class="detail-row">
@@ -232,8 +595,16 @@
                         <span class="value" id="track-date">-</span>
                     </div>
                     <div class="detail-row">
-                        <span class="label">Delivery Address</span>
+                        <span class="label">Address</span>
                         <span class="value" id="track-address">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Color</span>
+                        <span class="value" id="track-color">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Size</span>
+                        <span class="value" id="track-size">-</span>
                     </div>
 
                     <!-- Timeline -->
@@ -272,7 +643,10 @@
         </div>
     </section>
 
-    <footer class="footer" style="margin-top:0;">
+    <!-- ========================================== -->
+    <!-- FOOTER -->
+    <!-- ========================================== -->
+    <footer class="footer">
         <div class="footer-container">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -281,17 +655,12 @@
                         <span>Markaz</span>
                     </div>
                     <p>Your trusted destination for premium products in Pakistan.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
                 </div>
                 <div class="footer-links">
                     <h4>Quick Links</h4>
                     <a href="index.html">Home</a>
                     <a href="products.html">Products</a>
+                    <a href="tracking.html">Track Order</a>
                     <a href="index.html#about">About</a>
                     <a href="index.html#contact">Contact</a>
                 </div>
@@ -312,80 +681,134 @@
         </div>
     </footer>
 
+    <!-- ========================================== -->
+    <!-- TOAST -->
+    <!-- ========================================== -->
     <div class="toast" id="toast">
-        <div class="toast-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
+        <div class="toast-icon"><i class="fas fa-check-circle"></i></div>
         <div class="toast-content">
             <span class="toast-title">Success!</span>
-            <span class="toast-message" id="toast-message">Done</span>
+            <span class="toast-message" id="toast-msg">Done</span>
         </div>
         <button class="toast-close" onclick="this.parentElement.classList.remove('show')">
             <i class="fas fa-times"></i>
         </button>
     </div>
 
+    <!-- ========================================== -->
+    <!-- SCRIPTS -->
+    <!-- ========================================== -->
     <script>
         // ============================================
-        // TRACK ORDER
+        // TRACK ORDER - COMPLETE
         // ============================================
-        async function trackOrder() {
+
+        function trackOrder() {
             const orderId = document.getElementById('order-id-input').value.trim();
             const errorMsg = document.getElementById('error-message');
             const details = document.getElementById('order-details');
 
+            // Reset
+            errorMsg.style.display = 'none';
+            details.style.display = 'none';
+
             if (!orderId) {
                 errorMsg.style.display = 'block';
                 document.getElementById('error-text').textContent = 'Please enter an Order ID';
-                details.style.display = 'none';
                 return;
             }
 
-            errorMsg.style.display = 'none';
+            // ============================================
+            // CHECK FROM LOCAL STORAGE (For Demo)
+            // ============================================
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const order = orders.find(o => o.orderId === orderId);
 
-            try {
-                const response = await fetch(`/api/track-order?id=${orderId}`);
-                const result = await response.json();
-
-                if (result.success) {
-                    const order = result.order;
-                    displayOrderDetails(order);
-                    details.style.display = 'block';
-                    showToast('✅ Order found!', 'success');
-                } else {
-                    errorMsg.style.display = 'block';
-                    document.getElementById('error-text').textContent = result.message || 'Order not found';
-                    details.style.display = 'none';
-                }
-            } catch (error) {
+            if (order) {
+                displayOrderDetails(order);
+                details.style.display = 'block';
+                showToast('✅ Order found!', 'success');
+            } else {
                 errorMsg.style.display = 'block';
-                document.getElementById('error-text').textContent = 'Error tracking order. Please try again.';
-                details.style.display = 'none';
+                document.getElementById('error-text').textContent = 'Order not found. Please check your Order ID.';
+                showToast('❌ Order not found!', 'error');
             }
         }
 
         function displayOrderDetails(order) {
+            // Order ID & Status
             document.getElementById('track-order-id').textContent = order.orderId;
 
             const statusBadge = document.getElementById('track-status');
-            statusBadge.textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
-            statusBadge.className = 'status-badge ' + order.status;
+            const status = order.status || 'processing';
+            statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            statusBadge.className = 'order-status-badge ' + status;
 
+            // Details
             document.getElementById('track-items').textContent = order.items || 'N/A';
-            document.getElementById('track-total').textContent = `Rs. ${order.total}`;
+            document.getElementById('track-total').textContent = `Rs. ${order.total || 0}`;
             document.getElementById('track-date').textContent = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
             document.getElementById('track-address').textContent = order.address || 'N/A';
+            document.getElementById('track-color').textContent = order.colors || 'N/A';
+            document.getElementById('track-size').textContent = order.sizes || 'N/A';
 
-            // Update timeline
-            const statuses = ['processing', 'processing', 'shipped', 'delivered'];
-            const currentIndex = statuses.indexOf(order.status);
-            
+            // ============================================
+            // UPDATE TIMELINE
+            // ============================================
+            const statusMap = {
+                'processing': 1,
+                'shipped': 2,
+                'delivered': 3,
+                'cancelled': 0
+            };
+
+            const stepMap = {
+                0: { dot: 'step1-dot', desc: 'step1-desc' },
+                1: { dot: 'step2-dot', desc: 'step2-desc' },
+                2: { dot: 'step3-dot', desc: 'step3-desc' },
+                3: { dot: 'step4-dot', desc: 'step4-desc' }
+            };
+
+            const statusIndex = statusMap[status] || 1;
+
             // Reset all dots
             for (let i = 1; i <= 4; i++) {
                 const dot = document.getElementById(`step${i}-dot`);
                 dot.className = 'dot';
-                if (i <= currentIndex + 1) {
-                    dot.classList.add('active');
+            }
+
+            // Set active/completed dots
+            const statusMessages = {
+                'processing': 'Order is being processed',
+                'shipped': 'Order has been shipped',
+                'delivered': 'Order has been delivered',
+                'cancelled': 'Order has been cancelled'
+            };
+
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(`step${i}-dot`);
+                const desc = document.getElementById(`step${i}-desc`);
+
+                if (i <= statusIndex) {
+                    if (status === 'cancelled') {
+                        dot.className = 'dot';
+                        desc.textContent = 'Order cancelled';
+                    } else if (i === statusIndex) {
+                        dot.className = 'dot active';
+                    } else {
+                        dot.className = 'dot completed';
+                    }
+                }
+
+                // Update descriptions
+                if (i === 1) desc.textContent = 'Your order has been confirmed';
+                if (i === 2) desc.textContent = statusIndex >= 2 ? 'Order is being prepared' : 'Pending';
+                if (i === 3) desc.textContent = statusIndex >= 3 ? 'Order has been shipped' : 'Pending';
+                if (i === 4) desc.textContent = statusIndex >= 4 ? 'Order has been delivered' : 'Pending';
+
+                if (status === 'cancelled') {
+                    if (i === 1) desc.textContent = 'Order was placed';
+                    if (i > 1) desc.textContent = 'Order cancelled';
                 }
             }
         }
@@ -401,6 +824,7 @@
                 trackOrder();
             }
             updateCartBadge();
+            renderFooterCategories();
         });
 
         function updateCartBadge() {
@@ -411,10 +835,22 @@
             }
         }
 
+        function renderFooterCategories() {
+            const container = document.getElementById('footer-categories');
+            if (!container) return;
+            const categories = JSON.parse(localStorage.getItem('myCategories')) || ['Watches', 'Clothing', 'Electronics'];
+            container.innerHTML = categories.map(c =>
+                `<a href="products.html">${c}</a>`
+            ).join('');
+        }
+
+        // ============================================
+        // TOAST
+        // ============================================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             if (!toast) return;
-            document.getElementById('toast-message').textContent = message;
+            document.getElementById('toast-msg').textContent = message;
             const titles = { success: '✅ Success!', error: '❌ Error!', warning: '⚠️ Warning', info: 'ℹ️ Info' };
             toast.querySelector('.toast-title').textContent = titles[type] || titles.success;
             toast.className = 'toast';
@@ -424,6 +860,7 @@
             toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
+        // Make function global
         window.trackOrder = trackOrder;
     </script>
 </body>

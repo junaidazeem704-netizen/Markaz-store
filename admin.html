@@ -8,15 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* =============================================
-           ADMIN PANEL - COMPLETE
-           ============================================= */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a12;
@@ -24,17 +20,15 @@
             padding: 16px;
             min-height: 100vh;
         }
-
         .admin-wrapper {
             max-width: 800px;
             margin: 0 auto;
         }
-
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 24px;
+            padding: 16px 20px;
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 16px;
@@ -42,129 +36,101 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-
         .admin-header h1 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 800;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .admin-header-actions {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
-
         .admin-header-actions a {
-            padding: 8px 16px;
+            padding: 6px 14px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 8px;
             color: #a0a0b8;
             text-decoration: none;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
+            font-size: 0.75rem;
         }
-
-        .admin-header-actions a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
         .btn-danger-sm {
-            padding: 8px 16px;
+            padding: 6px 14px;
             background: rgba(239, 68, 68, 0.12);
             border: 1px solid rgba(239, 68, 68, 0.2);
             border-radius: 8px;
             color: #ef4444;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             font-family: inherit;
-            transition: all 0.3s ease;
         }
-
-        .btn-danger-sm:hover {
-            background: rgba(239, 68, 68, 0.2);
-        }
-
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 16px;
+            gap: 12px;
             margin-bottom: 20px;
         }
-
         .admin-stat-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 14px 18px;
             text-align: center;
         }
-
         .admin-stat-card .label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #a0a0b8;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-
         .admin-stat-card .value {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 700;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .admin-card {
             background: rgba(26, 26, 46, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 16px;
-            padding: 24px 28px;
+            padding: 20px;
             margin-bottom: 16px;
         }
-
         .admin-card h2 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
             margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-
         .admin-card h2 i {
             color: #6366f1;
         }
-
         .admin-card .badge {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             padding: 2px 10px;
             border-radius: 100px;
-            margin-left: 8px;
+            margin-left: 6px;
         }
-
         .form-group {
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
-
         .form-group label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: #a0a0b8;
             display: block;
             margin-bottom: 4px;
         }
-
         .form-group label .required {
             color: #ef4444;
         }
-
         .form-group input,
         .form-group textarea {
             width: 100%;
@@ -176,50 +142,40 @@
             font-size: 0.95rem;
             outline: none;
             font-family: inherit;
-            transition: all 0.3s ease;
         }
-
         .form-group textarea {
             resize: vertical;
             min-height: 80px;
         }
-
         .form-group input:focus,
         .form-group textarea:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            background: rgba(255, 255, 255, 0.06);
         }
-
         .form-group input::placeholder,
         .form-group textarea::placeholder {
             color: #6a6a82;
         }
-
         .form-group small {
             font-size: 0.7rem;
             color: #6a6a82;
             display: block;
             margin-top: 4px;
         }
-
         .form-group small i {
             color: #6366f1;
         }
-
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: 12px;
         }
-
         .form-actions {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
+            gap: 10px;
             margin-top: 8px;
         }
-
         .btn-primary {
             width: 100%;
             padding: 14px;
@@ -235,14 +191,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all 0.3s ease;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-        }
-
         .btn-secondary {
             width: 100%;
             padding: 14px;
@@ -258,14 +207,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all 0.3s ease;
         }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
         .btn-sm {
             padding: 6px 14px;
             font-size: 0.75rem;
@@ -277,45 +219,33 @@
             color: #a0a0b8;
             cursor: pointer;
             font-family: inherit;
-            transition: all 0.3s ease;
         }
-
         .btn-sm:hover {
             background: rgba(255, 255, 255, 0.1);
         }
-
         .btn-edit {
             padding: 4px 10px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             background: rgba(99, 102, 241, 0.12);
             border: 1px solid rgba(99, 102, 241, 0.2);
             border-radius: 6px;
             color: #6366f1;
             cursor: pointer;
             font-family: inherit;
-            transition: all 0.3s ease;
         }
-
-        .btn-edit:hover {
-            background: rgba(99, 102, 241, 0.2);
-        }
-
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
             border-radius: 10px;
-            padding: 24px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             position: relative;
             background: rgba(255, 255, 255, 0.02);
-            transition: all 0.3s ease;
         }
-
         .image-upload-area:hover {
             border-color: #6366f1;
             background: rgba(99, 102, 241, 0.04);
         }
-
         .image-upload-area input[type="file"] {
             position: absolute;
             top: 0;
@@ -325,31 +255,26 @@
             opacity: 0;
             cursor: pointer;
         }
-
         .image-upload-area i {
-            font-size: 2.4rem;
+            font-size: 2rem;
             color: #6366f1;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
-
         .image-upload-area p {
             color: #a0a0b8;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
-
         .image-upload-area .sub {
             color: #6a6a82;
             font-size: 0.7rem;
         }
-
         .image-preview-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 10px;
             margin-top: 12px;
         }
-
         .image-preview-item {
             position: relative;
             border-radius: 8px;
@@ -358,84 +283,66 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
-
         .image-preview-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         .image-preview-item .remove-img {
             position: absolute;
             top: 4px;
             right: 4px;
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.7);
             border: none;
             color: white;
             cursor: pointer;
             font-size: 0.6rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
         }
-
         .image-preview-item .remove-img:hover {
             background: #ef4444;
         }
-
         .image-preview-item .img-number {
             position: absolute;
             bottom: 4px;
             right: 4px;
             background: rgba(0, 0, 0, 0.6);
-            padding: 2px 8px;
+            padding: 1px 6px;
             border-radius: 4px;
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: white;
         }
-
         .options-group {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             margin-top: 4px;
-            min-height: 30px;
+            min-height: 28px;
         }
-
         .option-tag {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 12px 4px 14px;
+            gap: 4px;
+            padding: 4px 10px 4px 12px;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 100px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
-
         .option-tag .remove {
             cursor: pointer;
             color: #ef4444;
             background: none;
             border: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            font-size: 0.8rem;
         }
-
-        .option-tag .remove:hover {
-            transform: scale(1.2);
-        }
-
         .option-input-row {
             display: flex;
             gap: 6px;
             margin-top: 6px;
         }
-
         .option-input-row input {
             flex: 1;
             padding: 6px 12px;
@@ -445,50 +352,35 @@
             color: #ffffff;
             font-size: 0.85rem;
             outline: none;
-            transition: all 0.3s ease;
         }
-
-        .option-input-row input:focus {
-            border-color: #6366f1;
-        }
-
         .category-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             margin-top: 4px;
         }
-
         .category-tag {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 12px 4px 14px;
+            gap: 4px;
+            padding: 4px 10px 4px 12px;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 100px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
-
         .category-tag .remove {
             cursor: pointer;
             color: #ef4444;
             background: none;
             border: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            font-size: 0.8rem;
         }
-
-        .category-tag .remove:hover {
-            transform: scale(1.2);
-        }
-
         .category-input-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 12px;
         }
-
         .category-input-row input {
             flex: 1;
             padding: 8px 14px;
@@ -498,34 +390,14 @@
             color: #ffffff;
             font-size: 0.85rem;
             outline: none;
-            transition: all 0.3s ease;
         }
-
-        .category-input-row input:focus {
-            border-color: #6366f1;
-        }
-
         .product-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 400px;
+            gap: 6px;
+            max-height: 350px;
             overflow-y: auto;
         }
-
-        .product-list::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .product-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .product-list::-webkit-scrollbar-thumb {
-            background: #6366f1;
-            border-radius: 10px;
-        }
-
         .product-item {
             display: flex;
             justify-content: space-between;
@@ -536,57 +408,41 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             flex-wrap: wrap;
             gap: 6px;
-            transition: all 0.3s ease;
         }
-
-        .product-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-        }
-
         .product-item .info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
-
         .product-item .info img {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             object-fit: cover;
             border-radius: 6px;
         }
-
         .product-item .info .title {
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
-
         .product-item .info .meta {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #a0a0b8;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
         }
-
         .product-item .actions {
             display: flex;
             gap: 4px;
         }
-
         .empty-state {
             text-align: center;
             padding: 30px 20px;
             color: #6a6a82;
             display: none;
         }
-
         .empty-state i {
             font-size: 2rem;
             display: block;
             margin-bottom: 8px;
         }
-
         .order-item {
             display: flex;
             justify-content: space-between;
@@ -599,47 +455,30 @@
             flex-wrap: wrap;
             gap: 6px;
         }
-
         .order-item .order-info .order-id {
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
-
         .order-item .order-info .order-meta {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #a0a0b8;
         }
-
-        .order-item .order-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
         .order-item .order-status select {
             padding: 4px 8px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 6px;
             color: #ffffff;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-family: inherit;
             outline: none;
-            transition: all 0.3s ease;
         }
-
-        .order-item .order-status select:focus {
-            border-color: #6366f1;
-        }
-
         .order-status-badge {
             padding: 2px 10px;
             border-radius: 100px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
         }
-
         .order-status-badge.processing {
             background: rgba(245, 158, 11, 0.15);
             color: #f59e0b;
@@ -656,31 +495,26 @@
             background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
         }
-
         .order-stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-bottom: 16px;
         }
-
         .order-stat-box {
             background: rgba(255, 255, 255, 0.04);
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
             text-align: center;
         }
-
         .order-stat-box .stat-label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #a0a0b8;
         }
-
         .order-stat-box .stat-value {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
         }
-
         .order-stat-box .stat-value.delivered {
             color: #10b981;
         }
@@ -690,7 +524,6 @@
         .order-stat-box .stat-value.total {
             color: #6366f1;
         }
-
         .edit-mode-badge {
             background: #f59e0b;
             color: white;
@@ -699,11 +532,9 @@
             border-radius: 100px;
             margin-left: 8px;
         }
-
         .hidden {
             display: none !important;
         }
-
         .toast {
             position: fixed;
             bottom: 20px;
@@ -721,12 +552,10 @@
             opacity: 0;
             transition: all 0.4s ease;
         }
-
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
-
         .toast-icon {
             width: 28px;
             height: 28px;
@@ -737,50 +566,36 @@
             justify-content: center;
             flex-shrink: 0;
         }
-
         .toast-icon i {
             color: #10b981;
             font-size: 0.9rem;
         }
-
         .toast.error .toast-icon {
             background: rgba(239, 68, 68, 0.12);
         }
         .toast.error .toast-icon i {
             color: #ef4444;
         }
-
         .toast-content {
             flex: 1;
         }
-
         .toast-title {
             font-size: 0.75rem;
             font-weight: 600;
         }
-
         .toast-message {
             font-size: 0.7rem;
             color: #a0a0b8;
         }
-
         .toast-close {
             background: none;
             border: none;
             color: #6a6a82;
             cursor: pointer;
             font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .toast-close:hover {
-            color: #ffffff;
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
             .form-row {
                 grid-template-columns: 1fr;
             }
@@ -795,24 +610,8 @@
                 grid-template-columns: 1fr 1fr 1fr;
                 gap: 6px;
             }
-            .admin-card {
-                padding: 16px 18px;
-            }
-            .admin-header {
-                padding: 14px 16px;
-            }
-            .admin-header h1 {
-                font-size: 1.1rem;
-            }
-            .image-upload-area {
-                padding: 16px;
-            }
-            .image-upload-area i {
-                font-size: 1.8rem;
-            }
-            .image-preview-grid {
-                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-                gap: 8px;
+            .admin-wrapper {
+                padding: 0 4px;
             }
         }
     </style>
@@ -881,7 +680,7 @@
 
             <div class="form-group">
                 <label>Images <span class="required">*</span></label>
-                <div class="image-upload-area">
+                <div class="image-upload-area" id="upload-area">
                     <i class="fas fa-cloud-upload-alt"></i>
                     <p>Tap to upload images</p>
                     <span class="sub">Max 5 images</span>
@@ -1035,45 +834,36 @@
             const input = document.getElementById('p-images');
             if (!input) return;
 
-            // Remove any existing listeners
-            input.removeEventListener('change', handleImageUpload);
-            input.addEventListener('change', handleImageUpload);
-        }
+            input.addEventListener('change', function(e) {
+                const files = e.target.files;
+                console.log('📸 Files selected:', files.length);
 
-        function handleImageUpload(e) {
-            const files = e.target.files;
-            console.log('📸 Files selected:', files.length);
+                if (files.length === 0) return;
 
-            if (files.length === 0) return;
+                for (let file of files) {
+                    if (uploadedImages.length >= 5) {
+                        showToast('Max 5 images!', 'warning');
+                        break;
+                    }
 
-            for (let file of files) {
-                if (uploadedImages.length >= 5) {
-                    showToast('Max 5 images!', 'warning');
-                    break;
+                    if (file.size > 2 * 1024 * 1024) {
+                        showToast('Image too large! Max 2MB', 'error');
+                        continue;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        uploadedImages.push(event.target.result);
+                        renderPreviews();
+                        console.log('✅ Image loaded:', uploadedImages.length);
+                    };
+                    reader.onerror = function() {
+                        showToast('Error reading file!', 'error');
+                    };
+                    reader.readAsDataURL(file);
                 }
-
-                // Check file size (max 2MB)
-                if (file.size > 2 * 1024 * 1024) {
-                    showToast('Image too large! Max 2MB', 'error');
-                    continue;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    uploadedImages.push(event.target.result);
-                    renderPreviews();
-                    console.log('✅ Image loaded:', uploadedImages.length);
-                    console.log('📊 Total images:', uploadedImages.length);
-                };
-                reader.onerror = function() {
-                    showToast('Error reading file!', 'error');
-                    console.error('❌ FileReader error');
-                };
-                reader.readAsDataURL(file);
-            }
-
-            // Reset input so same file can be selected again
-            e.target.value = '';
+                e.target.value = '';
+            });
         }
 
         function renderPreviews() {
@@ -1083,7 +873,6 @@
             if (uploadedImages.length === 0) {
                 grid.innerHTML = '';
                 document.getElementById('p-images-data').value = '[]';
-                console.log('🖼️ Preview cleared');
                 return;
             }
 
@@ -1098,13 +887,11 @@
             `).join('');
 
             document.getElementById('p-images-data').value = JSON.stringify(uploadedImages);
-            console.log('🖼️ Preview rendered:', uploadedImages.length);
         }
 
         function removeImage(index) {
             uploadedImages.splice(index, 1);
             renderPreviews();
-            console.log('🗑️ Image removed:', uploadedImages.length);
             showToast('Image removed', 'info');
         }
 
@@ -1112,8 +899,6 @@
         // SAVE PRODUCT
         // ============================================
         async function saveProduct() {
-            console.log('🔴 saveProduct() called');
-
             const title = document.getElementById('p-title').value.trim();
             const price = document.getElementById('p-price').value.trim();
             const description = document.getElementById('p-description').value.trim();
@@ -1126,7 +911,6 @@
 
             const imagesData = document.getElementById('p-images-data');
             const images = JSON.parse(imagesData.value || '[]');
-            console.log('📸 Images to upload:', images.length);
 
             if (images.length === 0) {
                 showToast('Upload at least one image!', 'error');
@@ -1138,48 +922,34 @@
             showToast('📤 Uploading images...', 'info');
 
             for (let img of images) {
-                // Skip if already URL
                 if (img.startsWith('http://') || img.startsWith('https://')) {
                     imageUrls.push(img);
-                    console.log('✅ Already URL');
                     continue;
                 }
 
                 try {
-                    console.log('📤 Uploading to IMGBB...');
-
-                    // Convert base64 to blob
                     const response = await fetch(img);
                     const blob = await response.blob();
-
-                    // Create form data
                     const formData = new FormData();
                     formData.append('image', blob);
 
-                    // Upload to IMGBB
                     const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
                         method: 'POST',
                         body: formData
                     });
 
                     const result = await uploadRes.json();
-                    console.log('📤 IMGBB result:', result.success ? '✅ Success' : '❌ Failed');
-
                     if (result.success) {
                         imageUrls.push(result.data.url);
-                        console.log('✅ Uploaded:', result.data.url.substring(0, 40) + '...');
                     } else {
                         showToast('Upload failed: ' + (result.error?.message || 'Unknown'), 'error');
                         return;
                     }
                 } catch (e) {
-                    console.error('❌ Upload error:', e);
                     showToast('Upload error: ' + e.message, 'error');
                     return;
                 }
             }
-
-            console.log('✅ All images uploaded:', imageUrls.length);
 
             const sizes = JSON.parse(document.getElementById('p-sizes').value || '[]');
             const colors = JSON.parse(document.getElementById('p-colors').value || '[]');
@@ -1193,8 +963,6 @@
                 sizes: sizes,
                 colors: colors
             };
-
-            console.log('📦 Product data:', productData);
 
             try {
                 let result;
@@ -1211,7 +979,6 @@
 
                 if (result.error) throw result.error;
 
-                console.log('✅ Product saved to Supabase!');
                 showToast(editId ? '✅ Product updated!' : '✅ Product added!', 'success');
                 clearForm();
                 loadProducts();
@@ -1235,10 +1002,6 @@
                 const oldCategories = JSON.parse(localStorage.getItem('myCategories') || '[]');
                 const oldOrders = JSON.parse(localStorage.getItem('orders') || '[]');
 
-                console.log('📦 Old Products:', oldProducts.length);
-                console.log('🏷️ Old Categories:', oldCategories.length);
-                console.log('📊 Old Orders:', oldOrders.length);
-
                 let migrated = 0;
 
                 for (let cat of oldCategories) {
@@ -1247,7 +1010,7 @@
                             .from('categories')
                             .insert({ name: cat });
                         if (!error) migrated++;
-                    } catch (e) { console.log('Category exists:', cat); }
+                    } catch (e) {}
                 }
 
                 for (let p of oldProducts) {
@@ -1264,7 +1027,7 @@
                                 colors: p.colors || []
                             });
                         if (!error) migrated++;
-                    } catch (e) { console.error('Product error:', e); }
+                    } catch (e) {}
                 }
 
                 for (let o of oldOrders) {
@@ -1286,7 +1049,7 @@
                                 status: o.status || 'processing'
                             });
                         if (!error) migrated++;
-                    } catch (e) { console.error('Order error:', e); }
+                    } catch (e) {}
                 }
 
                 showToast('✅ ' + migrated + ' items migrated!', 'success');
@@ -1295,7 +1058,6 @@
                 loadOrders();
 
             } catch (error) {
-                console.error('❌ Migration error:', error);
                 showToast('Error: ' + error.message, 'error');
             }
         }
@@ -1312,16 +1074,14 @@
                 if (error) throw error;
                 renderCategories(data || []);
                 updateStats();
-            } catch (error) {
-                console.error('❌ Load categories error:', error);
-            }
+            } catch (error) {}
         }
 
         function renderCategories(categoriesData) {
             const list = document.getElementById('categories-list');
             if (!list) return;
             if (!categoriesData || categoriesData.length === 0) {
-                list.innerHTML = '<span style="color:#6a6a82;font-size:0.8rem;">No categories</span>';
+                list.innerHTML = '<span style="color:#6a6a82;font-size:0.75rem;">No categories</span>';
                 return;
             }
             list.innerHTML = categoriesData.map(c =>
@@ -1342,7 +1102,6 @@
                 showToast('Category added!', 'success');
                 loadCategories();
             } catch (error) {
-                console.error('❌ Add category error:', error);
                 showToast('Error: ' + error.message, 'error');
             }
         }
@@ -1355,7 +1114,6 @@
                 showToast('Category deleted.', 'success');
                 loadCategories();
             } catch (error) {
-                console.error('❌ Delete category error:', error);
                 showToast('Error: ' + error.message, 'error');
             }
         }
@@ -1369,9 +1127,7 @@
                 if (error) throw error;
                 renderProducts(data || []);
                 updateStats();
-            } catch (error) {
-                console.error('❌ Load products error:', error);
-            }
+            } catch (error) {}
         }
 
         function renderProducts(productsData) {
@@ -1387,7 +1143,7 @@
             list.innerHTML = productsData.map((p) => `
                 <div class="product-item">
                     <div class="info">
-                        <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/44'}" alt="${p.title}" />
+                        <img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/40'}" alt="${p.title}" />
                         <div>
                             <div class="title">${p.title}</div>
                             <div class="meta">
@@ -1437,7 +1193,6 @@
                 document.getElementById('cancel-btn').classList.remove('hidden');
                 showToast('Edit mode: ' + p.title, 'info');
             } catch (error) {
-                console.error('❌ Edit product error:', error);
                 showToast('Error: ' + error.message, 'error');
             }
         }
@@ -1450,7 +1205,6 @@
                 showToast('Product deleted.', 'success');
                 loadProducts();
             } catch (error) {
-                console.error('❌ Delete product error:', error);
                 showToast('Error: ' + error.message, 'error');
             }
         }
@@ -1498,9 +1252,7 @@
                 renderOrders(data || []);
                 updateOrderStats(data || []);
                 updateStats();
-            } catch (error) {
-                console.error('❌ Load orders error:', error);
-            }
+            } catch (error) {}
         }
 
         function renderOrders(ordersData) {
@@ -1547,7 +1299,6 @@
                 showToast('✅ Order status updated!', 'success');
                 loadOrders();
             } catch (error) {
-                console.error('❌ Update order error:', error);
                 showToast('Error: ' + error.message, 'error');
             }
         }
@@ -1570,9 +1321,7 @@
                 document.getElementById('total-categories').textContent = categoryCount || 0;
                 document.getElementById('total-orders').textContent = orderCount || 0;
                 document.getElementById('product-count').textContent = productCount || 0;
-            } catch (error) {
-                console.error('❌ Update stats error:', error);
-            }
+            } catch (error) {}
         }
 
         // ============================================
@@ -1598,7 +1347,6 @@
             document.getElementById(hidden).value = JSON.stringify(arr);
             input.value = '';
             renderOptions(type);
-            console.log('➕ Added ' + type + ': ' + val);
         }
 
         function removeOption(type, index) {
@@ -1646,7 +1394,6 @@
             renderPreviews();
             renderOptions('size');
             renderOptions('color');
-            console.log('🧹 Form cleared');
         }
 
         function cancelEdit() {

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /* =============================================
-           DARAZ-STYLE COMPLETE E-COMMERCE
+           COMPLETE E-COMMERCE STYLES - FIXED GAPS
            ============================================= */
         :root {
             --bg-primary: #0a0a12;
@@ -60,7 +60,7 @@
         }
 
         /* =============================================
-           NAVBAR - DARAZ STYLE
+           NAVBAR
            ============================================= */
         .navbar {
             position: fixed;
@@ -205,10 +205,10 @@
         }
 
         /* =============================================
-           BANNER SLIDER - DARAZ STYLE
+           BANNER SLIDER
            ============================================= */
         .banner-section {
-            padding: 80px 24px 20px;
+            padding: 80px 24px 16px;
         }
 
         .banner-section .container {
@@ -223,7 +223,7 @@
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.06);
             aspect-ratio: 16/5;
-            min-height: 250px;
+            min-height: 200px;
         }
 
         .banner-slides {
@@ -238,7 +238,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 60px;
+            padding: 30px 50px;
             position: relative;
             background: linear-gradient(135deg, #1a1a2e, #2a2a4e);
         }
@@ -248,7 +248,7 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            gap: 40px;
+            gap: 30px;
         }
 
         .banner-slide .banner-text {
@@ -264,14 +264,14 @@
             color: #ef4444;
             font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .banner-slide .banner-text h2 {
-            font-size: 2.4rem;
+            font-size: 2rem;
             font-weight: 800;
             line-height: 1.2;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .banner-slide .banner-text h2 .highlight {
@@ -280,20 +280,20 @@
 
         .banner-slide .banner-text p {
             color: var(--text-secondary);
-            font-size: 1rem;
-            margin-bottom: 16px;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
         }
 
         .banner-slide .banner-text .btn-shop {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 28px;
+            padding: 10px 24px;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             border: none;
             border-radius: var(--radius-sm);
             color: white;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -307,8 +307,8 @@
         }
 
         .banner-slide .banner-image {
-            flex: 0 0 200px;
-            height: 200px;
+            flex: 0 0 160px;
+            height: 160px;
             border-radius: var(--radius);
             overflow: hidden;
             background: rgba(255, 255, 255, 0.04);
@@ -321,12 +321,11 @@
             object-fit: cover;
         }
 
-        /* Banner Dots */
         .banner-dots {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-top: 16px;
+            margin-top: 12px;
         }
 
         .banner-dots .dot {
@@ -349,7 +348,6 @@
             background: var(--accent);
         }
 
-        /* Banner Arrows */
         .banner-arrow {
             position: absolute;
             top: 50%;
@@ -375,18 +373,18 @@
         }
 
         .banner-arrow.prev {
-            left: 16px;
+            left: 12px;
         }
 
         .banner-arrow.next {
-            right: 16px;
+            right: 12px;
         }
 
         /* =============================================
-           CATEGORIES SECTION - DARAZ STYLE
+           CATEGORIES SECTION - FIXED
            ============================================= */
         .categories-section {
-            padding: 20px 24px;
+            padding: 16px 24px 8px;
         }
 
         .categories-section .container {
@@ -398,13 +396,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
 
         .section-header h2 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
         }
 
@@ -427,15 +425,15 @@
 
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 14px;
         }
 
         .category-card {
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius);
-            padding: 20px 16px;
+            padding: 16px 12px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -444,36 +442,36 @@
         }
 
         .category-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-4px);
             border-color: var(--accent);
             box-shadow: var(--shadow-hover);
             background: var(--bg-card-hover);
         }
 
         .category-card .cat-icon {
-            font-size: 2rem;
-            margin-bottom: 6px;
+            font-size: 1.8rem;
+            margin-bottom: 4px;
             display: block;
             color: var(--accent);
         }
 
         .category-card .cat-name {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
         .category-card .cat-count {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             display: block;
             margin-top: 2px;
         }
 
         /* =============================================
-           PRODUCTS SECTION
+           PRODUCTS SECTION - FIXED
            ============================================= */
         .products-section {
-            padding: 20px 24px 60px;
+            padding: 8px 24px 60px;
         }
 
         .products-section .container {
@@ -483,8 +481,8 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 18px;
         }
 
         /* Product Card */
@@ -492,7 +490,7 @@
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius-lg);
-            padding: 16px;
+            padding: 14px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             position: relative;
@@ -516,7 +514,7 @@
         }
 
         .product-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-4px);
             border-color: rgba(255, 255, 255, 0.12);
             box-shadow: var(--shadow-hover);
             background: var(--bg-card-hover);
@@ -524,13 +522,13 @@
 
         .product-card .badge {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 4px 14px;
+            top: 10px;
+            right: 10px;
+            padding: 3px 12px;
             background: rgba(99, 102, 241, 0.15);
             border: 1px solid rgba(99, 102, 241, 0.2);
             border-radius: 100px;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 600;
             color: var(--accent);
             text-transform: uppercase;
@@ -544,28 +542,29 @@
             object-fit: cover;
             border-radius: var(--radius-sm);
             background: var(--bg-primary);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .product-card .product-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             margin-bottom: 4px;
+            line-height: 1.3;
         }
 
         .product-card .product-meta {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
-            margin: 6px 0;
+            margin: 4px 0;
         }
 
         .product-card .product-meta .tag {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: var(--text-secondary);
             background: rgba(255, 255, 255, 0.05);
             padding: 2px 8px;
@@ -581,14 +580,14 @@
         }
 
         .product-card .product-price {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--accent);
-            margin: 8px 0 12px;
+            margin: 6px 0 10px;
         }
 
         .product-card .product-price .original-price {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-decoration: line-through;
             margin-left: 8px;
@@ -597,12 +596,12 @@
 
         .product-card .btn-add {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             background: rgba(99, 102, 241, 0.12);
             border: 1px solid rgba(99, 102, 241, 0.2);
             border-radius: var(--radius-sm);
             color: var(--accent);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -610,7 +609,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .product-card .btn-add:hover {
@@ -621,12 +620,13 @@
         }
 
         /* =============================================
-           FOOTER - DARAZ STYLE
+           FOOTER
            ============================================= */
         .footer {
             background: var(--bg-secondary);
             border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 60px 24px 24px;
+            padding: 40px 24px 24px;
+            margin-top: 0;
         }
 
         .footer-container {
@@ -637,30 +637,30 @@
         .footer-top {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1.5fr;
-            gap: 48px;
-            margin-bottom: 40px;
+            gap: 40px;
+            margin-bottom: 30px;
         }
 
         .footer-brand .logo {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .footer-brand p {
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            max-width: 300px;
+            font-size: 0.85rem;
+            max-width: 280px;
             line-height: 1.8;
         }
 
         .social-links {
             display: flex;
-            gap: 12px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 16px;
         }
 
         .social-links a {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -681,9 +681,9 @@
 
         .footer-links h4,
         .footer-contact h4 {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             color: var(--text-primary);
         }
 
@@ -691,8 +691,8 @@
             display: block;
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.85rem;
-            padding: 4px 0;
+            font-size: 0.8rem;
+            padding: 3px 0;
             transition: all 0.3s ease;
         }
 
@@ -703,11 +703,11 @@
 
         .footer-contact p {
             color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin: 6px 0;
+            font-size: 0.8rem;
+            margin: 4px 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .footer-contact p i {
@@ -715,35 +715,34 @@
             color: var(--accent);
         }
 
-        /* Footer Bottom - Payment & Copyright */
         .footer-bottom {
             border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 24px;
+            padding-top: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 12px;
         }
 
         .footer-bottom .copyright {
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .footer-bottom .payment-methods {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
         }
 
         .footer-bottom .payment-methods span {
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
 
         .footer-bottom .payment-methods i {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             color: var(--text-muted);
             transition: all 0.3s ease;
         }
@@ -839,7 +838,7 @@
         @media (max-width: 1024px) {
             .footer-top {
                 grid-template-columns: 1fr 1fr;
-                gap: 32px;
+                gap: 30px;
             }
             .banner-slide .banner-content {
                 flex-direction: column;
@@ -849,11 +848,14 @@
                 text-align: center;
             }
             .banner-slide .banner-image {
-                flex: 0 0 150px;
-                height: 150px;
+                flex: 0 0 120px;
+                height: 120px;
             }
             .banner-slide .banner-text h2 {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
+            }
+            .banner-slide {
+                padding: 20px 30px;
             }
         }
 
@@ -864,63 +866,75 @@
             .nav-btn span {
                 display: none;
             }
+            .banner-section {
+                padding: 72px 16px 12px;
+            }
             .banner-slide {
-                padding: 24px 20px;
+                padding: 16px 20px;
             }
             .banner-slide .banner-text h2 {
-                font-size: 1.4rem;
+                font-size: 1.2rem;
+            }
+            .banner-slide .banner-text p {
+                font-size: 0.8rem;
             }
             .banner-slide .banner-image {
-                flex: 0 0 120px;
-                height: 120px;
+                flex: 0 0 80px;
+                height: 80px;
             }
             .banner-arrow {
-                width: 32px;
-                height: 32px;
-                font-size: 0.9rem;
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
             }
             .banner-arrow.prev {
-                left: 8px;
+                left: 6px;
             }
             .banner-arrow.next {
-                right: 8px;
+                right: 6px;
             }
             .banner-slider {
-                min-height: 200px;
+                min-height: 160px;
+            }
+            .categories-section {
+                padding: 12px 16px 8px;
             }
             .categories-grid {
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
                 gap: 10px;
             }
             .category-card {
-                padding: 14px 10px;
+                padding: 12px 10px;
             }
             .category-card .cat-icon {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
             .category-card .cat-name {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
+            }
+            .products-section {
+                padding: 8px 16px 40px;
             }
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
                 gap: 12px;
             }
             .product-card {
-                padding: 12px;
+                padding: 10px;
             }
             .product-card .product-title {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
             .product-card .product-price {
-                font-size: 0.95rem;
+                font-size: 0.85rem;
             }
             .product-card .btn-add {
-                padding: 8px;
-                font-size: 0.75rem;
+                padding: 6px;
+                font-size: 0.7rem;
             }
             .footer-top {
                 grid-template-columns: 1fr;
-                gap: 24px;
+                gap: 20px;
             }
             .footer-bottom {
                 flex-direction: column;
@@ -932,38 +946,48 @@
                 left: 16px;
                 max-width: 100%;
             }
+            .section-header h2 {
+                font-size: 1.1rem;
+            }
         }
 
         @media (max-width: 480px) {
             .banner-slider {
-                min-height: 160px;
+                min-height: 140px;
             }
             .banner-slide .banner-text h2 {
-                font-size: 1.1rem;
-            }
-            .banner-slide .banner-text p {
-                font-size: 0.8rem;
+                font-size: 1rem;
             }
             .banner-slide .banner-text .btn-shop {
-                padding: 8px 20px;
-                font-size: 0.8rem;
+                padding: 6px 16px;
+                font-size: 0.75rem;
             }
             .banner-slide .banner-image {
-                flex: 0 0 80px;
-                height: 80px;
+                flex: 0 0 60px;
+                height: 60px;
+            }
+            .banner-arrow {
+                display: none;
+            }
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 8px;
+            }
+            .category-card {
+                padding: 10px 8px;
+            }
+            .category-card .cat-icon {
+                font-size: 1.2rem;
+            }
+            .category-card .cat-name {
+                font-size: 0.6rem;
             }
             .products-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
             }
-            .section-header h2 {
-                font-size: 1.1rem;
-            }
             .product-card .product-img {
                 aspect-ratio: 1;
-            }
-            .banner-arrow {
-                display: none;
             }
         }
     </style>
@@ -984,8 +1008,7 @@
                     <a href="index.html" class="active">Home</a>
                     <a href="#categories">Categories</a>
                     <a href="#products">Products</a>
-                    <a href="#about">About</a>
-                    <a href="#contact">Contact</a>
+                    <a href="contact.html">Contact</a>
                 </div>
             </div>
             <div class="nav-right">
@@ -1024,7 +1047,7 @@
                             <div class="banner-text">
                                 <span class="discount-badge">🔥 Limited Time Offer</span>
                                 <h2>Summer <span class="highlight">Sale</span> 50% Off</h2>
-                                <p>Get the best deals on premium watches, clothing & electronics</p>
+                                <p>Get the best deals on premium products</p>
                                 <a href="#products" class="btn-shop">
                                     <i class="fas fa-shopping-bag"></i> Shop Now
                                 </a>
@@ -1040,7 +1063,7 @@
                             <div class="banner-text">
                                 <span class="discount-badge">✨ New Arrivals</span>
                                 <h2>Premium <span class="highlight">Collection</span> 2026</h2>
-                                <p>Discover our latest collection of premium products</p>
+                                <p>Discover our latest collection</p>
                                 <a href="#products" class="btn-shop">
                                     <i class="fas fa-arrow-right"></i> Explore Now
                                 </a>
@@ -1055,14 +1078,14 @@
                         <div class="banner-content">
                             <div class="banner-text">
                                 <span class="discount-badge">🎯 Weekend Special</span>
-                                <h2>Flat <span class="highlight">30% Off</span> Electronics</h2>
-                                <p>Smart watches, headphones & more at unbeatable prices</p>
+                                <h2>Flat <span class="highlight">30% Off</span></h2>
+                                <p>Unbeatable prices on top products</p>
                                 <a href="#products" class="btn-shop">
                                     <i class="fas fa-bolt"></i> Grab Deal
                                 </a>
                             </div>
                             <div class="banner-image">
-                                <img src="https://i.ibb.co/YT0WLQPr/1784793502879.webp" alt="Electronics Sale" />
+                                <img src="https://i.ibb.co/YT0WLQPr/1784793502879.webp" alt="Special Offer" />
                             </div>
                         </div>
                     </div>
@@ -1103,25 +1126,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- ABOUT SECTION -->
-    <!-- ========================================== -->
-    <section class="products-section" id="about" style="padding-top:0;">
-        <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-info-circle"></i> About Us</h2>
-            </div>
-            <div style="background:var(--bg-card);border-radius:var(--radius-lg);padding:40px;border:1px solid rgba(255,255,255,0.06);text-align:center;max-width:800px;margin:0 auto;">
-                <p style="color:var(--text-secondary);font-size:1.05rem;line-height:1.8;">
-                    Markaz Store is your trusted destination for premium products in Pakistan.
-                    We curate the best quality items from around the world and bring them to your doorstep.
-                    <br><br>
-                    <span style="color:var(--accent);font-weight:600;">Quality • Trust • Excellence</span>
-                </p>
-            </div>
-        </div>
-    </section>
- ========================================== -->
-    <!-- FOOTER - DARAZ STYLE -->
+    <!-- FOOTER -->
     <!-- ========================================== -->
     <footer class="footer">
         <div class="footer-container">
@@ -1145,8 +1150,7 @@
                     <a href="index.html">Home</a>
                     <a href="products.html">Products</a>
                     <a href="tracking.html">Track Order</a>
-                    <a href="#about">About Us</a>
-                    <a href="#contact">Contact Us</a>
+                    <a href="contact.html">Contact Us</a>
                 </div>
                 <div class="footer-links">
                     <h4>Categories</h4>
@@ -1210,7 +1214,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             renderCategories();
             renderProducts();
-            updateStats();
             updateCartBadge();
             renderFooterCategories();
             startSlider();
@@ -1265,7 +1268,7 @@
         }
 
         // ============================================
-        // RENDER CATEGORIES
+        // RENDER CATEGORIES - Only show categories with products
         // ============================================
         function renderCategories() {
             const grid = document.getElementById('categories-grid');
@@ -1285,7 +1288,24 @@
                 'General': 'fa-tag'
             };
 
-            grid.innerHTML = categories.map(cat => {
+            // ============================================
+            // FIXED: Only show categories that have products
+            // ============================================
+            const activeCategories = categories.filter(cat => {
+                const count = products.filter(p => p.category === cat).length;
+                return count > 0;
+            });
+
+            if (activeCategories.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-muted);">
+                        <p>No categories with products</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = activeCategories.map(cat => {
                 const count = products.filter(p => p.category === cat).length;
                 const icon = categoryIcons[cat] || 'fa-tag';
                 return `
@@ -1307,10 +1327,9 @@
 
             if (products.length === 0) {
                 grid.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted);">
-                        <i class="fas fa-box-open" style="font-size:3rem;display:block;margin-bottom:16px;"></i>
+                    <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-muted);">
+                        <i class="fas fa-box-open" style="font-size:2.5rem;display:block;margin-bottom:12px;"></i>
                         <p>No products available</p>
-                        <p style="font-size:0.9rem;margin-top:8px;">Add products from the admin panel</p>
                     </div>
                 `;
                 return;
@@ -1338,7 +1357,6 @@
                 }
 
                 const price = parseInt(p.price);
-                const discountPrice = Math.round(price * 0.7);
                 const hasDiscount = price > 1000;
 
                 return `
@@ -1422,13 +1440,6 @@
             if (badge) {
                 badge.textContent = cart.length;
             }
-        }
-
-        // ============================================
-        // UPDATE STATS
-        // ============================================
-        function updateStats() {
-            // Not needed for this version
         }
 
         // ============================================

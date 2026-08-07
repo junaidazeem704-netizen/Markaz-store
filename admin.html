@@ -920,13 +920,13 @@
         // DOM READY
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            loadCategories();
-            loadProducts();
-            loadOrders();
-            setupImageUpload();
-            loadOptions();
-            document.getElementById('cancel-btn').classList.add('hidden');
-        });
+    loadCategories();
+    loadProducts();
+    loadOrders();
+    setupImageUpload(); // ← YEH PEHLE SE HAI
+    loadOptions();
+    document.getElementById('cancel-btn').classList.add('hidden');
+});
 
         // ============================================
         // IMAGE UPLOAD - FIXED

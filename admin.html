@@ -153,9 +153,6 @@
             display: block;
             margin-top: 3px;
         }
-        .form-group small i {
-            color: #6366f1;
-        }
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -211,29 +208,16 @@
             cursor: pointer;
             font-family: inherit;
         }
-        .btn-sm:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .btn-edit {
+        .btn-edit, .btn-danger-sm {
             padding: 3px 8px;
             font-size: 0.6rem;
-            background: rgba(99, 102, 241, 0.12);
-            border: 1px solid rgba(99, 102, 241, 0.2);
             border-radius: 5px;
-            color: #6366f1;
             cursor: pointer;
             font-family: inherit;
         }
-        .btn-danger-sm {
-            padding: 3px 8px;
-            font-size: 0.6rem;
-            background: rgba(239, 68, 68, 0.12);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: 5px;
-            color: #ef4444;
-            cursor: pointer;
-            font-family: inherit;
-        }
+        .btn-edit { background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.2); color: #6366f1; }
+        .btn-danger-sm { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; }
+
         .image-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.08);
             border-radius: 8px;
@@ -249,389 +233,62 @@
             align-items: center;
             justify-content: center;
         }
-        .image-upload-area:hover {
-            border-color: #6366f1;
-            background: rgba(99, 102, 241, 0.04);
-        }
+        .image-upload-area:hover { border-color: #6366f1; background: rgba(99, 102, 241, 0.04); }
         .image-upload-area input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 10;
-            width: 100%;
-            height: 100%;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            opacity: 0; cursor: pointer; z-index: 10; width: 100%; height: 100%;
         }
-        .image-upload-area i {
-            font-size: 1.8rem;
-            color: #6366f1;
-            display: block;
-            margin-bottom: 4px;
-        }
-        .image-upload-area p {
-            color: #a0a0b8;
-            font-size: 0.8rem;
-        }
-        .image-upload-area .sub {
-            color: #6a6a82;
-            font-size: 0.65rem;
-        }
-        .image-upload-area .file-count {
-            margin-top: 4px;
-            font-size: 0.7rem;
-            color: #6366f1;
-            font-weight: 500;
-        }
-        .image-preview-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .image-preview-item {
-            position: relative;
-            border-radius: 6px;
-            overflow: hidden;
-            aspect-ratio: 1;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .image-preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .image-upload-area i { font-size: 1.8rem; color: #6366f1; margin-bottom: 4px; }
+        .image-upload-area p { color: #a0a0b8; font-size: 0.8rem; }
+        .image-upload-area .sub { color: #6a6a82; font-size: 0.65rem; }
+        .image-upload-area .file-count { margin-top: 4px; font-size: 0.7rem; color: #6366f1; font-weight: 500; }
+        .image-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; margin-top: 10px; }
+        .image-preview-item { position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 1; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); }
+        .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
         .image-preview-item .remove-img {
-            position: absolute;
-            top: 3px;
-            right: 3px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.8);
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; top: 3px; right: 3px; width: 20px; height: 20px;
+            border-radius: 50%; background: rgba(0, 0, 0, 0.8); border: none; color: white;
+            cursor: pointer; font-size: 0.5rem; display: flex; align-items: center; justify-content: center;
         }
-        .image-preview-item .remove-img:hover {
-            background: #ef4444;
-        }
-        .image-preview-item .img-number {
-            position: absolute;
-            bottom: 3px;
-            right: 3px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 1px 5px;
-            border-radius: 3px;
-            font-size: 0.45rem;
-            color: white;
-        }
-        .options-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 3px;
-            min-height: 24px;
-        }
-        .option-tag {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            padding: 3px 8px 3px 10px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 100px;
-            font-size: 0.7rem;
-        }
-        .option-tag .remove {
-            cursor: pointer;
-            color: #ef4444;
-            background: none;
-            border: none;
-            font-size: 0.7rem;
-        }
-        .option-input-row {
-            display: flex;
-            gap: 5px;
-            margin-top: 5px;
-        }
-        .option-input-row input {
-            flex: 1;
-            padding: 5px 10px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 6px;
-            color: #ffffff;
-            font-size: 0.8rem;
-            outline: none;
-        }
-        .category-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 3px;
-        }
-        .category-tag {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            padding: 3px 8px 3px 10px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 100px;
-            font-size: 0.7rem;
-        }
-        .category-tag .remove {
-            cursor: pointer;
-            color: #ef4444;
-            background: none;
-            border: none;
-            font-size: 0.7rem;
-        }
-        .category-input-row {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-        .category-input-row input {
-            flex: 1;
-            padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 6px;
-            color: #ffffff;
-            font-size: 0.8rem;
-            outline: none;
-        }
-        .product-list {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .product-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-        .product-item .info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .product-item .info img {
-            width: 32px;
-            height: 32px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-        .product-item .info .title {
-            font-weight: 500;
-            font-size: 0.8rem;
-        }
-        .product-item .info .meta {
-            font-size: 0.6rem;
-            color: #a0a0b8;
-        }
-        .product-item .actions {
-            display: flex;
-            gap: 3px;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 24px 16px;
-            color: #6a6a82;
-            display: none;
-        }
-        .empty-state i {
-            font-size: 1.6rem;
-            display: block;
-            margin-bottom: 6px;
-        }
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            margin-bottom: 5px;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-        .order-item .order-info .order-id {
-            font-weight: 600;
-            font-size: 0.75rem;
-        }
-        .order-item .order-info .order-meta {
-            font-size: 0.6rem;
-            color: #a0a0b8;
-        }
-        .order-item .order-status select {
-            padding: 3px 6px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 5px;
-            color: #ffffff;
-            font-size: 0.65rem;
-            font-family: inherit;
-            outline: none;
-        }
-        .order-status-badge {
-            padding: 2px 8px;
-            border-radius: 100px;
-            font-size: 0.55rem;
-            font-weight: 600;
-        }
-        .order-status-badge.processing {
-            background: rgba(245, 158, 11, 0.15);
-            color: #f59e0b;
-        }
-        .order-status-badge.shipped {
-            background: rgba(99, 102, 241, 0.15);
-            color: #6366f1;
-        }
-        .order-status-badge.delivered {
-            background: rgba(16, 185, 129, 0.15);
-            color: #10b981;
-        }
-        .order-status-badge.cancelled {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-        }
-        .order-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .order-stat-box {
-            background: rgba(255, 255, 255, 0.04);
-            padding: 8px;
-            border-radius: 6px;
-            text-align: center;
-        }
-        .order-stat-box .stat-label {
-            font-size: 0.55rem;
-            color: #a0a0b8;
-        }
-        .order-stat-box .stat-value {
-            font-size: 1rem;
-            font-weight: 700;
-        }
-        .order-stat-box .stat-value.delivered {
-            color: #10b981;
-        }
-        .order-stat-box .stat-value.cancelled {
-            color: #ef4444;
-        }
-        .order-stat-box .stat-value.total {
-            color: #6366f1;
-        }
-        .edit-mode-badge {
-            background: #f59e0b;
-            color: white;
-            font-size: 0.55rem;
-            padding: 2px 6px;
-            border-radius: 100px;
-            margin-left: 6px;
-        }
-        .hidden {
-            display: none !important;
-        }
-        .toast {
-            position: fixed;
-            bottom: 16px;
-            left: 16px;
-            right: 16px;
-            background: rgba(26, 26, 46, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 9999;
-            transform: translateY(120px);
-            opacity: 0;
-            transition: all 0.4s ease;
-        }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .toast-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: rgba(16, 185, 129, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .toast-icon i {
-            color: #10b981;
-            font-size: 0.8rem;
-        }
-        .toast.error .toast-icon {
-            background: rgba(239, 68, 68, 0.12);
-        }
-        .toast.error .toast-icon i {
-            color: #ef4444;
-        }
-        .toast-content {
-            flex: 1;
-        }
-        .toast-title {
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        .toast-message {
-            font-size: 0.65rem;
-            color: #a0a0b8;
-        }
-        .toast-close {
-            background: none;
-            border: none;
-            color: #6a6a82;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        @media (max-width: 480px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .form-actions {
-                grid-template-columns: 1fr;
-            }
-            .admin-stats {
-                grid-template-columns: 1fr 1fr;
-                gap: 6px;
-            }
-            .order-stats {
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 4px;
-            }
-            .image-preview-grid {
-                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-            }
-        }
+        .image-preview-item .img-number { position: absolute; bottom: 3px; right: 3px; background: rgba(0, 0, 0, 0.6); padding: 1px 5px; border-radius: 3px; font-size: 0.45rem; color: white; }
+
+        .options-group, .category-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; min-height: 24px; }
+        .option-tag, .category-tag { display: flex; align-items: center; gap: 3px; padding: 3px 8px 3px 10px; background: rgba(255, 255, 255, 0.06); border-radius: 100px; font-size: 0.7rem; }
+        .option-tag .remove, .category-tag .remove { cursor: pointer; color: #ef4444; background: none; border: none; font-size: 0.7rem; }
+        .option-input-row, .category-input-row { display: flex; gap: 5px; margin-top: 5px; }
+        .option-input-row input, .category-input-row input { flex: 1; padding: 5px 10px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 6px; color: #ffffff; font-size: 0.8rem; outline: none; }
+
+        .product-list { display: flex; flex-direction: column; gap: 5px; max-height: 300px; overflow-y: auto; }
+        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.03); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.06); flex-wrap: wrap; gap: 4px; }
+        .product-item .info { display: flex; align-items: center; gap: 8px; }
+        .product-item .info img { width: 32px; height: 32px; object-fit: cover; border-radius: 5px; }
+        .product-item .info .title { font-weight: 500; font-size: 0.8rem; }
+        .product-item .info .meta { font-size: 0.6rem; color: #a0a0b8; }
+
+        .empty-state { text-align: center; padding: 24px 16px; color: #6a6a82; display: none; }
+        .order-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.03); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.06); margin-bottom: 5px; flex-wrap: wrap; gap: 4px; }
+        .order-item .order-info .order-id { font-weight: 600; font-size: 0.75rem; }
+        .order-item .order-info .order-meta { font-size: 0.6rem; color: #a0a0b8; }
+        .order-item .order-status select { padding: 3px 6px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 5px; color: #ffffff; font-size: 0.65rem; outline: none; }
+        .order-status-badge { padding: 2px 8px; border-radius: 100px; font-size: 0.55rem; font-weight: 600; }
+        .order-status-badge.processing { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .order-status-badge.shipped { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
+        .order-status-badge.delivered { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .order-status-badge.cancelled { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+        .order-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .order-stat-box { background: rgba(255, 255, 255, 0.04); padding: 8px; border-radius: 6px; text-align: center; }
+        .order-stat-box .stat-label { font-size: 0.55rem; color: #a0a0b8; }
+        .order-stat-box .stat-value { font-size: 1rem; font-weight: 700; }
+        .edit-mode-badge { background: #f59e0b; color: white; font-size: 0.55rem; padding: 2px 6px; border-radius: 100px; margin-left: 6px; }
+        .hidden { display: none !important; }
+
+        .toast { position: fixed; bottom: 16px; left: 16px; right: 16px; background: rgba(26, 26, 46, 0.95); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 8px; z-index: 9999; transform: translateY(120px); opacity: 0; transition: all 0.4s ease; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-content { flex: 1; }
+        .toast-title { font-size: 0.7rem; font-weight: 600; }
+        .toast-message { font-size: 0.65rem; color: #a0a0b8; }
+        .toast-close { background: none; border: none; color: #6a6a82; cursor: pointer; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -744,7 +401,6 @@
 
     <!-- Toast -->
     <div class="toast" id="toast">
-        <div class="toast-icon"><i class="fas fa-check-circle"></i></div>
         <div class="toast-content">
             <span class="toast-title">Notification</span>
             <span class="toast-message" id="toast-msg">Done</span>
@@ -754,7 +410,7 @@
 
     <script>
         // ============================================
-        // CONFIGURATION
+        // CONFIGURATION & STATE
         // ============================================
         const SUPABASE_URL = 'https://vnzipnxrasonkhlwcynq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuemlwbnhyYXNvbmtobHdjeW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjY0ODcsImV4cCI6MjA1NjUwMjQ4N30.KfgUQ-fn1L0A_Jv3pFESuC8jR1R7S_iC9RPNlWpTbJ0';
@@ -765,7 +421,7 @@
         let productsList = [];
         let categoriesList = [];
         let ordersList = [];
-        let uploadedImages = []; // Base64 or existing HTTP URLs
+        let selectedFiles = []; // Stores File objects or URL strings
         let sizes = [];
         let colors = [];
         let editId = null;
@@ -815,7 +471,7 @@
         }
 
         // ============================================
-        // IMAGE UPLOAD LOGIC
+        // LIGHTWEIGHT FILE SELECTION (MOBILE SAFE)
         // ============================================
         function setupImageUpload() {
             const input = document.getElementById('p-images');
@@ -825,49 +481,46 @@
                 const files = e.target.files;
                 if (!files || files.length === 0) return;
 
-                for (let file of files) {
-                    if (uploadedImages.length >= 5) {
+                for (let i = 0; i < files.length; i++) {
+                    if (selectedFiles.length >= 5) {
                         showToast('Maximum 5 images allowed!', 'warning');
                         break;
                     }
-                    if (file.size > 5 * 1024 * 1024) {
-                        showToast('Image size must be under 5MB!', 'error');
-                        continue;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        uploadedImages.push(event.target.result);
-                        renderPreviews();
-                        updateFileCount();
-                    };
-                    reader.readAsDataURL(file);
+                    selectedFiles.push(files[i]);
                 }
-                e.target.value = '';
+
+                renderPreviews();
+                updateFileCount();
+                input.value = ''; // Reset input cleanly
             });
         }
 
         function updateFileCount() {
             const count = document.getElementById('file-count');
             if (count) {
-                count.textContent = uploadedImages.length + ' / 5 images selected';
-                count.style.color = uploadedImages.length > 0 ? '#10b981' : '#6366f1';
+                count.textContent = selectedFiles.length + ' / 5 images selected';
+                count.style.color = selectedFiles.length > 0 ? '#10b981' : '#6366f1';
             }
         }
 
         function renderPreviews() {
             const grid = document.getElementById('image-preview-grid');
             if (!grid) return;
-            grid.innerHTML = uploadedImages.map((img, i) => `
-                <div class="image-preview-item">
-                    <img src="${img}" alt="Preview ${i+1}" />
-                    <button class="remove-img" onclick="removeImage(${i})"><i class="fas fa-times"></i></button>
-                    <span class="img-number">${i+1}</span>
-                </div>
-            `).join('');
+
+            grid.innerHTML = selectedFiles.map((item, i) => {
+                let src = (typeof item === 'string') ? item : URL.createObjectURL(item);
+                return `
+                    <div class="image-preview-item">
+                        <img src="${src}" alt="Preview ${i+1}" />
+                        <button class="remove-img" onclick="removeImage(${i})"><i class="fas fa-times"></i></button>
+                        <span class="img-number">${i+1}</span>
+                    </div>
+                `;
+            }).join('');
         }
 
         function removeImage(index) {
-            uploadedImages.splice(index, 1);
+            selectedFiles.splice(index, 1);
             renderPreviews();
             updateFileCount();
         }
@@ -902,7 +555,7 @@
         }
 
         // ============================================
-        // SAVE PRODUCT (IMGBB + SUPABASE)
+        // SAVE PRODUCT (DIRECT FILE UPLOAD TO IMGBB + SUPABASE)
         // ============================================
         async function saveProduct() {
             const title = document.getElementById('p-title').value.trim();
@@ -915,7 +568,7 @@
                 return;
             }
 
-            if (uploadedImages.length === 0) {
+            if (selectedFiles.length === 0) {
                 showToast('Select at least 1 image!', 'error');
                 return;
             }
@@ -927,21 +580,18 @@
             let imageUrls = [];
             showToast('📤 Uploading images to ImgBB...', 'info');
 
-            // Process Each Image for ImgBB
-            for (let i = 0; i < uploadedImages.length; i++) {
-                let img = uploadedImages[i];
+            // Upload files directly to ImgBB via Multipart FormData
+            for (let i = 0; i < selectedFiles.length; i++) {
+                let item = selectedFiles[i];
 
-                if (img.startsWith('http://') || img.startsWith('https://')) {
-                    imageUrls.push(img);
+                if (typeof item === 'string') {
+                    imageUrls.push(item);
                     continue;
                 }
 
                 try {
-                    // Clean Base64 Prefix for ImgBB
-                    const cleanBase64 = img.replace(/^data:image\/[a-zA-Z0-9\+\/]+;base64,/, "");
-
                     const formData = new FormData();
-                    formData.append('image', cleanBase64);
+                    formData.append('image', item);
 
                     const uploadRes = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
                         method: 'POST',
@@ -1059,7 +709,7 @@
             document.getElementById('p-price').value = p.price || '';
             document.getElementById('p-description').value = p.description || '';
             document.getElementById('p-category').value = p.category || '';
-            uploadedImages = p.images ? [...p.images] : [];
+            selectedFiles = p.images ? [...p.images] : [];
             renderPreviews();
             updateFileCount();
             sizes = p.sizes ? [...p.sizes] : [];
@@ -1209,7 +859,7 @@
             document.getElementById('edit-badge').classList.add('hidden');
             document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> Add Product';
             document.getElementById('cancel-btn').classList.add('hidden');
-            uploadedImages = [];
+            selectedFiles = [];
             sizes = [];
             colors = [];
             editId = null;

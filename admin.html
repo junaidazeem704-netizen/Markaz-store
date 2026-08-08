@@ -1,456 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Admin Panel - Markaz Store</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <!-- Supabase SDK -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Markaz Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #0a0a12; color: #ffffff; padding: 12px; min-height: 100vh; }
-        .admin-wrapper { max-width: 700px; margin: 0 auto; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(26, 26, 46, 0.85); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 14px; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
-        .admin-header h1 { font-size: 1.1rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .admin-header-actions a { padding: 5px 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 8px; color: #a0a0b8; text-decoration: none; font-size: 0.7rem; }
-        .admin-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-        .admin-stat-card { background: rgba(26, 26, 46, 0.85); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 12px 14px; text-align: center; }
-        .admin-stat-card .label { font-size: 0.6rem; color: #a0a0b8; text-transform: uppercase; }
-        .admin-stat-card .value { font-size: 1.3rem; font-weight: 700; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .admin-card { background: rgba(26, 26, 46, 0.85); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 14px; padding: 16px 18px; margin-bottom: 14px; }
-        .admin-card h2 { font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-        .admin-card h2 i { color: #6366f1; }
-        .admin-card .badge { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-size: 0.6rem; padding: 2px 8px; border-radius: 100px; margin-left: 6px; }
-        .form-group { margin-bottom: 10px; }
-        .form-group label { font-size: 0.75rem; font-weight: 500; color: #a0a0b8; display: block; margin-bottom: 3px; }
-        .form-group label .required { color: #ef4444; }
-        .form-group input, .form-group textarea { width: 100%; padding: 10px 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 8px; color: #ffffff; font-size: 0.9rem; outline: none; font-family: inherit; }
-        .form-group textarea { resize: vertical; min-height: 60px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .form-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
-        .btn-primary { width: 100%; padding: 12px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border: none; border-radius: 8px; color: white; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn-secondary { width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 8px; color: #a0a0b8; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn-sm { padding: 5px 12px; font-size: 0.7rem; width: auto; display: inline-flex; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 6px; color: #a0a0b8; cursor: pointer; }
-        .btn-edit, .btn-danger-sm { padding: 3px 8px; font-size: 0.6rem; border-radius: 5px; cursor: pointer; }
-        .btn-edit { background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.2); color: #6366f1; }
-        .btn-danger-sm { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; }
-
-        .image-upload-area { border: 2px dashed rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; position: relative; background: rgba(255, 255, 255, 0.02); margin-bottom: 8px; }
-        .image-upload-area input[type="file"] { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; z-index: 10; }
-        .image-upload-area i { font-size: 1.6rem; color: #6366f1; margin-bottom: 4px; display: block; }
-        .image-upload-area p { color: #a0a0b8; font-size: 0.8rem; }
-        .image-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; margin-top: 10px; }
-        .image-preview-item { position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 1; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); }
-        .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
-        .image-preview-item .remove-img { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; background: rgba(0, 0, 0, 0.8); border: none; color: white; cursor: pointer; font-size: 0.5rem; display: flex; align-items: center; justify-content: center; }
-
-        .options-group, .category-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; min-height: 24px; }
-        .option-tag, .category-tag { display: flex; align-items: center; gap: 3px; padding: 3px 8px; background: rgba(255, 255, 255, 0.06); border-radius: 100px; font-size: 0.7rem; }
-        .option-tag .remove, .category-tag .remove { cursor: pointer; color: #ef4444; background: none; border: none; font-size: 0.7rem; }
-        .option-input-row, .category-input-row { display: flex; gap: 5px; margin-top: 5px; }
-        .option-input-row input, .category-input-row input { flex: 1; padding: 5px 10px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 6px; color: #ffffff; font-size: 0.8rem; outline: none; }
-
-        .product-list { display: flex; flex-direction: column; gap: 5px; max-height: 300px; overflow-y: auto; }
-        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.03); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.06); gap: 4px; }
-        .product-item .info { display: flex; align-items: center; gap: 8px; }
-        .product-item .info img { width: 32px; height: 32px; object-fit: cover; border-radius: 5px; }
-        .product-item .info .title { font-weight: 500; font-size: 0.8rem; }
-        .product-item .info .meta { font-size: 0.6rem; color: #a0a0b8; }
-
-        .empty-state { text-align: center; padding: 24px 16px; color: #6a6a82; display: none; }
-        .order-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.03); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.06); margin-bottom: 5px; gap: 4px; }
-        .order-item .order-info .order-id { font-weight: 600; font-size: 0.75rem; }
-        .order-item .order-info .order-meta { font-size: 0.6rem; color: #a0a0b8; }
-        .order-item .order-status select { padding: 3px 6px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 5px; color: #ffffff; font-size: 0.65rem; }
-
-        .order-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .order-stat-box { background: rgba(255, 255, 255, 0.04); padding: 8px; border-radius: 6px; text-align: center; }
-        .order-stat-box .stat-label { font-size: 0.55rem; color: #a0a0b8; }
-        .order-stat-box .stat-value { font-size: 1rem; font-weight: 700; }
-        .edit-mode-badge { background: #f59e0b; color: white; font-size: 0.55rem; padding: 2px 6px; border-radius: 100px; margin-left: 6px; }
-        .hidden { display: none !important; }
-
-        .toast { position: fixed; bottom: 16px; left: 16px; right: 16px; background: rgba(26, 26, 46, 0.95); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 8px; z-index: 9999; transform: translateY(120px); opacity: 0; transition: all 0.4s ease; }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast-content { flex: 1; }
-        .toast-title { font-size: 0.7rem; font-weight: 600; }
-        .toast-message { font-size: 0.65rem; color: #a0a0b8; }
-        .toast-close { background: none; border: none; color: #6a6a82; cursor: pointer; font-size: 0.9rem; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .form-control { width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--border); color: #fff; border-radius: 8px; margin-bottom: 12px; }
+        @media(max-width:768px) { .admin-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <div class="admin-wrapper">
-        <header class="admin-header">
-            <h1>⚙️ Admin Panel</h1>
-            <div class="admin-header-actions">
-                <a href="index.html"><i class="fas fa-store"></i> Store</a>
-            </div>
-        </header>
-
-        <div class="admin-stats">
-            <div class="admin-stat-card"><div class="label">📦 Products</div><div class="value" id="total-products">0</div></div>
-            <div class="admin-stat-card"><div class="label">🏷️ Categories</div><div class="value" id="total-categories">0</div></div>
-            <div class="admin-stat-card"><div class="label">📊 Orders</div><div class="value" id="total-orders">0</div></div>
+    <nav class="navbar">
+        <div class="container nav-flex">
+            <a href="index.html" class="logo"><i class="fas fa-cog"></i> MARKAZ <span>ADMIN</span></a>
+            <a href="index.html" class="btn btn-outline"><i class="fas fa-store"></i> View Store</a>
         </div>
+    </nav>
 
-        <!-- Add Product -->
-        <div class="admin-card">
-            <h2><i class="fas fa-plus-circle"></i> <span id="form-title">Add Product</span>
-            <span class="edit-mode-badge hidden" id="edit-badge">Editing</span></h2>
-            <input type="hidden" id="edit-id" value="" />
+    <div class="container" style="margin-top:30px;">
+        <div class="admin-grid">
+            <!-- Add / Edit Product -->
+            <div class="card">
+                <h3><i class="fas fa-plus-circle"></i> Add / Edit Product</h3>
+                <form id="product-form" onsubmit="saveProduct(event)" style="margin-top:14px;">
+                    <input type="text" id="p-title" class="form-control" placeholder="Product Title *" required>
+                    <input type="number" id="p-price" class="form-control" placeholder="Price (PKR) *" required>
+                    <textarea id="p-desc" class="form-control" placeholder="Product Description"></textarea>
+                    <input type="text" id="p-cat" class="form-control" placeholder="Category (e.g. Watches, Shirts)">
 
-            <div class="form-group">
-                <label>Title <span class="required">*</span></label>
-                <input type="text" id="p-title" placeholder="e.g. Rolex Watch" />
-            </div>
-            <div class="form-group">
-                <label>Price (PKR) <span class="required">*</span></label>
-                <input type="number" id="p-price" placeholder="2500" />
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="p-description" placeholder="Product details..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>Category</label>
-                <input type="text" id="p-category" placeholder="Watches, Clothing, etc." />
-            </div>
+                    <!-- Multi Image Input + Auto Detection -->
+                    <label style="font-size:0.8rem; color:var(--text-muted);">Upload Images (ImgBB):</label>
+                    <input type="file" id="p-images" class="form-control" accept="image/*" multiple onchange="handleImageSelection(event)">
+                    <div id="img-preview" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
 
-            <!-- Image Input Section -->
-            <div class="form-group">
-                <label>Images <span class="required">*</span></label>
-                <div class="image-upload-area">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Tap to select images from gallery</p>
-                    <input type="file" id="p-images" accept="image/*" multiple />
-                </div>
-                
-                <div style="display:flex; gap:6px; margin-top:6px;">
-                    <input type="url" id="p-img-url" placeholder="OR paste Image URL (https://...)" style="flex:1; font-size:0.75rem; padding:8px;" />
-                    <button class="btn-sm" type="button" onclick="addUrlImage()"><i class="fas fa-plus"></i> Add URL</button>
-                </div>
-
-                <small id="file-count" style="margin-top:6px; color:#6366f1; display:block;">0 / 5 images selected</small>
-                <div class="image-preview-grid" id="image-preview-grid"></div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Sizes</label>
-                    <div class="options-group" id="sizes-container"></div>
-                    <div class="option-input-row">
-                        <input type="text" id="size-input" placeholder="S, M, L" />
-                        <button class="btn-sm" type="button" onclick="addOption('size')">+</button>
+                    <div style="display:flex; gap:8px; margin-bottom:12px;">
+                        <input type="text" id="p-colors" class="form-control" placeholder="Colors (Comma separated)" style="margin-bottom:0;">
+                        <button type="button" class="btn btn-outline" onclick="autoDetectColors()"><i class="fas fa-magic"></i> Auto Color</button>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Colors</label>
-                    <div class="options-group" id="colors-container"></div>
-                    <div class="option-input-row">
-                        <input type="text" id="color-input" placeholder="Silver, Gold" />
-                        <button class="btn-sm" type="button" onclick="addOption('color')">+</button>
-                    </div>
-                </div>
+
+                    <input type="text" id="p-sizes" class="form-control" placeholder="Sizes (e.g. S, M, L, XL)">
+
+                    <button type="submit" id="save-p-btn" class="btn btn-primary" style="width:100%;">Save Product to Database</button>
+                </form>
             </div>
 
-            <div class="form-actions">
-                <button class="btn-primary" id="submit-btn" onclick="saveProduct()"><i class="fas fa-plus"></i> Add Product</button>
-                <button class="btn-secondary hidden" id="cancel-btn" onclick="cancelEdit()">Cancel</button>
-                <button class="btn-secondary" type="button" onclick="autoDetectCategory()"><i class="fas fa-magic"></i> Auto Cat</button>
+            <!-- Banner Control Panel -->
+            <div class="card">
+                <h3><i class="fas fa-sliders-h"></i> Homepage Store Settings</h3>
+                <form onsubmit="saveSettings(event)" style="margin-top:14px;">
+                    <label style="font-size:0.8rem;">Banner Main Heading:</label>
+                    <input type="text" id="s-title" class="form-control">
+                    <label style="font-size:0.8rem;">Banner Subtitle:</label>
+                    <input type="text" id="s-subtitle" class="form-control">
+                    <label style="font-size:0.8rem;">Banner Image URL:</label>
+                    <input type="text" id="s-image" class="form-control">
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Update Store Banners</button>
+                </form>
             </div>
         </div>
 
-        <!-- Categories -->
-        <div class="admin-card">
-            <h2><i class="fas fa-tags"></i> Categories</h2>
-            <div class="category-input-row">
-                <input type="text" id="new-cat-name" placeholder="New category..." />
-                <button class="btn-sm" onclick="addCategory()">Add</button>
-            </div>
-            <div class="category-tags" id="categories-list"></div>
+        <!-- Orders Table -->
+        <div class="card">
+            <h3><i class="fas fa-truck"></i> Live Orders & Status Email Manager</h3>
+            <div id="orders-list" style="margin-top:14px; overflow-x:auto;"></div>
         </div>
-
-        <!-- Products List -->
-        <div class="admin-card">
-            <h2><i class="fas fa-box"></i> Products <span class="badge" id="product-count">0</span></h2>
-            <div class="product-list" id="products-list"></div>
-            <div class="empty-state" id="empty-state"><i class="fas fa-box-open"></i> No products</div>
-        </div>
-
-        <!-- Orders -->
-        <div class="admin-card">
-            <h2><i class="fas fa-truck"></i> Order Management</h2>
-            <div class="order-stats">
-                <div class="order-stat-box"><div class="stat-label">Total</div><div class="stat-value" id="order-total-count">0</div></div>
-                <div class="order-stat-box"><div class="stat-label">Delivered</div><div class="stat-value" id="order-delivered-count" style="color:#10b981;">0</div></div>
-                <div class="order-stat-box"><div class="stat-label">Cancelled</div><div class="stat-value" id="order-cancelled-count" style="color:#ef4444;">0</div></div>
-            </div>
-            <div id="order-list"></div>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast">
-        <div class="toast-content"><span class="toast-title">Notice</span><span class="toast-message" id="toast-msg">Done</span></div>
     </div>
 
     <script>
         const SUPABASE_URL = 'https://vnzipnxrasonkhlwcynq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuemlwbnhyYXNvbmtobHdjeW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjY0ODcsImV4cCI6MjA1NjUwMjQ4N30.KfgUQ-fn1L0A_Jv3pFESuC8jR1R7S_iC9RPNlWpTbJ0';
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
 
-        let productsList = [], categoriesList = [], ordersList = [];
-        let uploadedImages = []; // Stores Base64 Strings or HTTP URLs
-        let sizes = [], colors = [], editId = null;
+        let selectedFiles = [];
 
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAllData();
-            setupImageUpload();
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadOrders();
+            await loadSettingsData();
         });
 
-        async function loadAllData() {
-            await Promise.all([loadProducts(), loadCategories(), loadOrders()]);
-            updateStats();
+        function handleImageSelection(e) {
+            selectedFiles = Array.from(e.target.files);
+            const preview = document.getElementById('img-preview');
+            preview.innerHTML = selectedFiles.map(f => `<img src="${URL.createObjectURL(f)}" width="50" height="50" style="object-fit:cover; border-radius:6px;">`).join('');
         }
 
-        async function loadProducts() {
-            const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false });
-            productsList = data || [];
-            renderProducts();
+        function autoDetectColors() {
+            const title = document.getElementById('p-title').value.toLowerCase();
+            const colorMap = ['black', 'white', 'red', 'blue', 'green', 'yellow', 'silver', 'gold', 'navy', 'grey'];
+            const detected = colorMap.filter(c => title.includes(c));
+            if (detected.length) {
+                document.getElementById('p-colors').value = detected.join(', ');
+                alert(`✨ Auto Detected Colors: ${detected.join(', ')}`);
+            } else {
+                alert('No standard color name found in title. Type manually.');
+            }
         }
 
-        async function loadCategories() {
-            const { data } = await supabase.from('categories').select('*').order('name', { ascending: true });
-            categoriesList = data || [];
-            renderCategories();
+        async function saveProduct(e) {
+            e.preventDefault();
+            const btn = document.getElementById('save-p-btn');
+            btn.disabled = true;
+            btn.innerText = 'Uploading Images to ImgBB...';
+
+            let imageUrls = [];
+
+            // ImgBB Upload Loop
+            for (let file of selectedFiles) {
+                const formData = new FormData();
+                formData.append('image', file);
+                try {
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const json = await res.json();
+                    if (json.success) imageUrls.push(json.data.url);
+                } catch(err) { console.error('Image upload failed', err); }
+            }
+
+            btn.innerText = 'Saving to Database...';
+
+            const payload = {
+                title: document.getElementById('p-title').value.trim(),
+                price: parseFloat(document.getElementById('p-price').value),
+                description: document.getElementById('p-desc').value.trim(),
+                category: document.getElementById('p-category')?.value || 'General',
+                images: imageUrls.length ? imageUrls : ['https://via.placeholder.com/300'],
+                colors: document.getElementById('p-colors').value.split(',').map(s => s.trim()).filter(Boolean),
+                sizes: document.getElementById('p-sizes').value.split(',').map(s => s.trim()).filter(Boolean)
+            };
+
+            const { error } = await supabase.from('products').insert([payload]);
+
+            if (!error) {
+                alert('✅ Product successfully added!');
+                location.reload();
+            } else {
+                alert('Error: ' + error.message);
+                btn.disabled = false;
+                btn.innerText = 'Save Product to Database';
+            }
         }
 
         async function loadOrders() {
             const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-            ordersList = data || [];
-            renderOrders();
-        }
-
-        // ============================================
-        // ORIGINAL WORKING LOCALSTORAGE BASE64 LOGIC
-        // ============================================
-        function setupImageUpload() {
-            const input = document.getElementById('p-images');
-            if (!input) return;
-
-            input.addEventListener('change', function(e) {
-                const files = e.target.files;
-                if (!files || files.length === 0) return;
-
-                for (let file of files) {
-                    if (uploadedImages.length >= 5) {
-                        showToast('Maximum 5 images allowed!');
-                        break;
-                    }
-
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        uploadedImages.push(event.target.result); // Save Base64
-                        renderPreviews();
-                    };
-                    reader.readAsDataURL(file);
-                }
-                e.target.value = '';
-            });
-        }
-
-        function addUrlImage() {
-            const input = document.getElementById('p-img-url');
-            const url = input.value.trim();
-            if (!url) return;
-            if (uploadedImages.length >= 5) { showToast('Max 5 images allowed!'); return; }
-            uploadedImages.push(url);
-            input.value = '';
-            renderPreviews();
-        }
-
-        function renderPreviews() {
-            const grid = document.getElementById('image-preview-grid');
-            document.getElementById('file-count').textContent = uploadedImages.length + ' / 5 images selected';
-            grid.innerHTML = uploadedImages.map((img, i) => `
-                <div class="image-preview-item">
-                    <img src="${img}" />
-                    <button class="remove-img" onclick="removeImage(${i})">×</button>
-                </div>
-            `).join('');
-        }
-
-        function removeImage(index) {
-            uploadedImages.splice(index, 1);
-            renderPreviews();
-        }
-
-        // --- Options ---
-        function addOption(type) {
-            const input = document.getElementById(type === 'size' ? 'size-input' : 'color-input');
-            const arr = type === 'size' ? sizes : colors;
-            if (!input.value.trim() || arr.includes(input.value.trim())) return;
-            arr.push(input.value.trim());
-            input.value = '';
-            renderOptions(type);
-        }
-
-        function removeOption(type, i) {
-            (type === 'size' ? sizes : colors).splice(i, 1);
-            renderOptions(type);
-        }
-
-        function renderOptions(type) {
-            const container = document.getElementById(type === 'size' ? 'sizes-container' : 'colors-container');
-            const arr = type === 'size' ? sizes : colors;
-            container.innerHTML = arr.map((item, i) => `
-                <span class="option-tag">${item}<button class="remove" onclick="removeOption('${type}', ${i})">×</button></span>
-            `).join('');
-        }
-
-        // ============================================
-        // DIRECT SAVE TO SUPABASE (NO IMGBB REQUIRED)
-        // ============================================
-        async function saveProduct() {
-            const title = document.getElementById('p-title').value.trim();
-            const price = document.getElementById('p-price').value.trim();
-            const description = document.getElementById('p-description').value.trim();
-            const category = document.getElementById('p-category').value.trim() || 'General';
-
-            if (!title || !price) { showToast('Title and Price required!'); return; }
-            if (uploadedImages.length === 0) { showToast('Select at least 1 image!'); return; }
-
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = 'Saving...';
-
-            const productData = { 
-                title, 
-                price, 
-                description: description || 'Premium Product', 
-                category, 
-                images: uploadedImages, // Base64 or HTTP URLs
-                sizes, 
-                colors 
-            };
-
-            let res;
-            if (editId) res = await supabase.from('products').update(productData).eq('id', editId);
-            else res = await supabase.from('products').insert([productData]);
-
-            if (!res.error) {
-                showToast('✅ Product Live in Supabase!');
-                clearForm();
-                await loadProducts();
-                updateStats();
-            } else {
-                alert("Database Error: " + res.error.message);
+            const div = document.getElementById('orders-list');
+            if (data && data.length) {
+                div.innerHTML = `
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                        <tr style="background:var(--bg-main); text-align:left;">
+                            <th style="padding:10px;">ID</th>
+                            <th>Customer</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        ${data.map(o => `
+                            <tr style="border-bottom:1px solid var(--border);">
+                                <td style="padding:10px;">${o.order_id}</td>
+                                <td>${o.name}<br><small>${o.phone}</small></td>
+                                <td>Rs. ${o.total}</td>
+                                <td><span style="color:var(--primary); font-weight:700;">${o.status}</span></td>
+                                <td>
+                                    <select onchange="updateOrderStatus('${o.id}', this.value)" style="padding:4px; background:var(--bg-main); color:#fff; border-radius:4px;">
+                                        <option value="processing" ${o.status==='processing'?'selected':''}>Processing</option>
+                                        <option value="shipped" ${o.status==='shipped'?'selected':''}>Shipped</option>
+                                        <option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option>
+                                        <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Cancelled</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                `;
             }
-
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Product';
         }
 
-        function clearForm() {
-            document.getElementById('p-title').value = '';
-            document.getElementById('p-price').value = '';
-            document.getElementById('p-description').value = '';
-            document.getElementById('p-category').value = '';
-            document.getElementById('edit-id').value = '';
-            uploadedImages = []; sizes = []; colors = []; editId = null;
-            renderPreviews(); renderOptions('size'); renderOptions('color');
+        async function updateOrderStatus(id, newStatus) {
+            const { data, error } = await supabase.from('orders').update({ status: newStatus }).eq('id', id).select().single();
+            if (!error && data) {
+                // Send Status Change Mail
+                await fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'STATUS_UPDATE', order: data })
+                });
+                alert('✅ Order status updated & email sent to customer!');
+                await loadOrders();
+            }
         }
 
-        async function addCategory() {
-            const name = document.getElementById('new-cat-name').value.trim();
-            if (!name) return;
-            await supabase.from('categories').insert([{ name }]);
-            document.getElementById('new-cat-name').value = '';
-            await loadCategories(); updateStats();
+        async function loadSettingsData() {
+            const { data } = await supabase.from('settings').select('*').eq('id', 1).single();
+            if (data) {
+                document.getElementById('s-title').value = data.banner_title;
+                document.getElementById('s-subtitle').value = data.banner_subtitle;
+                document.getElementById('s-image').value = data.banner_image;
+            }
         }
 
-        async function deleteCategory(id) {
-            if (confirm('Delete category?')) { await supabase.from('categories').delete().eq('id', id); await loadCategories(); updateStats(); }
-        }
-
-        async function deleteProduct(id) {
-            if (confirm('Delete product?')) { await supabase.from('products').delete().eq('id', id); await loadProducts(); updateStats(); }
-        }
-
-        function editProduct(id) {
-            const p = productsList.find(x => x.id == id);
-            if (!p) return;
-            editId = id;
-            document.getElementById('p-title').value = p.title || '';
-            document.getElementById('p-price').value = p.price || '';
-            document.getElementById('p-description').value = p.description || '';
-            document.getElementById('p-category').value = p.category || '';
-            uploadedImages = p.images ? [...p.images] : [];
-            sizes = p.sizes || []; colors = p.colors || [];
-            renderPreviews(); renderOptions('size'); renderOptions('color');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function autoDetectCategory() {
-            const title = document.getElementById('p-title').value.toLowerCase();
-            if (title.includes('watch')) document.getElementById('p-category').value = 'Watches';
-            else if (title.includes('shirt') || title.includes('dress')) document.getElementById('p-category').value = 'Clothing';
-        }
-
-        async function updateOrderStatus(id, status) {
-            await supabase.from('orders').update({ status }).eq('id', id);
-            await loadOrders();
-        }
-
-        function renderCategories() {
-            document.getElementById('categories-list').innerHTML = categoriesList.map(c => `
-                <span class="category-tag">${c.name}<button class="remove" onclick="deleteCategory('${c.id}')">×</button></span>
-            `).join('');
-        }
-
-        function renderProducts() {
-            document.getElementById('products-list').innerHTML = productsList.map(p => `
-                <div class="product-item">
-                    <div class="info">
-                        <img src="${p.images?.[0] || 'https://via.placeholder.com/40'}" />
-                        <div><div class="title">${p.title}</div><div class="meta">Rs. ${p.price}</div></div>
-                    </div>
-                    <div>
-                        <button class="btn-edit" onclick="editProduct('${p.id}')">Edit</button>
-                        <button class="btn-danger-sm" onclick="deleteProduct('${p.id}')">Del</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderOrders() {
-            document.getElementById('order-list').innerHTML = ordersList.map(o => `
-                <div class="order-item">
-                    <div class="order-info"><span class="order-id">#${o.order_id || o.id}</span><span class="order-meta">${o.name} • Rs. ${o.total}</span></div>
-                    <select onchange="updateOrderStatus('${o.id}', this.value)">
-                        <option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option>
-                        <option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-                        <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                    </select>
-                </div>
-            `).join('');
-        }
-
-        function updateStats() {
-            document.getElementById('total-products').textContent = productsList.length;
-            document.getElementById('total-categories').textContent = categoriesList.length;
-            document.getElementById('total-orders').textContent = ordersList.length;
-            document.getElementById('product-count').textContent = productsList.length;
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        async function saveSettings(e) {
+            e.preventDefault();
+            const payload = {
+                banner_title: document.getElementById('s-title').value,
+                banner_subtitle: document.getElementById('s-subtitle').value,
+                banner_image: document.getElementById('s-image').value
+            };
+            await supabase.from('settings').update(payload).eq('id', 1);
+            alert('✅ Homepage Settings Saved!');
         }
     </script>
 </body>

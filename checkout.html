@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Markaz Store</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-    <div class="checkout-wrapper" style="max-width:600px;margin:80px auto;padding:20px;background:#1a1a2e;border-radius:16px;">
-        <h2>Checkout</h2>
-        <form id="checkout-form" onsubmit="event.preventDefault(); submitOrder();">
-            <div style="margin-bottom:12px;">
-                <label>Full Name</label>
-                <input type="text" id="c-name" required style="width:100%;padding:10px;background:#0a0a12;border:1px solid #333;color:white;border-radius:8px;" />
-            </div>
-            <div style="margin-bottom:12px;">
-                <label>Email</label>
-                <input type="email" id="c-email" required style="width:100%;padding:10px;background:#0a0a12;border:1px solid #333;color:white;border-radius:8px;" />
-            </div>
-            <div style="margin-bottom:12px;">
-                <label>Phone</label>
-                <input type="tel" id="c-phone" required style="width:100%;padding:10px;background:#0a0a12;border:1px solid #333;color:white;border-radius:8px;" />
-            </div>
-            <div style="margin-bottom:12px;">
-                <label>Address</label>
-                <input type="text" id="c-address" required style="width:100%;padding:10px;background:#0a0a12;border:1px solid #333;color:white;border-radius:8px;" />
-            </div>
-            <button type="submit" style="width:100%;padding:12px;background:#6366f1;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Place Order</button>
-        </form>
+    <div class="container" style="max-width:600px; margin-top:40px;">
+        <div style="background:var(--bg-card); padding:24px; border-radius:16px; border:1px solid var(--border);">
+            <h2 style="margin-bottom:20px;">Shipping Details</h2>
+            <form id="checkout-form" onsubmit="handleCheckout(event)">
+                <div style="margin-bottom:12px;">
+                    <label>Full Name *</label>
+                    <input type="text" id="c-name" required style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border); color:#fff; border-radius:8px; margin-top:4px;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label>Email Address *</label>
+                    <input type="email" id="c-email" required style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border); color:#fff; border-radius:8px; margin-top:4px;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="c-phone" required style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border); color:#fff; border-radius:8px; margin-top:4px;">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label>Complete Shipping Address *</label>
+                    <textarea id="c-address" required style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border); color:#fff; border-radius:8px; margin-top:4px; height:80px;"></textarea>
+                </div>
+                <button type="submit" id="place-order-btn" class="btn btn-primary" style="width:100%;">Place Cash on Delivery Order</button>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -39,40 +39,49 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuemlwbnhyYXNvbmtobHdjeW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjY0ODcsImV4cCI6MjA1NjUwMjQ4N30.KfgUQ-fn1L0A_Jv3pFESuC8jR1R7S_iC9RPNlWpTbJ0';
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function submitOrder() {
-            const name = document.getElementById('c-name').value.trim();
-            const email = document.getElementById('c-email').value.trim();
-            const phone = document.getElementById('c-phone').value.trim();
-            const address = document.getElementById('c-address').value.trim();
+        async function handleCheckout(e) {
+            e.preventDefault();
+            const btn = document.getElementById('place-order-btn');
+            btn.disabled = true;
+            btn.innerText = 'Processing Order...';
 
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            if(!cart.length) { alert('Cart empty'); return; }
+            if (!cart.length) { alert('Your cart is empty!'); return; }
 
-            let total = 0;
-            const itemsList = cart.map(i => {
-                total += parseInt(i.price) * i.quantity;
-                return `${i.title} x${i.quantity}`;
-            }).join(', ');
+            const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+            const orderId = 'MK-' + Math.floor(100000 + Math.random() * 900000);
 
-            const orderData = {
-                order_id: 'MK-' + Date.now().toString().slice(-6),
-                items: itemsList,
+            const orderPayload = {
+                order_id: orderId,
+                items: cart,
                 total: total,
-                name: name,
-                email: email,
-                phone: phone,
-                address: address,
+                name: document.getElementById('c-name').value.trim(),
+                email: document.getElementById('c-email').value.trim(),
+                phone: document.getElementById('c-phone').value.trim(),
+                address: document.getElementById('c-address').value.trim(),
                 status: 'processing'
             };
 
-            const { error } = await supabase.from('orders').insert([orderData]);
+            // 1. Insert into Supabase
+            const { error } = await supabase.from('orders').insert([orderPayload]);
 
             if (!error) {
+                // 2. Trigger Automated Order Email
+                try {
+                    await fetch('/api/send-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: 'NEW_ORDER', order: orderPayload })
+                    });
+                } catch(err) { console.error('Email Trigger Failed:', err); }
+
                 localStorage.setItem('cart', '[]');
-                alert('🎉 Order Placed Successfully!');
-                window.location.href = 'index.html';
+                alert(`🎉 Order Placed Successfully! Your Order ID is ${orderId}`);
+                window.location.href = `track-order.html?id=${orderId}`;
             } else {
-                alert('Order Error: ' + error.message);
+                alert('Checkout Error: ' + error.message);
+                btn.disabled = false;
+                btn.innerText = 'Place Cash on Delivery Order';
             }
         }
     </script>

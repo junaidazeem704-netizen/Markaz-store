@@ -7,246 +7,91 @@
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .products-page {
-            padding: 100px 24px 60px;
-            min-height: 100vh;
-        }
-        .products-page .container {
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-        .products-page .section-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .products-page .section-header h1 {
-            font-size: 2.4rem;
-            font-weight: 800;
-        }
-        .products-page .section-header p {
-            color: var(--text-secondary);
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 28px;
-        }
-        .category-filter {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 32px;
-        }
-        @media (max-width: 768px) {
-            .products-page {
-                padding: 80px 16px 40px;
-            }
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 20px;
-            }
-        }
-        @media (max-width: 480px) {
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        .products-page { padding: 100px 24px 60px; min-height: 100vh; }
+        .products-page .container { max-width: 1280px; margin: 0 auto; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .category-filter { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+        .cat-btn { padding: 8px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; color: white; cursor: pointer; }
+        .cat-btn.active { background: #6366f1; border-color: #6366f1; }
     </style>
 </head>
 <body>
 
-    <!-- ========================================== -->
-    <!-- NAVBAR -->
-    <!-- ========================================== -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="nav-left">
-                <div class="logo">
-                    <i class="fas fa-store-alt"></i>
-                    <span>Markaz</span>
-                </div>
-                <div class="nav-links">
-                    <a href="index.html">Home</a>
-                    <a href="products.html" class="active">Products</a>
-                    <a href="index.html#about">About</a>
-                    <a href="index.html#contact">Contact</a>
-                </div>
+            <div class="logo"><i class="fas fa-store-alt"></i><span>Markaz</span></div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="products.html" class="active">Products</a>
+                <a href="contact.html">Contact</a>
             </div>
-            <div class="nav-right">
-                <button class="nav-btn" onclick="window.location.href='admin.html'">
-                    <i class="fas fa-cog"></i>
-                    <span>Admin</span>
-                </button>
-                <button class="nav-btn cart-btn">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="cart-badge">0</span>
-                </button>
-            </div>
+            <button class="nav-btn" onclick="window.location.href='cart.html'"><i class="fas fa-shopping-bag"></i> <span id="cart-badge">0</span></button>
         </div>
     </nav>
 
-    <!-- ========================================== -->
-    <!-- PRODUCTS PAGE -->
-    <!-- ========================================== -->
     <section class="products-page">
         <div class="container">
-            <div class="section-header">
-                <h1>Our <span class="gradient-text">Collection</span></h1>
-                <p>Browse our premium selection of products</p>
-            </div>
-            
-            <!-- Category Filter -->
             <div class="category-filter" id="category-filter"></div>
-            
-            <!-- Products Grid -->
             <div class="products-grid" id="products-container"></div>
         </div>
     </section>
 
-    <!-- ========================================== -->
-    <!-- FOOTER -->
-    <!-- ========================================== -->
-    <footer class="footer" style="margin-top:0;">
-        <div class="footer-container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="logo">
-                        <i class="fas fa-store-alt"></i>
-                        <span>Markaz</span>
-                    </div>
-                    <p>Your trusted destination for premium products in Pakistan.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <a href="index.html">Home</a>
-                    <a href="products.html">Products</a>
-                    <a href="index.html#about">About</a>
-                    <a href="index.html#contact">Contact</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Categories</h4>
-                    <div id="footer-categories"></div>
-                </div>
-                <div class="footer-contact">
-                    <h4>Contact Us</h4>
-                    <p><i class="fas fa-phone"></i> +92 300 1234567</p>
-                    <p><i class="fas fa-envelope"></i> info@markazstore.com</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Markaz Store. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
     <script>
-        // Products page specific initialization
-        document.addEventListener('DOMContentLoaded', function() {
-            renderCategoryFilter();
-            displayProducts(products);
-            updateHeroStats();
-            renderFooterCategories();
-            updateCartBadge();
+        const SUPABASE_URL = 'https://vnzipnxrasonkhlwcynq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuemlwbnhyYXNvbmtobHdjeW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjY0ODcsImV4cCI6MjA1NjUwMjQ4N30.KfgUQ-fn1L0A_Jv3pFESuC8jR1R7S_iC9RPNlWpTbJ0';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let allProducts = [];
+        let categoriesList = [];
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await fetchProductsAndCategories();
         });
-        
+
+        async function fetchProductsAndCategories() {
+            const { data: pData } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+            if (pData) allProducts = pData;
+
+            const { data: cData } = await supabase.from('categories').select('*');
+            if (cData) categoriesList = cData.map(c => c.name);
+
+            renderCategoryFilter();
+            displayProducts(allProducts);
+        }
+
         function renderCategoryFilter() {
             const container = document.getElementById('category-filter');
-            if (!container) return;
-            
             let html = `<button class="cat-btn active" onclick="filterCategory('All', this)">All</button>`;
-            categories.forEach(cat => {
+            categoriesList.forEach(cat => {
                 html += `<button class="cat-btn" onclick="filterCategory('${cat}', this)">${cat}</button>`;
             });
             container.innerHTML = html;
         }
-        
-        // Override displayProducts for products page
-        const originalDisplayProducts = window.displayProducts;
-        window.displayProducts = function(list) {
-            const container = document.getElementById('products-container');
-            if (!container) return;
-            
-            // Check if we're on products page
-            if (!document.querySelector('.products-page')) {
-                if (typeof originalDisplayProducts === 'function') {
-                    originalDisplayProducts(list);
-                }
-                return;
-            }
-            
-            currentFilterProducts = list;
-            
-            if (!list.length) {
-                container.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#6a6a82;padding:60px 0;">
-                    <i class="fas fa-box-open" style="font-size:2.4rem;display:block;margin-bottom:12px;"></i>
-                    No products found.
-                </p>`;
-                return;
-            }
-            
-            let cards = '';
-            list.forEach((p, i) => {
-                const imgs = p.images && p.images.length ? p.images : ['https://via.placeholder.com/200'];
-                let thumbs = '';
-                if (imgs.length > 1) {
-                    thumbs = `<div class="thumb-box">` + 
-                        imgs.slice(0, 4).map(img => `<img src="${img}" class="t-img">`).join('') + 
-                        `</div>`;
-                }
-                
-                let sizeHtml = '';
-                if (p.sizes && p.sizes.length > 0) {
-                    sizeHtml = `<div class="product-options"><span class="opt-label">Sizes:</span> ${p.sizes.slice(0, 3).map(s => `<span class="opt-tag">${s}</span>`).join('')}${p.sizes.length > 3 ? ' +' : ''}</div>`;
-                }
-                
-                let colorHtml = '';
-                if (p.colors && p.colors.length > 0) {
-                    colorHtml = `<div class="product-options"><span class="opt-label">Colors:</span> ${p.colors.slice(0, 3).map(c => `<span class="opt-tag color-dot" style="background:${c.toLowerCase()};color:white;padding:2px 10px;border-radius:4px;">${c}</span>`).join('')}${p.colors.length > 3 ? ' +' : ''}</div>`;
-                }
-                
-                cards += `
-                    <div class="card" onclick="viewProduct(${i})" style="cursor:pointer;">
-                        <span class="badge">${p.category || 'General'}</span>
-                        <img src="${imgs[0]}" class="p-img" loading="lazy" alt="${p.title}">
-                        ${thumbs}
-                        <h3>${p.title}</h3>
-                        ${sizeHtml}
-                        ${colorHtml}
-                        <div class="price">Rs. ${p.price}</div>
-                        <button class="wa-btn" onclick="event.stopPropagation(); viewProduct(${i})">
-                            <i class="fas fa-eye"></i> View Details
-                        </button>
-                    </div>
-                `;
-            });
-            container.innerHTML = cards;
-        };
-        
-        // View Product function
-        function viewProduct(index) {
-            const item = currentFilterProducts[index];
-            if (item) {
-                localStorage.setItem('viewProduct', JSON.stringify({
-                    index: index,
-                    ...item
-                }));
-                window.location.href = 'product-detail.html';
-            }
+
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            if (cat === 'All') displayProducts(allProducts);
+            else displayProducts(allProducts.filter(p => p.category === cat));
         }
-        
-        // Make functions global
-        window.viewProduct = viewProduct;
-        window.renderCategoryFilter = renderCategoryFilter;
+
+        function displayProducts(list) {
+            const container = document.getElementById('products-container');
+            container.innerHTML = list.map((p, i) => `
+                <div class="card" onclick="viewProduct(${i})" style="background:rgba(26,26,46,0.85);padding:12px;border-radius:12px;cursor:pointer;">
+                    <img src="${p.images?.[0] || 'https://via.placeholder.com/200'}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;">
+                    <h3>${p.title}</h3>
+                    <div style="color:#6366f1;font-weight:700;">Rs. ${p.price}</div>
+                </div>
+            `).join('');
+        }
+
+        function viewProduct(index) {
+            localStorage.setItem('viewProduct', JSON.stringify(allProducts[index]));
+            window.location.href = 'product-detail.html';
+        }
     </script>
 </body>
 </html>

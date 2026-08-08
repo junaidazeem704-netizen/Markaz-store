@@ -2,73 +2,108 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Markaz Store</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Panel - Markaz Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .form-control { width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--border); color: #fff; border-radius: 8px; margin-bottom: 12px; }
-        @media(max-width:768px) { .admin-grid { grid-template-columns: 1fr; } }
+        :root {
+            --bg: #090d16;
+            --card: #111827;
+            --input: #1f293d;
+            --accent: #6366f1;
+            --text: #f9fafb;
+            --muted: #9ca3af;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 14px; min-height: 100vh; }
+        .container { max-width: 650px; margin: 0 auto; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 14px 18px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 16px; }
+        .header h1 { font-size: 1.1rem; font-weight: 800; color: #fff; }
+        .header h1 span { color: var(--accent); }
+
+        .card { background: var(--card); padding: 18px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 16px; }
+        .card h2 { font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; }
+        .input-box { width: 100%; padding: 11px; background: var(--input); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 0.85rem; outline: none; }
+        .input-box:focus { border-color: var(--accent); }
+
+        .upload-area { border: 2px dashed var(--border); background: var(--input); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; position: relative; }
+        .upload-area input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .upload-area i { font-size: 1.8rem; color: var(--accent); margin-bottom: 6px; display: block; }
+        .upload-area p { font-size: 0.8rem; color: var(--muted); }
+
+        .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; margin-top: 10px; }
+        .preview-box { position: relative; aspect-ratio: 1; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+        .preview-box img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-box button { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); color: #ef4444; border: none; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; font-size: 0.6rem; }
+
+        .btn-submit { width: 100%; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; margin-top: 6px; }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .product-item { display: flex; justify-content: space-between; align-items: center; background: var(--input); padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
+        .product-item img { width: 36px; height: 36px; object-fit: cover; border-radius: 6px; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="container nav-flex">
-            <a href="index.html" class="logo"><i class="fas fa-cog"></i> MARKAZ <span>ADMIN</span></a>
-            <a href="index.html" class="btn btn-outline"><i class="fas fa-store"></i> View Store</a>
-        </div>
-    </nav>
-
-    <div class="container" style="margin-top:30px;">
-        <div class="admin-grid">
-            <!-- Add / Edit Product -->
-            <div class="card">
-                <h3><i class="fas fa-plus-circle"></i> Add / Edit Product</h3>
-                <form id="product-form" onsubmit="saveProduct(event)" style="margin-top:14px;">
-                    <input type="text" id="p-title" class="form-control" placeholder="Product Title *" required>
-                    <input type="number" id="p-price" class="form-control" placeholder="Price (PKR) *" required>
-                    <textarea id="p-desc" class="form-control" placeholder="Product Description"></textarea>
-                    <input type="text" id="p-cat" class="form-control" placeholder="Category (e.g. Watches, Shirts)">
-
-                    <!-- Multi Image Input + Auto Detection -->
-                    <label style="font-size:0.8rem; color:var(--text-muted);">Upload Images (ImgBB):</label>
-                    <input type="file" id="p-images" class="form-control" accept="image/*" multiple onchange="handleImageSelection(event)">
-                    <div id="img-preview" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
-
-                    <div style="display:flex; gap:8px; margin-bottom:12px;">
-                        <input type="text" id="p-colors" class="form-control" placeholder="Colors (Comma separated)" style="margin-bottom:0;">
-                        <button type="button" class="btn btn-outline" onclick="autoDetectColors()"><i class="fas fa-magic"></i> Auto Color</button>
-                    </div>
-
-                    <input type="text" id="p-sizes" class="form-control" placeholder="Sizes (e.g. S, M, L, XL)">
-
-                    <button type="submit" id="save-p-btn" class="btn btn-primary" style="width:100%;">Save Product to Database</button>
-                </form>
-            </div>
-
-            <!-- Banner Control Panel -->
-            <div class="card">
-                <h3><i class="fas fa-sliders-h"></i> Homepage Store Settings</h3>
-                <form onsubmit="saveSettings(event)" style="margin-top:14px;">
-                    <label style="font-size:0.8rem;">Banner Main Heading:</label>
-                    <input type="text" id="s-title" class="form-control">
-                    <label style="font-size:0.8rem;">Banner Subtitle:</label>
-                    <input type="text" id="s-subtitle" class="form-control">
-                    <label style="font-size:0.8rem;">Banner Image URL:</label>
-                    <input type="text" id="s-image" class="form-control">
-                    <button type="submit" class="btn btn-primary" style="width:100%;">Update Store Banners</button>
-                </form>
-            </div>
+    <div class="container">
+        <div class="header">
+            <h1>MARKAZ <span>ADMIN</span></h1>
+            <a href="index.html" style="color:#fff; text-decoration:none; font-size:0.8rem;"><i class="fas fa-store"></i> Store</a>
         </div>
 
-        <!-- Orders Table -->
         <div class="card">
-            <h3><i class="fas fa-truck"></i> Live Orders & Status Email Manager</h3>
-            <div id="orders-list" style="margin-top:14px; overflow-x:auto;"></div>
+            <h2><i class="fas fa-plus-circle" style="color:var(--accent);"></i> Add Product (ImgBB Remote Hosting)</h2>
+            
+            <div class="form-group">
+                <label>Product Title *</label>
+                <input type="text" id="p-title" class="input-box" placeholder="e.g. Red T-Shirt" onkeyup="autoDetectColors()">
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="form-group">
+                    <label>Price (PKR) *</label>
+                    <input type="number" id="p-price" class="input-box" placeholder="1500">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="p-category" class="input-box" placeholder="Clothing">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="p-desc" class="input-box" style="height:60px;" placeholder="Product details..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Gallery Images (Select Multiple) *</label>
+                <div class="upload-area">
+                    <i class="fas fa-images"></i>
+                    <p>Tap to pick photos from gallery</p>
+                    <input type="file" id="p-file-input" accept="image/*" multiple onchange="handleFileSelect(event)">
+                </div>
+                <div class="preview-grid" id="preview-grid"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Colors Auto-Detected</label>
+                <input type="text" id="p-colors" class="input-box" placeholder="Auto detected or type (Red, Black)">
+            </div>
+
+            <button type="button" class="btn-submit" id="submit-btn" onclick="saveProduct()">Upload to ImgBB & Publish</button>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-boxes"></i> Live Products</h2>
+            <div id="products-list">Loading...</div>
         </div>
     </div>
 
@@ -76,142 +111,137 @@
         const SUPABASE_URL = 'https://vnzipnxrasonkhlwcynq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuemlwbnhyYXNvbmtobHdjeW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjY0ODcsImV4cCI6MjA1NjUwMjQ4N30.KfgUQ-fn1L0A_Jv3pFESuC8jR1R7S_iC9RPNlWpTbJ0';
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         const IMGBB_API_KEY = '311cba478ef03480a9e99f45226dc6ac';
 
         let selectedFiles = [];
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadOrders();
-            await loadSettingsData();
-        });
+        document.addEventListener('DOMContentLoaded', fetchProducts);
 
-        function handleImageSelection(e) {
-            selectedFiles = Array.from(e.target.files);
-            const preview = document.getElementById('img-preview');
-            preview.innerHTML = selectedFiles.map(f => `<img src="${URL.createObjectURL(f)}" width="50" height="50" style="object-fit:cover; border-radius:6px;">`).join('');
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            selectedFiles = [...selectedFiles, ...files].slice(0, 5);
+            renderPreviews();
+            e.target.value = '';
+        }
+
+        function renderPreviews() {
+            const grid = document.getElementById('preview-grid');
+            grid.innerHTML = selectedFiles.map((file, i) => `
+                <div class="preview-box">
+                    <img src="${URL.createObjectURL(file)}">
+                    <button type="button" onclick="removeFile(${i})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            renderPreviews();
         }
 
         function autoDetectColors() {
             const title = document.getElementById('p-title').value.toLowerCase();
-            const colorMap = ['black', 'white', 'red', 'blue', 'green', 'yellow', 'silver', 'gold', 'navy', 'grey'];
-            const detected = colorMap.filter(c => title.includes(c));
-            if (detected.length) {
-                document.getElementById('p-colors').value = detected.join(', ');
-                alert(`✨ Auto Detected Colors: ${detected.join(', ')}`);
-            } else {
-                alert('No standard color name found in title. Type manually.');
+            const colorList = ['red', 'black', 'blue', 'green', 'white', 'yellow', 'silver', 'gold', 'grey', 'brown'];
+            const matched = colorList.filter(c => title.includes(c));
+            if (matched.length) {
+                document.getElementById('p-colors').value = matched.join(', ');
             }
         }
 
-        async function saveProduct(e) {
-            e.preventDefault();
-            const btn = document.getElementById('save-p-btn');
+        async function saveProduct() {
+            const title = document.getElementById('p-title').value.trim();
+            const price = document.getElementById('p-price').value.trim();
+            const desc = document.getElementById('p-desc').value.trim();
+            const category = document.getElementById('p-category').value.trim() || 'General';
+            const colors = document.getElementById('p-colors').value.split(',').map(c => c.trim()).filter(Boolean);
+
+            if (!title || !price) { alert('Title aur Price required hain!'); return; }
+            if (selectedFiles.length === 0) { alert('Kam az kam 1 image select karein!'); return; }
+
+            const btn = document.getElementById('submit-btn');
             btn.disabled = true;
-            btn.innerText = 'Uploading Images to ImgBB...';
 
-            let imageUrls = [];
+            let imgUrls = [];
 
-            // ImgBB Upload Loop
-            for (let file of selectedFiles) {
-                const formData = new FormData();
-                formData.append('image', file);
+            // Direct ImgBB Upload via Raw FormData (Zero Base64 Memory Overhead)
+            for (let i = 0; i < selectedFiles.length; i++) {
+                btn.innerText = `Uploading Image ${i+1}/${selectedFiles.length} to ImgBB...`;
+                
                 try {
-                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const formData = new FormData();
+                    formData.append('image', selectedFiles[i]);
+
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
                     const json = await res.json();
-                    if (json.success) imageUrls.push(json.data.url);
-                } catch(err) { console.error('Image upload failed', err); }
+                    if (json.success) {
+                        imgUrls.push(json.data.url);
+                    } else {
+                        alert(`ImgBB Upload Error (${i+1}): ` + (json.error?.message || 'Failed'));
+                        btn.disabled = false;
+                        btn.innerText = 'Upload to ImgBB & Publish';
+                        return;
+                    }
+                } catch (e) {
+                    alert('Network error while uploading to ImgBB!');
+                    btn.disabled = false;
+                    btn.innerText = 'Upload to ImgBB & Publish';
+                    return;
+                }
             }
 
-            btn.innerText = 'Saving to Database...';
+            btn.innerText = 'Saving URL to Supabase Database...';
 
-            const payload = {
-                title: document.getElementById('p-title').value.trim(),
-                price: parseFloat(document.getElementById('p-price').value),
-                description: document.getElementById('p-desc').value.trim(),
-                category: document.getElementById('p-category')?.value || 'General',
-                images: imageUrls.length ? imageUrls : ['https://via.placeholder.com/300'],
-                colors: document.getElementById('p-colors').value.split(',').map(s => s.trim()).filter(Boolean),
-                sizes: document.getElementById('p-sizes').value.split(',').map(s => s.trim()).filter(Boolean)
-            };
-
-            const { error } = await supabase.from('products').insert([payload]);
+            // Store ONLY the String URLs in Supabase (0 Storage Used)
+            const { error } = await supabase.from('products').insert([{
+                title: title,
+                price: parseFloat(price),
+                description: desc,
+                category: category,
+                images: imgUrls,
+                colors: colors
+            }]);
 
             if (!error) {
-                alert('✅ Product successfully added!');
+                alert('✅ Product live ho gaya! ImgBB par images save ho gayin.');
                 location.reload();
             } else {
-                alert('Error: ' + error.message);
+                alert('Supabase Database Error: ' + error.message);
                 btn.disabled = false;
-                btn.innerText = 'Save Product to Database';
+                btn.innerText = 'Upload to ImgBB & Publish';
             }
         }
 
-        async function loadOrders() {
-            const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-            const div = document.getElementById('orders-list');
+        async function fetchProducts() {
+            const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+            const list = document.getElementById('products-list');
             if (data && data.length) {
-                div.innerHTML = `
-                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
-                        <tr style="background:var(--bg-main); text-align:left;">
-                            <th style="padding:10px;">ID</th>
-                            <th>Customer</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                        ${data.map(o => `
-                            <tr style="border-bottom:1px solid var(--border);">
-                                <td style="padding:10px;">${o.order_id}</td>
-                                <td>${o.name}<br><small>${o.phone}</small></td>
-                                <td>Rs. ${o.total}</td>
-                                <td><span style="color:var(--primary); font-weight:700;">${o.status}</span></td>
-                                <td>
-                                    <select onchange="updateOrderStatus('${o.id}', this.value)" style="padding:4px; background:var(--bg-main); color:#fff; border-radius:4px;">
-                                        <option value="processing" ${o.status==='processing'?'selected':''}>Processing</option>
-                                        <option value="shipped" ${o.status==='shipped'?'selected':''}>Shipped</option>
-                                        <option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option>
-                                        <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Cancelled</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </table>
-                `;
+                list.innerHTML = data.map(p => `
+                    <div class="product-item">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <img src="${p.images?.[0] || 'https://via.placeholder.com/40'}">
+                            <div>
+                                <div style="font-size:0.8rem; font-weight:600;">${p.title}</div>
+                                <div style="font-size:0.7rem; color:var(--muted);">Rs. ${p.price}</div>
+                            </div>
+                        </div>
+                        <button style="background:rgba(239,68,68,0.15); color:#ef4444; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="deleteProduct(${p.id})">Delete</button>
+                    </div>
+                `).join('');
+            } else {
+                list.innerHTML = '<p style="font-size:0.75rem; color:var(--muted);">No products found.</p>';
             }
         }
 
-        async function updateOrderStatus(id, newStatus) {
-            const { data, error } = await supabase.from('orders').update({ status: newStatus }).eq('id', id).select().single();
-            if (!error && data) {
-                // Send Status Change Mail
-                await fetch('/api/send-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: 'STATUS_UPDATE', order: data })
-                });
-                alert('✅ Order status updated & email sent to customer!');
-                await loadOrders();
+        async function deleteProduct(id) {
+            if (confirm('Delete this product?')) {
+                await supabase.from('products').delete().eq('id', id);
+                fetchProducts();
             }
-        }
-
-        async function loadSettingsData() {
-            const { data } = await supabase.from('settings').select('*').eq('id', 1).single();
-            if (data) {
-                document.getElementById('s-title').value = data.banner_title;
-                document.getElementById('s-subtitle').value = data.banner_subtitle;
-                document.getElementById('s-image').value = data.banner_image;
-            }
-        }
-
-        async function saveSettings(e) {
-            e.preventDefault();
-            const payload = {
-                banner_title: document.getElementById('s-title').value,
-                banner_subtitle: document.getElementById('s-subtitle').value,
-                banner_image: document.getElementById('s-image').value
-            };
-            await supabase.from('settings').update(payload).eq('id', 1);
-            alert('✅ Homepage Settings Saved!');
         }
     </script>
 </body>
